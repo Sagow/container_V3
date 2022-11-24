@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/11/22 19:37:03 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2022/11/24 18:12:20 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@ namespace ft
 {
 	template <class T>
 	struct RBnode{
-		T*		content;
+		T				content;
 		struct RBnode*	left;
 		struct RBnode*	right;
 		bool			colour;
@@ -24,13 +24,63 @@ namespace ft
 	class RBtree
 	{
 		private:
-			struct RBnode	*trunk;
-			struct RBnode	*leftest;
-			struct RBnode	*rightest;
+			struct RBnode	*_trunk;
+			struct RBnode	*_leftest;
+			struct RBnode	*_rightest;
+			void			balanceTree()
+			{
+				//aussi penser a mettre a jour rightest et leftest
+			}
 		
 		public:
+			RBnode()
+			{
+				_trunck = NULL;
+				_leftest = NULL;
+				_rightest = NULL;
+			}
+			RBnode(T val)
+			{
+				_trunk = new RBnode;
+				_trunk->content = val;
+				_trunk->left = NULL;
+				_trunk->right = NULL;
+				_leftest = _trunk;
+				_rightest = _trunk;
+			}
 			RBnode*			getTrunck();
 			RBnode*			getLeftest();
 			RBnode*			getRightest();
+			void			insertNode(T val)
+			{
+				RBnode *next = _trunk;
+
+				if (!_trunck)
+				{
+					_trunk = new RBnode;
+					_trunk->content = val;
+					_trunk->left = NULL;
+					_trunk->right = NULL;
+					_leftest = _trunk;
+					_rightest = _trunk;
+				}
+				else
+				{
+					while (next)
+					{
+						if (val > next->content)
+							next = next->right;
+						else
+							next = next->left;
+					}
+					next = new RBnode;
+					next->content = val;
+					next->left = NULL;
+					next->right = NULL;
+					balanceTree();
+				}
+			}
+			void			deleteNode(T* ptr);
 	};
 }
+
