@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/11/24 18:12:20 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2022/11/24 18:15:19 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ namespace ft
 				_trunk->content = val;
 				_trunk->left = NULL;
 				_trunk->right = NULL;
+				_trunk->colour = false;
 				_leftest = _trunk;
 				_rightest = _trunk;
 			}
@@ -61,6 +62,7 @@ namespace ft
 					_trunk->content = val;
 					_trunk->left = NULL;
 					_trunk->right = NULL;
+					_trunk->colour = false;
 					_leftest = _trunk;
 					_rightest = _trunk;
 				}
@@ -77,6 +79,7 @@ namespace ft
 					next->content = val;
 					next->left = NULL;
 					next->right = NULL;
+					next->colour = false;
 					balanceTree();
 				}
 			}
