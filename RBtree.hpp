@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/11/24 18:15:19 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2022/11/25 15:51:47 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ namespace ft
 		T				content;
 		struct RBnode*	left;
 		struct RBnode*	right;
+		struct RBnode*	parent;
 		bool			colour;
 	};
 
@@ -45,6 +46,7 @@ namespace ft
 				_trunk->content = val;
 				_trunk->left = NULL;
 				_trunk->right = NULL;
+				_trunk->parent = NULL;
 				_trunk->colour = false;
 				_leftest = _trunk;
 				_rightest = _trunk;
@@ -55,6 +57,7 @@ namespace ft
 			void			insertNode(T val)
 			{
 				RBnode *next = _trunk;
+				RBnode *parent = NULL;
 
 				if (!_trunck)
 				{
@@ -62,6 +65,7 @@ namespace ft
 					_trunk->content = val;
 					_trunk->left = NULL;
 					_trunk->right = NULL;
+					_trunk->parent = NULL;
 					_trunk->colour = false;
 					_leftest = _trunk;
 					_rightest = _trunk;
@@ -70,6 +74,7 @@ namespace ft
 				{
 					while (next)
 					{
+						parent = next;
 						if (val > next->content)
 							next = next->right;
 						else
@@ -79,11 +84,15 @@ namespace ft
 					next->content = val;
 					next->left = NULL;
 					next->right = NULL;
+					next->parent = parent;
 					next->colour = false;
 					balanceTree();
 				}
 			}
-			void			deleteNode(T* ptr);
+			void			deleteNode(T* ptr)
+			{
+				
+			}
 	};
 }
 
