@@ -6,22 +6,37 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/11/25 15:51:47 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2022/11/29 19:09:10 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include <memory>
 
 namespace ft
 {
 	template <class T>
-	struct RBnode{
-		T				content;
-		struct RBnode*	left;
-		struct RBnode*	right;
-		struct RBnode*	parent;
-		bool			colour;
+	class RBnode{
+		public:
+			T				content;
+			struct RBnode*	left;
+			struct RBnode*	right;
+			struct RBnode*	parent;
+			bool			colour;
 	};
 
-	template <class T>
+	template <class T, class Allocator = std::allocator<RBnode<T>> >
+	RBnode<T>*			createNode(T data, RBnode<T>* parent, Allocator alloc)
+	{
+		RBnode* ptr = alloc.allocate(sizeof(RBnode));
+		content = data;
+		left = NULL;
+		right = NULL;
+		parent = parent;
+		colour = false;
+		return (ptr);
+	};
+	
+	template <class T, class Allocator = std::allocator<RBnode<T>> >
 	class RBtree
 	{
 		private:
@@ -42,12 +57,7 @@ namespace ft
 			}
 			RBnode(T val)
 			{
-				_trunk = new RBnode;
-				_trunk->content = val;
-				_trunk->left = NULL;
-				_trunk->right = NULL;
-				_trunk->parent = NULL;
-				_trunk->colour = false;
+				_trunk = createNode(val, NULL, Allocator);
 				_leftest = _trunk;
 				_rightest = _trunk;
 			}
@@ -61,12 +71,7 @@ namespace ft
 
 				if (!_trunck)
 				{
-					_trunk = new RBnode;
-					_trunk->content = val;
-					_trunk->left = NULL;
-					_trunk->right = NULL;
-					_trunk->parent = NULL;
-					_trunk->colour = false;
+					_trunk = createNode(val, NULL, Allocator);
 					_leftest = _trunk;
 					_rightest = _trunk;
 				}
@@ -80,12 +85,7 @@ namespace ft
 						else
 							next = next->left;
 					}
-					next = new RBnode;
-					next->content = val;
-					next->left = NULL;
-					next->right = NULL;
-					next->parent = parent;
-					next->colour = false;
+					next = createNode(val, parent, Allocator);
 					balanceTree();
 				}
 			}
