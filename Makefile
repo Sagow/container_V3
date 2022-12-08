@@ -1,6 +1,7 @@
-SRCS =	main.cpp
+SRCS =	main_test.cpp
 
-HEADERS = map.hpp
+HEADERS =	vector.hpp \
+			algorithm.hpp
 
 OBJS =  ${SRCS:.cpp=.o}
 
