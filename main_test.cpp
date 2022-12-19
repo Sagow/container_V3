@@ -115,6 +115,7 @@ int main()
 	for (int i = 0; i < 20; i++)
 	{
 		ft::vector<int>	j(2, i);
+		std::cout << "boucle" << std::endl;
 		vec2.push_back(j);
 	}
 	for (size_t i = 0; i < vec2.size(); i++)
