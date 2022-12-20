@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 20:05:21 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/12/20 21:18:50 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2022/12/20 22:55:52 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,12 +142,12 @@ namespace ft {
 			
 			reverse_iterator rbegin()
 			{
-				return (reverse_iterator(_ptr + (_size - 1)));
+				return (reverse_iterator(end()));
 			}
 			
 			const_reverse_iterator rbegin() const
 			{
-				return (const_reverse_iterator(_ptr + (_size - 1)));
+				return (const_reverse_iterator(end()));
 			}
 			
 			reverse_iterator rend()
@@ -181,10 +181,12 @@ namespace ft {
 			{
 				return (_capacity);
 			}
+			
 			bool empty() const
 			{
 				return (_size == 0);
 			}
+			
 			void reserve(size_type n)
 			{
 				pointer ptr = _ptr;
@@ -263,10 +265,10 @@ namespace ft {
 			void push_back(const T& x)
 			{
 				//std::cout << "dans push_back" << std::endl;
-				//insert(end(), x);
-				reserve(_size + 1);
+				insert(end(), x);
+				/*reserve(_size + 1);
 				_alloc.construct(_ptr + _size, x);
-				_size++;
+				_size++;*/
 			}
 			
 			void pop_back()
@@ -334,25 +336,35 @@ namespace ft {
 			
 			iterator erase(iterator position)
 			{
-				size_type	index = position - begin();
-				for (size_type i = index; i < _size - 1; i++)
-					_ptr[i] = _ptr[i + 1];
-				_alloc.destroy(_ptr + index);
-				return (iterator(_ptr + index));
+				return (erase(position, position + 1));
 			}
 			
 			iterator erase(iterator first, iterator last)
 			{
-				int nb = last - first;
-				for (int i = 0; i < nb; i++)
-					first = erase(first);
+				size_type	dist = last - first;
+				size_type	pos = first - begin();
+				for(; pos < _size; pos++)
+					_ptr[pos] = _ptr[pos + dist];
+				for (size_type i = 0; i < dist; i++)
+					_alloc.destroy(_ptr + pos + i);
+				_size -= dist;
 				return (first);
 			}
 			void swap(vector<T,Allocator>& x)
 			{
-				vector<T,Allocator> tmp(this);
-				this = x;
-				x = tmp;
+				pointer	tmp_ptr = _ptr;
+				allocator_type	tmp_alloc = _alloc;
+				size_type	tmp_size = _size;
+				size_type	tmp_capacity = _capacity;
+				
+				_ptr = x._ptr;
+				_alloc = x._alloc;
+				_size = x._size;
+				_capacity = x._capacity;
+				x._ptr = tmp_ptr;
+				x._alloc = tmp_alloc;
+				x._size = tmp_size;
+				x._capacity = tmp_capacity;
 			}
 			void clear()
 			{
