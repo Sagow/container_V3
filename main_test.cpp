@@ -92,42 +92,40 @@ void	exec_compare(std::string msg)
 	file.close();
 }
 
+void	display_my_vector(ft::vector<int> v)
+{
+	for (ft::vector<int>::iterator it = v.begin(); it != v.end(); it++)
+		std::cout << "[" << (*it) << "]" << std::endl;
+}
+void	display_vector(std::vector<int> v)
+{
+	for (std::vector<int>::iterator it = v.begin(); it != v.end(); it++)
+		std::cout << "[" << (*it) << "]" << std::endl;
+}
 int main()
 {
-	// typedef	std::string												T;
-
-	// typedef ft::vector<T>::iterator									ft_it;
-	// typedef std::vector<T>::iterator								std_it;
-	// typedef ft::vector<T>::reverse_iterator							ft_rev_it;
-	// typedef ft::vector<T>::const_reverse_iterator					ft_const_rev_it;
-	// typedef std::vector<T>::reverse_iterator			std_rev_it;
-
-	// exec_test<ft::vector<T>, ft_it>		("ft::vector");
-	// exec_test<std::vector<T>, std_it>	("std::vector");
-
-	// exec_rev_test<ft::vector<T>, ft_rev_it>				("ft::rev_vector");
-	// exec_rev_test<ft::vector<T>, ft_const_rev_it>		("ft::const_rev_vector");
-	// exec_rev_test<std::vector<T>, std_rev_it>	("std::rev_vector");
-
-	// exec_compare<ft::vector<T> >					("VECTOR");
-	// tests();
 	ft::vector<ft::vector<int> >	vec2;
+
 	for (int i = 0; i < 20; i++)
 	{
-		ft::vector<int>	j(2, i);
-		std::cout << "boucle" << std::endl;
+		ft::vector<int>	j(3, i);
+		//std::cout << j.size() << ' ';
+	//std::cout << "boucle" << std::endl;
 		vec2.push_back(j);
+		std::cout << vec2.back().size() << " contre " << j.size() << " sur " << vec2.size() << " elements(" << vec2[i].capacity() << std::endl;
 	}
-	for (size_t i = 0; i < vec2.size(); i++)
-		std::cout << vec2[i].back() << ' ';
 	std::cout << std::endl;
+	for (size_t i = 0; i < vec2.size(); i++)
+		std::cout << vec2[i].front() << ' ';
+	std::cout << std::endl;
+	std::cout << "--------------" << std::endl;
 
-	/* CE TEST EST CENSE ECHOUER ET FAIRE UN INVALID READ
-	ft::vector<std::string>    v2(8);
-    ft::vector<std::string>::iterator    it2 = v2.begin();
-
-    v2.push_back("AAAAAAAAAA");
-    std::cout << (*it2) << std::endl;
-	*/
+	/*ft::vector<int> vec;
+	for (int i = 0; i < 20; i++)
+	{
+		vec.push_back(i + 5);
+	}
+	for (size_t i = 0; i < vec.size(); i++)
+		std::cout << vec[i] << ' ';*/
 	return 0;
 }

@@ -7,7 +7,7 @@ OBJS =  ${SRCS:.cpp=.o}
 
 CC =	c++
 
-FLAGS = -std=c++98 -Wall -Werror -Wextra -fsanitize=address -g3
+FLAGS = -std=c++98 -Wall -Werror -Wextra -g3
 
 NAME =  Vector
 

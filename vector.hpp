@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 20:05:21 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/12/19 16:23:29 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2022/12/20 21:18:50 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <cstring>
 #include <vector>
 #include "algorithm.hpp"
+#include <iostream>
 
 namespace ft {
 	template <class T, class Allocator = std::allocator<T> >
@@ -34,6 +35,21 @@ namespace ft {
 			typedef typename 	Allocator::const_pointer				const_pointer;
 			typedef 			std::reverse_iterator<iterator>			reverse_iterator;
 			typedef 			std::reverse_iterator<const_iterator>	const_reverse_iterator;
+		private:
+			size_type	next_size(size_type n)
+			{
+				//std::cout << "next_size va se lancer" << std::endl;
+				
+				size_type res = n > max_size() / 2 ? max_size() : _capacity * 2;
+				if (!res)
+					res = 1;
+				while (res < n && res != max_size())
+				//{
+					res = res > max_size() / 2 ? max_size() : res * 2;
+					//std::cout << "res = " << res << " n = " << n << " max = " << max_size() << std::endl;
+				//}
+				return (res);
+			}
 			
 		protected:
 			pointer _ptr;
@@ -51,16 +67,20 @@ namespace ft {
 			}
 			template <class InputIterator>
 			vector(InputIterator first, InputIterator last,
-			const Allocator& alloc= Allocator()) : _ptr(NULL), _alloc(alloc), _size(0), _capacity(0)
+			const Allocator& alloc= Allocator(), typename ft::enable_if<!ft::is_integral<InputIterator>::state>::type =0) : _ptr(NULL), _alloc(alloc), _size(0), _capacity(0)
 			{
+				//std::cout << "Vector assign " << std::endl;
 				for (InputIterator it = first; it != last; it++)
 					_capacity++;
 				_ptr = _alloc.allocate(_capacity);
 				this->assign(first, last);
 			}
-			vector(const vector<T,Allocator>& x) : _ptr(NULL), _size(0), _capacity(0)
+			vector(const vector<T,Allocator>& x) : _ptr(NULL), _alloc(x._alloc), _size(0), _capacity(0)
 			{
+				//std::cout << "Copy constr " << std::endl;
 				assign(x.begin(), x.end());
+				//std::cout << "res : " << *(begin()) << " a +" << end() - begin() << " size = " << _size << std::endl;
+
 			}
 			~vector()
 			{
@@ -70,6 +90,8 @@ namespace ft {
 			};
 			vector<T,Allocator>& operator=(const vector<T,Allocator>& x)
 			{
+				std::cout << "=" << std::endl;
+				_alloc = x._alloc;
 				if (&x != this)
 					assign(x.begin(), x.end());
 				return (*this);
@@ -80,12 +102,15 @@ namespace ft {
 				assign(InputIterator first, InputIterator last)
 				{
 					erase(begin(), end());
+					//std::cout << "assign de " << *first << " a +" << last - first << std::endl;
 					insert(begin(), first, last);
 				}
 			
 			void assign(size_type n, const T& u)
 			{
+
 				erase(begin(), end());
+				//std::cout << "assign va se lancer" << std::endl;
 				insert(begin(), n, u);
 			}
 			
@@ -162,7 +187,10 @@ namespace ft {
 			}
 			void reserve(size_type n)
 			{
-				pointer ptr;
+				pointer ptr = _ptr;
+				size_t	capacity = _capacity;
+				//std::cout << "reserve va se lancer" << std::endl;
+
 				
 				if (n > max_size() || n < 0)
 					throw (std::length_error("vector::reserve")); //aller chercher p 349 du livre pour les classes d'exceptions
@@ -170,27 +198,26 @@ namespace ft {
 					n = 1;
 				if (n > _capacity)
 				{
-					ptr = _alloc.allocate(n);
+					_capacity = next_size(n);
+					_ptr = _alloc.allocate(_capacity);
 					for (size_type i = 0; i < _size; i++)
 					{
-						_alloc.construct(ptr + i, *(_ptr + i));
-						_alloc.destroy(_ptr + i);
+						_alloc.construct(_ptr + i, *(ptr + i));
+						_alloc.destroy(ptr + i);
 					}
-					_alloc.deallocate(_ptr, _size);
-					_ptr = ptr;	
-					_capacity = n;
+					_alloc.deallocate(ptr, capacity);
 				}
 			}
 			// element access:
 			reference operator[](size_type n)
 			{
-				pointer ret = _ptr + n * sizeof(value_type);
+				pointer ret = _ptr + n;
 				return (*ret);
 			}
 			
 			const_reference operator[](size_type n) const
 			{
-				pointer ret = _ptr + n * sizeof(value_type);
+				pointer ret = _ptr + n;
 				return (*ret);
 			}
 
@@ -198,7 +225,7 @@ namespace ft {
 			{
 				if (!(n < size()))
 					throw (std::out_of_range("pouet"));
-				pointer ret = _ptr + n * sizeof(value_type);
+				pointer ret = _ptr + n;
 				return (*ret);
 			}
 			
@@ -206,7 +233,7 @@ namespace ft {
 			{
 				if (!(n < size()))
 					throw (std::out_of_range("pouet"));
-				pointer ret = _ptr + n * sizeof(value_type);
+				pointer ret = _ptr + n;
 				return (*ret);
 			}
 			
@@ -235,7 +262,11 @@ namespace ft {
 			// 23.2.4.3 modifiers:
 			void push_back(const T& x)
 			{
-				insert(end(), x);
+				//std::cout << "dans push_back" << std::endl;
+				//insert(end(), x);
+				reserve(_size + 1);
+				_alloc.construct(_ptr + _size, x);
+				_size++;
 			}
 			
 			void pop_back()
@@ -245,10 +276,13 @@ namespace ft {
 			
 			iterator insert(iterator position, const T& x)
 			{
+					//std::cout << "insert a " << &position << std::endl;
+			
 				size_type index = position - begin();
 				if (_capacity < _size + 1)
 				{
-					reserve(_capacity * 2);
+					reserve(_size + 1);
+					//std::cout << "on a reserve " << _capacity << " pour " << _size + 1 << std::endl;
 					position = begin() + index;
 				}
 				size_type i = _size;
@@ -256,6 +290,8 @@ namespace ft {
 					_alloc.construct(_ptr + i, x);
 				else
 				{
+					//std::cout << "le else" << std::endl;
+					
 					_alloc.construct(_ptr + i, _ptr[i - 1]);
 					i--;
 					for(; i > index; i--)
@@ -263,18 +299,20 @@ namespace ft {
 					_ptr[i] = x;
 				}
 				_size++;
+				//std::cout << "a inse a " << &position << std::endl;
+
+					//std::cout << "derniere val" << _ptr[i] << std::endl;
 				return (position);
 			}
 			
 			void insert(iterator position, size_type n, const T& x)
 			{
+
 				if (_capacity < _size + n)
 				{
 					size_type	index = position - begin();
-					if (_size + n <= _capacity * 2)
-						reserve(_capacity * 2);
-					else
-						reserve(_size + n);
+				//std::cout << "insert va se lancer" << std::endl;
+					reserve(_size + n);
 					position = begin() + index;
 				}
 				for (size_type i = 0; i < n; i++)
@@ -285,10 +323,12 @@ namespace ft {
 				typename ft::enable_if<!ft::is_integral<InputIterator>::state>::type
 				insert(iterator position, InputIterator first, InputIterator last)
 			{
-				while (first != last)
+				//std::cout << "c est le bon" << std::endl;
+				for (; first != last; first++)
 				{
-					position = insert(position, *first) + 1;
-					first++;
+					position = insert(position, *first);
+					position++;
+					//std::cout << &position << std::endl;
 				}
 			}
 			
