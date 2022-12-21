@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 20:05:21 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/12/20 22:55:52 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2022/12/21 20:08:18 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <vector>
 #include "algorithm.hpp"
 #include <iostream>
+#include <sstream>
 
 namespace ft {
 	template <class T, class Allocator = std::allocator<T> >
@@ -67,7 +68,7 @@ namespace ft {
 			}
 			template <class InputIterator>
 			vector(InputIterator first, InputIterator last,
-			const Allocator& alloc= Allocator(), typename ft::enable_if<!ft::is_integral<InputIterator>::state>::type =0) : _ptr(NULL), _alloc(alloc), _size(0), _capacity(0)
+			const Allocator& alloc= Allocator(), typename ft::enable_if<!ft::is_integral<InputIterator>::value, int>::type =0) : _ptr(NULL), _alloc(alloc), _size(0), _capacity(0)
 			{
 				//std::cout << "Vector assign " << std::endl;
 				for (InputIterator it = first; it != last; it++)
@@ -90,7 +91,7 @@ namespace ft {
 			};
 			vector<T,Allocator>& operator=(const vector<T,Allocator>& x)
 			{
-				std::cout << "=" << std::endl;
+				//std::cout << "=" << std::endl;
 				_alloc = x._alloc;
 				if (&x != this)
 					assign(x.begin(), x.end());
@@ -152,12 +153,12 @@ namespace ft {
 			
 			reverse_iterator rend()
 			{
-				return (reverse_iterator(_ptr - 1));
+				return (reverse_iterator(begin()));
 			}
 
 			const_reverse_iterator rend() const
 			{
-				return (reverse_iterator(_ptr - 1));
+				return (const_reverse_iterator(begin()));
 			}
 			// 23.2.4.2 capacity:
 			size_type size() const
@@ -174,8 +175,6 @@ namespace ft {
 				insert(end(), sz-size(), c);
 				else if (sz < size())
 				erase(begin()+sz, end());
-				else
-				; // do nothing
 			}
 			size_type capacity() const
 			{
@@ -194,7 +193,7 @@ namespace ft {
 				//std::cout << "reserve va se lancer" << std::endl;
 
 				
-				if (n > max_size() || n < 0)
+				if (n > max_size())
 					throw (std::length_error("vector::reserve")); //aller chercher p 349 du livre pour les classes d'exceptions
 				if (!_capacity && !n)
 					n = 1;
@@ -213,30 +212,45 @@ namespace ft {
 			// element access:
 			reference operator[](size_type n)
 			{
-				pointer ret = _ptr + n;
-				return (*ret);
+				/*pointer ret = _ptr + n;
+				return (*ret);*/
+				return (_ptr[n]);
 			}
 			
 			const_reference operator[](size_type n) const
 			{
-				pointer ret = _ptr + n;
-				return (*ret);
+				/*pointer ret = _ptr + n;
+				return (*ret);*/
+				return (_ptr[n]);
 			}
 
 			const_reference at(size_type n) const
 			{
 				if (!(n < size()))
-					throw (std::out_of_range("pouet"));
-				pointer ret = _ptr + n;
-				return (*ret);
+				{
+					std::ostringstream	print;
+					
+					print << "vector::_M_range_check: __n (which is " << n << ") >= this->size() (which is " << size() << ")";
+					throw (std::out_of_range(print.str()));
+				}
+				/*pointer ret = _ptr + n;
+				return (*ret);*/
+				return (_ptr[n]);
+				
 			}
 			
 			reference at(size_type n)
 			{
 				if (!(n < size()))
-					throw (std::out_of_range("pouet"));
-				pointer ret = _ptr + n;
-				return (*ret);
+				{
+					std::ostringstream	print;
+					
+					print << "vector::_M_range_check: __n (which is " << n << ") >= this->size() (which is " << size() << ")";
+					throw (std::out_of_range(print.str()));
+				}
+				/*pointer ret = _ptr + n;
+				return (*ret);*/
+				return (_ptr[n]);
 			}
 			
 			reference front()

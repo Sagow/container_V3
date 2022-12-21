@@ -70,6 +70,6 @@ namespace ft
 		typedef bool												value_type;
 		typedef is_integral_base<typename ft::remove_cv<T>::type>	type;
 	
-		operator value_type() {return (this->value);}
+		operator value_type() {return (this->value_type);}
 	};
 }

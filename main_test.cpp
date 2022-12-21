@@ -104,28 +104,20 @@ void	display_vector(std::vector<int> v)
 }
 int main()
 {
-	ft::vector<ft::vector<int> >	vec2;
-
-	for (int i = 0; i < 20; i++)
+	
+	//AT
+	ft::vector<std::string> MIKE(8, "pouet");
+	std::vector<std::string> BOB(8, "pouet");
+	std::cout << "\nAT\n";
+	try
 	{
-		ft::vector<int>	j(3, i);
-		//std::cout << j.size() << ' ';
-	//std::cout << "boucle" << std::endl;
-		vec2.push_back(j);
-		std::cout << vec2.back().size() << " contre " << j.size() << " sur " << vec2.size() << " elements(" << vec2[i].capacity() << std::endl;
+		std::cout << MIKE.at(2) << '\n';
+		std::cout << MIKE.at(87) << '\n';
 	}
-	std::cout << std::endl;
-	for (size_t i = 0; i < vec2.size(); i++)
-		std::cout << vec2[i].front() << ' ';
-	std::cout << std::endl;
-	std::cout << "--------------" << std::endl;
-
-	/*ft::vector<int> vec;
-	for (int i = 0; i < 20; i++)
+	catch (std::out_of_range& oor)
 	{
-		vec.push_back(i + 5);
+		(void)oor;
+		std::cout << "OOR error caught\n" << oor.what();
 	}
-	for (size_t i = 0; i < vec.size(); i++)
-		std::cout << vec[i] << ' ';*/
 	return 0;
 }
