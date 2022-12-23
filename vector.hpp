@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 20:05:21 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/12/23 19:47:53 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2022/12/23 20:02:36 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -370,13 +370,16 @@ namespace ft {
 			iterator erase(iterator first, iterator last)
 			{
 				size_type	dist = last - first;
+				if (!dist)
+					return (first);
 				size_type	start = first - begin();
 				size_type	end = last - begin();
 				
 				size_type	i = start;
 				while (i < _size - dist)
 				{
-					_ptr[i] = _ptr[i + dist];
+					_alloc.destroy(_ptr + i);
+					_alloc.construct(_ptr + i, *(_ptr + i + dist));
 					i++;
 				}
 				while (i < _size)
