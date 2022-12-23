@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 20:05:21 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/12/23 20:02:36 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2022/12/23 20:45:19 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,13 @@ namespace ft {
 				size_type res = n > max_size() / 2 ? max_size() : _capacity * 2;
 				if (!res)
 					res = 1;
-				while (res < n && res != max_size())
+				/*while (res < n && res != max_size())
 				//{
 					res = res > max_size() / 2 ? max_size() : res * 2;
 					//std::cout << "res = " << res << " n = " << n << " max = " << max_size() << std::endl;
-				//}
+				//}*/
+				if (res < n)
+					return (n);
 				return (res);
 			}
 			template <typename Integral>
@@ -60,6 +62,14 @@ namespace ft {
 			template <typename InputIterator>
 			void	_init_vec(InputIterator first, InputIterator last, false_type)
 			{
+				size_type n = 0;
+				InputIterator tmp = first;
+				while (tmp != last)
+				{
+					n++;
+					tmp++;
+				}
+				reserve(n);
 				assign(first, last);
 			}
 			
@@ -86,6 +96,7 @@ namespace ft {
 			explicit vector(size_type n, const T& value = T(),
 			const Allocator& alloc = Allocator()) : _ptr(NULL), _alloc(alloc), _size(0), _capacity(0)
 			{
+				reserve(n);
 				this->assign(n, value);
 			}
 			template <class InputIterator>
@@ -104,6 +115,7 @@ namespace ft {
 			vector(const vector<T,Allocator>& x) : _ptr(NULL), _alloc(x._alloc), _size(0), _capacity(0)
 			{
 				//std::cout << "Copy constr " << std::endl;
+				reserve(x._size);
 				assign(x.begin(), x.end());
 				//std::cout << "res : " << *(begin()) << " a +" << end() - begin() << " size = " << _size << std::endl;
 
@@ -197,7 +209,10 @@ namespace ft {
 			void resize(size_type sz, T c = T())
 			{
 				if (sz > size())
-				insert(end(), sz-size(), c);
+				{
+					reserve(next_size(sz));
+					insert(end(), sz-size(), c);
+				}
 				else if (sz < size())
 				erase(begin()+sz, end());
 			}
@@ -224,7 +239,7 @@ namespace ft {
 					n = 1;
 				if (n > _capacity)
 				{
-					_capacity = next_size(n);
+					_capacity = n;
 					_ptr = _alloc.allocate(_capacity);
 					for (size_type i = 0; i < _size; i++)
 					{
@@ -311,7 +326,7 @@ namespace ft {
 				size_type index = position - begin();
 				if (_capacity < _size + 1)
 				{
-					reserve(_size + 1);
+					reserve(next_size(_size + 1));
 					//std::cout << "on a reserve " << _capacity << " pour " << _size + 1 << std::endl;
 					position = begin() + index;
 				}
@@ -342,7 +357,7 @@ namespace ft {
 				{
 					size_type	index = position - begin();
 				//std::cout << "insert va se lancer" << std::endl;
-					reserve(_size + n);
+					reserve(next_size(_size + n));
 					position = begin() + index;
 				}
 				for (size_type i = 0; i < n; i++)
