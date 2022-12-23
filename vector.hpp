@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 20:05:21 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/12/21 20:08:18 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2022/12/23 19:47:53 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,28 @@ namespace ft {
 				//}
 				return (res);
 			}
+			template <typename Integral>
+			void	_init_vec(Integral n, Integral val, true_type)
+			{
+				assign(n, val);
+			}
+
+			template <typename InputIterator>
+			void	_init_vec(InputIterator first, InputIterator last, false_type)
+			{
+				assign(first, last);
+			}
+			
+			void	check_index(size_type index)
+			{
+				if (!(index < size()))
+				{
+					std::ostringstream	print;
+					
+					print << "vector::_M_range_check: __n (which is " << index << ") >= this->size() (which is " << _size << ")";
+					throw (std::out_of_range(print.str()));
+				}
+			}
 			
 		protected:
 			pointer _ptr;
@@ -68,13 +90,16 @@ namespace ft {
 			}
 			template <class InputIterator>
 			vector(InputIterator first, InputIterator last,
-			const Allocator& alloc= Allocator(), typename ft::enable_if<!ft::is_integral<InputIterator>::value, int>::type =0) : _ptr(NULL), _alloc(alloc), _size(0), _capacity(0)
+			const Allocator& alloc= Allocator()) : _ptr(NULL), _alloc(alloc), _size(0), _capacity(0)
 			{
 				//std::cout << "Vector assign " << std::endl;
-				for (InputIterator it = first; it != last; it++)
+				/*for (InputIterator it = first; it != last; it++)
 					_capacity++;
 				_ptr = _alloc.allocate(_capacity);
-				this->assign(first, last);
+				this->assign(first, last);*/
+				typedef typename ft::is_integral<InputIterator>	_Integral;
+
+				_init_vec(first, last, _Integral());
 			}
 			vector(const vector<T,Allocator>& x) : _ptr(NULL), _alloc(x._alloc), _size(0), _capacity(0)
 			{
@@ -102,7 +127,7 @@ namespace ft {
 				typename ft::enable_if<!ft::is_integral<InputIterator>::state>::type
 				assign(InputIterator first, InputIterator last)
 				{
-					erase(begin(), end());
+					clear();
 					//std::cout << "assign de " << *first << " a +" << last - first << std::endl;
 					insert(begin(), first, last);
 				}
@@ -110,7 +135,7 @@ namespace ft {
 			void assign(size_type n, const T& u)
 			{
 
-				erase(begin(), end());
+				clear();
 				//std::cout << "assign va se lancer" << std::endl;
 				insert(begin(), n, u);
 			}
@@ -226,28 +251,17 @@ namespace ft {
 
 			const_reference at(size_type n) const
 			{
-				if (!(n < size()))
-				{
-					std::ostringstream	print;
-					
-					print << "vector::_M_range_check: __n (which is " << n << ") >= this->size() (which is " << size() << ")";
-					throw (std::out_of_range(print.str()));
-				}
+				check_index(n);
 				/*pointer ret = _ptr + n;
 				return (*ret);*/
 				return (_ptr[n]);
 				
 			}
 			
+			
 			reference at(size_type n)
 			{
-				if (!(n < size()))
-				{
-					std::ostringstream	print;
-					
-					print << "vector::_M_range_check: __n (which is " << n << ") >= this->size() (which is " << size() << ")";
-					throw (std::out_of_range(print.str()));
-				}
+				check_index(n);
 				/*pointer ret = _ptr + n;
 				return (*ret);*/
 				return (_ptr[n]);
@@ -356,11 +370,20 @@ namespace ft {
 			iterator erase(iterator first, iterator last)
 			{
 				size_type	dist = last - first;
-				size_type	pos = first - begin();
-				for(; pos < _size; pos++)
-					_ptr[pos] = _ptr[pos + dist];
-				for (size_type i = 0; i < dist; i++)
-					_alloc.destroy(_ptr + pos + i);
+				size_type	start = first - begin();
+				size_type	end = last - begin();
+				
+				size_type	i = start;
+				while (i < _size - dist)
+				{
+					_ptr[i] = _ptr[i + dist];
+					i++;
+				}
+				while (i < _size)
+				{
+					_alloc.destroy(_ptr + i);
+					i++;
+				}
 				_size -= dist;
 				return (first);
 			}
