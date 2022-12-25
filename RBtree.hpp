@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/12/01 22:43:34 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2022/12/25 15:34:14 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,28 @@ namespace ft
 			RBnode*			right;
 			RBnode*			parent;
 			bool			colour;
+			
+			RBnode() : left(NULL), right(NULL), parent(NULL), colour(false)
+			{}
+
+			RBnode(RBnode &src) : content(src.content), left(src.left), right(src.right), parent(src.parent), colour(src.colour)
+			{}
+			
+			RBnode(T val) : content(val), left(NULL), right(NULL), parent(NULL), colour(false)
+			{}
+
+			RBnode(RBnode &par, T val) : content(val), left(NULL), right(NULL), parent(&par), colour(false)
+			{}
+			
+			RBnode &operator=(const RBnode &src)
+			{
+				content = src.content;
+				left = src.left;
+				right = src.right;
+				parent = src.parent;
+				colour = src.colour;
+				return (*this);
+			}
 
 			size_t			getDepth(size_t depth = 0)
 			{
@@ -49,33 +71,30 @@ namespace ft
 				}
 				return (depth);
 			}
+
+			void	leftRotate()
+			{
+				
+			}
 	};
 
-	template <class T, class Allocator = std::allocator<RBnode<T>> >
+	template <class T, class Allocator = std::allocator<RBnode<T> > >
 	RBnode<T>*			createNode(T data, RBnode<T>* parent, Allocator alloc)
 	{
-		RBnode* ptr = alloc.allocate(sizeof(RBnode));
-		content = data;
-		left = NULL;
-		right = NULL;
-		parent = parent;
-		colour = false;
+		RBnode* ptr = alloc.allocate(sizeof(RBnode(parent, data)));
 		return (ptr);
 	};
 	
-	template <class T, class Allocator = std::allocator<RBnode<T>> >
+	template <class T, class Allocator = std::allocator<RBnode<T> > >
 	class RBtree
 	{
 		private:
 			struct RBnode	*_trunk;
 			struct RBnode	*_leftest;
 			struct RBnode	*_rightest;
-			void			balanceTree()
-			{
-				//aussi penser a mettre a jour rightest et leftest
-			}
-		
+			
 		public:
+		
 			RBtree()
 			{
 				_trunk = NULL;
@@ -116,9 +135,41 @@ namespace ft
 					balanceTree();
 				}
 			}
+			
 			void			deleteNode(T* ptr)
 			{
 				
+			}
+			
+			//ATTENTION ce n'est pas une deep copy
+			RBtree &operator=(const RBtree &src)
+			{
+				if (this != &src)
+				{
+					_trunk = src._trunk;
+					_leftest = src._leftest;
+					_rightest = src._rightest;
+				}
+				return (*this);
+			}
+			void			balanceTree()
+			{
+				//aussi penser a mettre a jour rightest et leftest
+				RBnode	*pivot = findUnbalancedNode();
+				
+				if (pivot)
+				{
+					//la branche gauche est plus lourde
+					if (pivot->left.getDepth() > pivot->right.getDepth())
+					{
+						
+					}
+					//la branche droite est plus lourde
+					else
+					{
+						
+					}
+				}
 			}
 
 			void fillTab(std::map<int, vector<T*> > &tab, RBnode* node, int level, int maxlevel)
