@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/12/25 15:34:14 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2022/12/26 22:50:33 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@
 #include <map>
 #include <iterator>
 #include <iostream>
+
+/*Notes : pour resoudre les conflits de couleur, faire une rotation quand on a bien right et left de completes, sinon push la couleur plus haut dans l'arbre*/
+//en vrai je suis plus sure. Franchement je sais pas c'est bizarre
 
 namespace ft
 {
@@ -74,7 +77,25 @@ namespace ft
 
 			void	leftRotate()
 			{
-				
+				RBnode tmp(*right);
+
+				right->parent = parent;
+				right->left = this;
+				parent = right;
+				right = tmp.left;
+				//check les couleurs
+			}
+
+
+			void	rightRotate()
+			{
+				RBnode tmp(*left);
+
+				left->parent = parent;
+				left->right = this;
+				parent = left;
+				left = tmp.right;
+				//check les couleurs
 			}
 	};
 
@@ -107,9 +128,22 @@ namespace ft
 				_leftest = _trunk;
 				_rightest = _trunk;
 			}
-			RBnode*			getTrunck();
-			RBnode*			getLeftest();
-			RBnode*			getRightest();
+			
+			RBnode*			getTrunck()
+			{
+				return (_trunk);
+			}
+			
+			RBnode*			getLeftest()
+			{
+				return (_leftest);
+			}
+			
+			RBnode*			getRightest()
+			{
+				return (_rightest);
+			}
+			
 			void			insertNode(T val)
 			{
 				RBnode *next = _trunk;

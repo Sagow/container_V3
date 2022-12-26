@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 20:05:21 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/12/23 20:45:19 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2022/12/26 18:42:13 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -316,7 +316,11 @@ namespace ft {
 			
 			void pop_back()
 			{
-				erase(end()--);
+				if (_size)
+				{
+					_alloc.destroy(_ptr + _size - 1);
+					_size--;
+				}
 			}
 			
 			iterator insert(iterator position, const T& x)
@@ -388,7 +392,6 @@ namespace ft {
 				if (!dist)
 					return (first);
 				size_type	start = first - begin();
-				size_type	end = last - begin();
 				
 				size_type	i = start;
 				while (i < _size - dist)

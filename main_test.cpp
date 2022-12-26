@@ -106,7 +106,7 @@ int main()
 {
 	
 	//AT
-	ft::vector<std::string> MIKE(8, "pouet");
+	/*ft::vector<std::string> MIKE(8, "pouet");
 	std::vector<std::string> BOB(8, "pouet");
 	std::cout << "\nAT\n";
 	try
@@ -118,6 +118,22 @@ int main()
 	{
 		(void)oor;
 		std::cout << "OOR error caught\n" << oor.what();
-	}
+	}*/
+	ft::vector<int>			test(3, 3);
+	ft::vector<ft::vector<int> > BOB(5, test);
+	ft::vector<ft::vector<int> > truc;
+
+
+	test.assign(3, 17);
+	test.assign(23, 19);
+size_t	bob_resize = 2;
+	std::cout << "\nRESIZE" << std::endl;
+	BOB.resize(bob_resize);
+	test.assign(2, 42);
+	BOB.push_back(test);
+	BOB.pop_back();
+	BOB.pop_back();
+
+	//BOB.swap(truc);
 	return 0;
 }
