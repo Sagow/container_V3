@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/12/26 22:50:33 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2022/12/28 20:57:30 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,12 @@ namespace ft
 
 			size_t			getDepth(size_t depth = 0)
 			{
-				size_t add;
+				/*size_t add;
 				
 				if (!this)
 					return (depth);
-				depth++;
+				if (!colour)
+					depth++;
 				if (right)
 				{
 					add = right->getDepth(depth);
@@ -71,6 +72,13 @@ namespace ft
 					add = left->getDepth(depth);
 					if (add > depth)
 						depth = add;
+				}*/
+				size_t	depth = 0;
+				RBnode *dad = parent;
+				while (*dad)
+				{
+					if (!dad->colour)
+						depth++;
 				}
 				return (depth);
 			}
@@ -168,6 +176,27 @@ namespace ft
 					next = createNode(val, parent, Allocator);
 					balanceTree();
 				}
+
+				bool	isBalanced(void)
+				{
+					RBnode *testedNode = _leftest;
+					size_t	depth = _leftest->getDepth();
+
+					while (testedNode != _rightest)
+					{
+						if (testedNode->parent->right != testedNode)
+						{
+							test
+						}
+						
+					}
+				}
+				
+				void	balanceTree(void)
+				{
+					if (!(isBalanced()))
+				}
+				
 			}
 			
 			void			deleteNode(T* ptr)
