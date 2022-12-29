@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/12/28 20:57:30 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2022/12/29 22:59:00 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,103 +16,13 @@
 #include <map>
 #include <iterator>
 #include <iostream>
+#include "RBnode.hpp"
 
 /*Notes : pour resoudre les conflits de couleur, faire une rotation quand on a bien right et left de completes, sinon push la couleur plus haut dans l'arbre*/
 //en vrai je suis plus sure. Franchement je sais pas c'est bizarre
 
 namespace ft
 {
-	template <class T>
-	class RBnode{
-		public:
-			T				content;
-			RBnode*			left;
-			RBnode*			right;
-			RBnode*			parent;
-			bool			colour;
-			
-			RBnode() : left(NULL), right(NULL), parent(NULL), colour(false)
-			{}
-
-			RBnode(RBnode &src) : content(src.content), left(src.left), right(src.right), parent(src.parent), colour(src.colour)
-			{}
-			
-			RBnode(T val) : content(val), left(NULL), right(NULL), parent(NULL), colour(false)
-			{}
-
-			RBnode(RBnode &par, T val) : content(val), left(NULL), right(NULL), parent(&par), colour(false)
-			{}
-			
-			RBnode &operator=(const RBnode &src)
-			{
-				content = src.content;
-				left = src.left;
-				right = src.right;
-				parent = src.parent;
-				colour = src.colour;
-				return (*this);
-			}
-
-			size_t			getDepth(size_t depth = 0)
-			{
-				/*size_t add;
-				
-				if (!this)
-					return (depth);
-				if (!colour)
-					depth++;
-				if (right)
-				{
-					add = right->getDepth(depth);
-					if (add > depth)
-						depth = add;
-				}
-				if (left)
-				{
-					add = left->getDepth(depth);
-					if (add > depth)
-						depth = add;
-				}*/
-				size_t	depth = 0;
-				RBnode *dad = parent;
-				while (*dad)
-				{
-					if (!dad->colour)
-						depth++;
-				}
-				return (depth);
-			}
-
-			void	leftRotate()
-			{
-				RBnode tmp(*right);
-
-				right->parent = parent;
-				right->left = this;
-				parent = right;
-				right = tmp.left;
-				//check les couleurs
-			}
-
-
-			void	rightRotate()
-			{
-				RBnode tmp(*left);
-
-				left->parent = parent;
-				left->right = this;
-				parent = left;
-				left = tmp.right;
-				//check les couleurs
-			}
-	};
-
-	template <class T, class Allocator = std::allocator<RBnode<T> > >
-	RBnode<T>*			createNode(T data, RBnode<T>* parent, Allocator alloc)
-	{
-		RBnode* ptr = alloc.allocate(sizeof(RBnode(parent, data)));
-		return (ptr);
-	};
 	
 	template <class T, class Allocator = std::allocator<RBnode<T> > >
 	class RBtree
@@ -184,17 +94,42 @@ namespace ft
 
 					while (testedNode != _rightest)
 					{
-						if (testedNode->parent->right != testedNode)
-						{
-							test
-						}
-						
+						testedNode = testedNode->nextLeaf();
+						if (testedNode->getDepth() != depth)
+							return (false);
 					}
+					return (true);
+				}
+
+				bool	balancedThroughRecoloring(RBnode &lastInserted)
+				{
+					if (lastInserted.parent == NULL)
+						return (true);
+					lastInserted.colour = true;
+					if (lastInserted.parent->colour)
+						lastInserted.parent->colour == false;
+					
+				}
+
+				void	balanceTroughPivot()
+				{
+					
 				}
 				
-				void	balanceTree(void)
+				void	balanceTree(RBnode &lastInserted)
 				{
 					if (!(isBalanced()))
+					{
+						if (lastInserted.parent && lastInserted.onlyChild())
+						{
+							if (lastInserted.data < lastInserted.parent->data)
+								lastInserted.parent.rightRotate();
+							else
+								lastInserted.parent.leftRotate();
+						}
+						if (!balancedThroughRecoloring(lastInserted))
+							balanceTroughPivot();
+					}
 				}
 				
 			}
