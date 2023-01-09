@@ -13,16 +13,16 @@ namespace ft
 			RBnode*			parent;
 			bool			colour;
 			
-			RBnode() : left(NULL), right(NULL), parent(NULL), colour(false)
+			RBnode() : left(NULL), right(NULL), parent(NULL), colour(true)
 			{}
 
 			RBnode(RBnode &src) : content(src.content), left(src.left), right(src.right), parent(src.parent), colour(src.colour)
 			{}
 			
-			RBnode(T val) : content(val), left(NULL), right(NULL), parent(NULL), colour(false)
+			RBnode(T val) : content(val), left(NULL), right(NULL), parent(NULL), colour(true)
 			{}
 
-			RBnode(RBnode &par, T val) : content(val), left(NULL), right(NULL), parent(&par), colour(false)
+			RBnode(RBnode &par, T val) : content(val), left(NULL), right(NULL), parent(&par), colour(true)
 			{}
 			
 			RBnode &operator=(const RBnode &src)
@@ -33,6 +33,22 @@ namespace ft
 				parent = src.parent;
 				colour = src.colour;
 				return (*this);
+			}
+
+			RBnode	*getUncle()
+			{
+				if (!parent)
+					return (NULL);
+				if (parent->parent->left == parent)
+					return (parent->parent->right);
+				return (parent->parent->left);
+			}
+
+			RBnode *getGrandparent()
+			{
+				if (!parent)
+					return (NULL);
+				return (parent->parent);
 			}
 
 			size_t			getDepth(size_t depth = 0)
@@ -55,7 +71,6 @@ namespace ft
 					if (add > depth)
 						depth = add;
 				}*/
-				size_t	depth = 0;
 				RBnode *dad = parent;
 				while (*dad)
 				{
@@ -67,8 +82,9 @@ namespace ft
 
 			void	leftRotate()
 			{
+				if (!right)
+					return ;
 				RBnode tmp(*right);
-
 				right->parent = parent;
 				right->left = this;
 				parent = right;
@@ -79,8 +95,9 @@ namespace ft
 
 			void	rightRotate()
 			{
+				if (!left)
+					return ;
 				RBnode tmp(*left);
-
 				left->parent = parent;
 				left->right = this;
 				parent = left;
@@ -127,7 +144,7 @@ namespace ft
 	template <class T, class Allocator = std::allocator<RBnode<T> > >
 	RBnode<T>*			createNode(T data, RBnode<T>* parent, Allocator alloc)
 	{
-		RBnode* ptr = alloc.allocate(sizeof(RBnode(parent, data)));
+		RBnode<T>* ptr = alloc.allocate(sizeof(RBnode<T>(parent, data)));
 		return (ptr);
 	};
 }

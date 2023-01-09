@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/12/29 22:59:00 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/09 17:40:44 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ namespace ft
 	class RBtree
 	{
 		private:
-			struct RBnode	*_trunk;
-			struct RBnode	*_leftest;
-			struct RBnode	*_rightest;
+			RBnode<T>	*_trunk;
+			RBnode<T>	*_leftest;
+			RBnode<T>	*_rightest;
 			
 		public:
 		
@@ -42,34 +42,36 @@ namespace ft
 			}
 			RBtree(T val)
 			{
-				_trunk = createNode(val, NULL, Allocator);
+				Allocator alloc;
+				_trunk = createNode(val, NULL, alloc);
 				_leftest = _trunk;
 				_rightest = _trunk;
 			}
 			
-			RBnode*			getTrunck()
+			RBnode<T>*			getTrunck()
 			{
 				return (_trunk);
 			}
 			
-			RBnode*			getLeftest()
+			RBnode<T>*			getLeftest()
 			{
 				return (_leftest);
 			}
 			
-			RBnode*			getRightest()
+			RBnode<T>*			getRightest()
 			{
 				return (_rightest);
 			}
 			
 			void			insertNode(T val)
 			{
-				RBnode *next = _trunk;
-				RBnode *parent = NULL;
-
+				RBnode<T> *next = _trunk;
+				RBnode<T> *parent = NULL;
+				Allocator	alloc;
+				
 				if (!_trunk)
 				{
-					_trunk = createNode(val, NULL, Allocator);
+					_trunk = createNode(val, NULL, alloc);
 					_leftest = _trunk;
 					_rightest = _trunk;
 				}
@@ -83,31 +85,41 @@ namespace ft
 						else
 							next = next->left;
 					}
-					next = createNode(val, parent, Allocator);
-					balanceTree();
-				}
-
-				bool	isBalanced(void)
-				{
-					RBnode *testedNode = _leftest;
-					size_t	depth = _leftest->getDepth();
-
-					while (testedNode != _rightest)
+					if (val > parent->content)
 					{
-						testedNode = testedNode->nextLeaf();
-						if (testedNode->getDepth() != depth)
-							return (false);
+						parent->right = createNode(val, parent, alloc);
+						balanceTree(parent->right);
 					}
-					return (true);
+					else
+					{
+						parent->left = createNode(val, parent, alloc);
+						balanceTree(parent->left);
+					}
+					
 				}
+			}
 
-				bool	balancedThroughRecoloring(RBnode &lastInserted)
+			bool	isBalanced(void)
+			{
+				RBnode<T> *testedNode = _leftest;
+				size_t	depth = _leftest->getDepth();
+
+				while (testedNode != _rightest)
 				{
-					if (lastInserted.parent == NULL)
+					testedNode = testedNode->nextLeaf();
+					if (testedNode->getDepth() != depth)
+						return (false);
+				}
+				return (true);
+			}
+/*
+				bool	balancedThroughRecoloring(RBnode<T> &lastInserted)
+				{
+					if (lastInserted->parent == NULL)
 						return (true);
-					lastInserted.colour = true;
-					if (lastInserted.parent->colour)
-						lastInserted.parent->colour == false;
+					lastInserted->colour = true;
+					if (lastInserted->parent->colour)
+						lastInserted->parent->colour == false;
 					
 				}
 
@@ -115,24 +127,76 @@ namespace ft
 				{
 					
 				}
-				
-				void	balanceTree(RBnode &lastInserted)
+*/
+			void	balanceTree(RBnode<T> *lastInserted)
+			{
+				/*if (!(isBalanced()))
 				{
-					if (!(isBalanced()))
+					if (lastInserted->parent && lastInserted->onlyChild())
 					{
-						if (lastInserted.parent && lastInserted.onlyChild())
+						if (lastInserted->data < lastInserted->parent->data)
+							lastInserted->parent.rightRotate();
+						else
+							lastInserted->parent.leftRotate();
+					}
+					if (!balancedThroughRecoloring(lastInserted))
+						balanceTroughPivot();
+				}*/
+
+				//insert case I1
+				if (!lastInserted->parent->colour)
+					return ;
+				//insert case I2
+				if (lastInserted->parent && lastInserted->parent->colour && lastInserted->getUncle() && lastInserted->getUncle()->colour)
+				{
+					lastInserted->parent->colour = false;
+					lastInserted->getUncle()->colour = false;
+					lastInserted->parent->parent->colour = true;
+					balanceTree(lastInserted->parent->parent);
+				}
+				//Insert case I3 (inside de I2)
+				//Insert case I4
+				if (lastInserted->parent && lastInserted->parent->colour && !lastInserted->parent->parent)
+				{
+					lastInserted->parent->colour = false;
+					return ;
+				}
+				//Insert case I5 (inner grandchild)
+				if (lastInserted->parent && lastInserted->parent->colour && lastInserted->getUncle() && !lastInserted->getUncle()->colour)
+				{
+					if (lastInserted->parent->parent && lastInserted->parent == lastInserted->parent->parent->left)
+					{
+						if (lastInserted == lastInserted->parent->right)
 						{
-							if (lastInserted.data < lastInserted.parent->data)
-								lastInserted.parent.rightRotate();
-							else
-								lastInserted.parent.leftRotate();
+							lastInserted->parent->leftRotate();
+							lastInserted = lastInserted->left;
 						}
-						if (!balancedThroughRecoloring(lastInserted))
-							balanceTroughPivot();
+					}
+					else
+					{
+						if (lastInserted == lastInserted->parent->left)
+						{
+							lastInserted->parent->rightRotate();
+							lastInserted = lastInserted->right;
+						}
 					}
 				}
-				
+				//Insert case I6
+				RBnode<T> *grandparent = lastInserted->getGrandparent();
+				if (lastInserted->parent && grandparent && lastInserted->parent == grandparent->left)
+				{
+					grandparent->rightRotate();
+					lastInserted->parent->colour = false;
+					grandparent->colour = true;
+				}
+				else if (lastInserted->parent && grandparent && lastInserted->parent == grandparent->right)
+				{
+					grandparent->leftRotate();
+					lastInserted->parent->colour = false;
+					grandparent->colour = true;
+				}
 			}
+				
 			
 			void			deleteNode(T* ptr)
 			{
@@ -150,7 +214,7 @@ namespace ft
 				}
 				return (*this);
 			}
-			void			balanceTree()
+			/*void			balanceTree()
 			{
 				//aussi penser a mettre a jour rightest et leftest
 				RBnode	*pivot = findUnbalancedNode();
@@ -168,9 +232,9 @@ namespace ft
 						
 					}
 				}
-			}
+			}*/
 
-			void fillTab(std::map<int, vector<T*> > &tab, RBnode* node, int level, int maxlevel)
+			void fillTab(std::map<int, std::vector<T*> > &tab, RBnode<T>* node, int level, int maxlevel)
 			{
 				if (!node)
 				{
@@ -203,9 +267,9 @@ namespace ft
 				std::map<int, std::vector<T*> > tab; //int pour la pronfondeur, mettre NULL si le node n existe pas
 				int depth = _trunk->getDepth();
 				fillTab(tab, _trunk, 0, depth);
-				for(std::map<int, std::vector<T*> >::iterator it = tab.begin(); it != tab.end(); it++)
+				for(typename std::map<int, std::vector<T*> >::iterator it = tab.begin(); it != tab.end(); it++)
 				{
-					for (std::vector<T*>::iterator ite = (*it).second.begin(); ite != (*it).second.end(); ite++)
+					for (typename std::vector<T*>::iterator ite = (*it).second.begin(); ite != (*it).second.end(); ite++)
 					{
 						for (int i = 0; i < depth * 5 / (*it).first; i++)
 							std::cout << " ";
@@ -215,6 +279,7 @@ namespace ft
 				}
 				
 			}
+			
 	};
 }
 
