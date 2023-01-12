@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/12 20:42:35 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/12 21:30:34 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,8 @@ namespace ft
 				
 				if (!_trunk)
 				{
-					_trunk = alloc.allocate(sizeof(RBnode<T>(val)));
+					_trunk = alloc.allocate(sizeof(RBnode<T>));
+					alloc.construct(_trunk, RBnode<T>(val));
 					_leftest = _trunk;
 					_rightest = _trunk;
 				}
@@ -85,7 +86,7 @@ namespace ft
 					while (next)
 					{
 						parent = next;
-						if (val > next->content)
+						if (next->content < val)
 							next = next->right;
 						else
 							next = next->left;
@@ -96,19 +97,17 @@ namespace ft
 					{
 
 //std::cout << "balise 4a" << std::endl;
-						parent->right = alloc.allocate(sizeof(RBnode<T>(*parent, val)));
+						parent->right = alloc.allocate(sizeof(RBnode<T>));
 						next = parent->right;
 					}
 					else
 					{
 
 //std::cout << "balise 4b" << std::endl;
-						parent->left = alloc.allocate(sizeof(RBnode<T>(*parent, val)));
+						parent->left = alloc.allocate(sizeof(RBnode<T>));
 						next = parent->left;
 					}
-					next->parent = parent;
-					next->content = val;
-					next->colour = true;
+					alloc.construct(next, RBnode<T>(parent, val));
 					balanceTree(next);
 //std::cout << "balise 5" << std::endl;
 					if (val < _leftest->content)
@@ -163,12 +162,11 @@ namespace ft
 				}*/
 
 				//insert case I1
-				if (!lastInserted)
-					return ;
+				
 				std::cout << "crash " << (lastInserted->parent == NULL ? "vide" : "plein") << std::endl;
-				if (!lastInserted->parent || (lastInserted->parent && !lastInserted->parent->colour))
+				if (!lastInserted || !lastInserted->parent || (lastInserted->parent && !lastInserted->parent->colour))
 				{
-//std::cout << "I1" << std::endl;
+std::cout << "I1" << std::endl;
 					
 					return ;
 				}
@@ -240,7 +238,7 @@ namespace ft
 			
 			void			deleteNode(T* ptr)
 			{
-				
+				(void) ptr;
 			}
 			
 			//ATTENTION ce n'est pas une deep copy

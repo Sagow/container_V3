@@ -1,15 +1,15 @@
-SRCS =	main_test.cpp
+SRCS =	main_RBtree.cpp
 
-HEADERS =	vector.hpp \
-			algorithm.hpp
+HEADERS =	RBnode.hpp \
+			RBtree.hpp
 
 OBJS =  ${SRCS:.cpp=.o}
 
 CC =	c++
 
-FLAGS = -std=c++98 -Wall -Werror -Wextra -g3
+FLAGS = -std=c++98 -Wall -Werror -Wextra -g3 -fsanitize=address
 
-NAME =  Vector
+NAME =  RBtest
 
 all: ${NAME}
 

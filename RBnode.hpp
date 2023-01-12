@@ -19,13 +19,13 @@ namespace ft
 			RBnode() : left(NULL), right(NULL), parent(NULL), colour(true)
 			{}
 
-			RBnode(RBnode &src) : content(src.content), left(src.left), right(src.right), parent(src.parent), colour(src.colour)
+			RBnode(const RBnode &src) : content(src.content), left(src.left), right(src.right), parent(src.parent), colour(src.colour)
 			{}
 			
-			RBnode(T val) : content(val), left(NULL), right(NULL), parent(NULL), colour(true)
+			RBnode(const T val) : content(val), left(NULL), right(NULL), parent(NULL), colour(true)
 			{}
 
-			RBnode(RBnode &par, T val) : content(val), left(NULL), right(NULL), parent(&par), colour(true)
+			RBnode(RBnode *par, const T val) : content(val), left(NULL), right(NULL), parent(par), colour(true)
 			{}
 			
 			RBnode &operator=(const RBnode &src)
