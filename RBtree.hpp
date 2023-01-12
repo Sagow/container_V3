@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/09 17:40:44 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/12 20:42:35 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,13 @@ namespace ft
 			RBtree(T val)
 			{
 				Allocator alloc;
-				_trunk = createNode(val, NULL, alloc);
+				_trunk = alloc.allocate(sizeof(RBnode<T>));
+				_trunk->content = val;
 				_leftest = _trunk;
 				_rightest = _trunk;
 			}
 			
-			RBnode<T>*			getTrunck()
+			RBnode<T>*			getTrunk()
 			{
 				return (_trunk);
 			}
@@ -69,14 +70,18 @@ namespace ft
 				RBnode<T> *parent = NULL;
 				Allocator	alloc;
 				
+//std::cout << "balise 1" << std::endl;
+				
 				if (!_trunk)
 				{
-					_trunk = createNode(val, NULL, alloc);
+					_trunk = alloc.allocate(sizeof(RBnode<T>(val)));
 					_leftest = _trunk;
 					_rightest = _trunk;
 				}
 				else
 				{
+//std::cout << "balise 2" << std::endl;
+					
 					while (next)
 					{
 						parent = next;
@@ -85,17 +90,31 @@ namespace ft
 						else
 							next = next->left;
 					}
+//std::cout << "balise 3" << std::endl;
+
 					if (val > parent->content)
 					{
-						parent->right = createNode(val, parent, alloc);
-						balanceTree(parent->right);
+
+//std::cout << "balise 4a" << std::endl;
+						parent->right = alloc.allocate(sizeof(RBnode<T>(*parent, val)));
+						next = parent->right;
 					}
 					else
 					{
-						parent->left = createNode(val, parent, alloc);
-						balanceTree(parent->left);
+
+//std::cout << "balise 4b" << std::endl;
+						parent->left = alloc.allocate(sizeof(RBnode<T>(*parent, val)));
+						next = parent->left;
 					}
-					
+					next->parent = parent;
+					next->content = val;
+					next->colour = true;
+					balanceTree(next);
+//std::cout << "balise 5" << std::endl;
+					if (val < _leftest->content)
+						_leftest = next;
+					else if (_rightest->content < val)
+						_rightest = next;
 				}
 			}
 
@@ -144,11 +163,20 @@ namespace ft
 				}*/
 
 				//insert case I1
-				if (!lastInserted->parent->colour)
+				if (!lastInserted)
 					return ;
+				std::cout << "crash " << (lastInserted->parent == NULL ? "vide" : "plein") << std::endl;
+				if (!lastInserted->parent || (lastInserted->parent && !lastInserted->parent->colour))
+				{
+//std::cout << "I1" << std::endl;
+					
+					return ;
+				}
 				//insert case I2
 				if (lastInserted->parent && lastInserted->parent->colour && lastInserted->getUncle() && lastInserted->getUncle()->colour)
 				{
+//std::cout << "I2" << std::endl;
+
 					lastInserted->parent->colour = false;
 					lastInserted->getUncle()->colour = false;
 					lastInserted->parent->parent->colour = true;
@@ -158,17 +186,22 @@ namespace ft
 				//Insert case I4
 				if (lastInserted->parent && lastInserted->parent->colour && !lastInserted->parent->parent)
 				{
+//std::cout << "I4" << std::endl;
+
 					lastInserted->parent->colour = false;
 					return ;
 				}
 				//Insert case I5 (inner grandchild)
 				if (lastInserted->parent && lastInserted->parent->colour && lastInserted->getUncle() && !lastInserted->getUncle()->colour)
 				{
+//std::cout << "I5" << std::endl;
+
 					if (lastInserted->parent->parent && lastInserted->parent == lastInserted->parent->parent->left)
 					{
 						if (lastInserted == lastInserted->parent->right)
 						{
-							lastInserted->parent->leftRotate();
+							if (lastInserted->parent->leftRotate())
+								_trunk = lastInserted->parent->parent;
 							lastInserted = lastInserted->left;
 						}
 					}
@@ -176,7 +209,8 @@ namespace ft
 					{
 						if (lastInserted == lastInserted->parent->left)
 						{
-							lastInserted->parent->rightRotate();
+							if (lastInserted->parent->rightRotate())
+								_trunk = lastInserted->parent->parent;
 							lastInserted = lastInserted->right;
 						}
 					}
@@ -185,13 +219,19 @@ namespace ft
 				RBnode<T> *grandparent = lastInserted->getGrandparent();
 				if (lastInserted->parent && grandparent && lastInserted->parent == grandparent->left)
 				{
-					grandparent->rightRotate();
+//std::cout << "I6a" << std::endl;
+
+					if (grandparent->rightRotate())
+						_trunk = grandparent->parent;
 					lastInserted->parent->colour = false;
 					grandparent->colour = true;
 				}
 				else if (lastInserted->parent && grandparent && lastInserted->parent == grandparent->right)
 				{
-					grandparent->leftRotate();
+//std::cout << "I6b" << std::endl;
+
+					if (grandparent->leftRotate())
+						_trunk = grandparent->parent;
 					lastInserted->parent->colour = false;
 					grandparent->colour = true;
 				}
@@ -257,6 +297,42 @@ namespace ft
 					}
 				}
 			}
+			
+			void	printDegre()
+			{
+				RBnode<int> *sample = _leftest;
+
+				while (sample != _rightest)
+				{
+					std::cout << sample->content << " a pour parent " << sample->parent  << " et pour enfants " << sample->left << " et " << sample->right
+					 << std::endl;
+					//redescendre ici
+					if (sample->left)
+					{
+						std::cout << "case1" << std::endl;
+						sample = sample->left;
+					}
+					else if (sample->right)
+					{
+						std::cout << "case2" << std::endl;
+						sample = sample->right;						
+					}
+					else if (sample->parent->right && sample->parent->right != sample)
+					{
+						std::cout << "case3" << std::endl;						
+						sample = sample->parent->right;
+					}
+					else
+					{
+						std::cout << "case4" << std::endl;
+						sample = sample->getUncle();
+					}
+				}
+				std::cout << sample->content << " a pour parent " << sample->parent  << " et pour enfants " << sample->left << " et " << sample->right
+					 << std::endl;
+				
+			}
+			
 			void	print(void)
 			{
 				if (!_trunk)
@@ -264,7 +340,7 @@ namespace ft
 					std::cout << "Cet arbre est vide" << std::endl;
 					return ;
 				}
-				std::map<int, std::vector<T*> > tab; //int pour la pronfondeur, mettre NULL si le node n existe pas
+				/*std::map<int, std::vector<T*> > tab; //int pour la pronfondeur, mettre NULL si le node n existe pas
 				int depth = _trunk->getDepth();
 				fillTab(tab, _trunk, 0, depth);
 				for(typename std::map<int, std::vector<T*> >::iterator it = tab.begin(); it != tab.end(); it++)
@@ -276,9 +352,11 @@ namespace ft
 						std::cout << std::setw(10) << std::setiosflags(std::ios::right) *it;
 					}
 					std::cout << std::endl << std::endl;
-				}
-				
+				}*/
+				//printDegre();
+				_trunk->printRecur();
 			}
+			
 			
 	};
 }

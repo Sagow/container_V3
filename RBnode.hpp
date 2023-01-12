@@ -1,6 +1,9 @@
 #pragma once
 #include <memory>
-
+#include <iostream>
+#define BLACK "\e[1;30m"
+#define RED "\e[1;31m"
+#define END "\e[0m"
 
 namespace ft
 {
@@ -71,37 +74,45 @@ namespace ft
 					if (add > depth)
 						depth = add;
 				}*/
-				RBnode *dad = parent;
-				while (*dad)
+				RBnode<T> *dad = parent;
+				while (dad)
 				{
-					if (!dad->colour)
+					//if (!dad->colour)
 						depth++;
+					dad = dad->parent;
 				}
 				return (depth);
 			}
 
-			void	leftRotate()
+			//true si changement de racine
+			bool	leftRotate()
 			{
 				if (!right)
-					return ;
+					return (false);
 				RBnode tmp(*right);
 				right->parent = parent;
 				right->left = this;
 				parent = right;
 				right = tmp.left;
+				if (!parent->right->parent)
+					return (true);
+				return (false);
 				//check les couleurs
 			}
 
-
-			void	rightRotate()
+			//true si changement de racine
+			bool	rightRotate()
 			{
 				if (!left)
-					return ;
+					return (false);
 				RBnode tmp(*left);
 				left->parent = parent;
 				left->right = this;
 				parent = left;
 				left = tmp.right;
+				if (!parent->left->parent)
+					return (true);
+				return (false);
 				//check les couleurs
 			}
 			
@@ -139,12 +150,23 @@ namespace ft
 					return (true);
 				return (false);
 			}
+	
+			void	printRecur(int decal = 0)
+			{
+				if (left)
+					left->printRecur(decal + 1);
+				for (int i = 0; i < decal; i++)
+					std::cout << "    ";
+				std::cout << (colour ? RED : BLACK) << content << END << std::endl;
+				if (right)
+					right->printRecur(decal + 1);
+			}
 	};
 
-	template <class T, class Allocator = std::allocator<RBnode<T> > >
+	/*template <class T, class Allocator = std::allocator<RBnode<T> > >
 	RBnode<T>*			createNode(T data, RBnode<T>* parent, Allocator alloc)
 	{
 		RBnode<T>* ptr = alloc.allocate(sizeof(RBnode<T>(parent, data)));
 		return (ptr);
-	};
+	};*/
 }
