@@ -101,7 +101,7 @@ namespace ft
 			//true si changement de racine
 			bool	leftRotate()
 			{
-				bool	trunk = false;
+				/*bool	trunk = false;
 				if (!right)
 					return (false);
 				if (!parent)
@@ -111,8 +111,15 @@ namespace ft
 				right->left = this;
 				parent = right;
 				right = tmp.left;
-				return (trunk);
-				//check les couleurs
+				return (trunk);*/
+				RBnode	*grandparent = parent;
+				RBnode	*switchingWith = right;
+				RBnode	*pendulum = right->left;
+				parent = switchingWith;
+				right = pendulum;
+				switchingWith->parent = grandparent;
+				switchingWith->left = this;
+				return (!grandparent);
 			}
 
 			//true si changement de racine
@@ -129,7 +136,6 @@ namespace ft
 				parent = left;
 				left = tmp.right;
 				return (trunk);
-				//check les couleurs
 			}
 			
 			RBnode	*nextLeaf()

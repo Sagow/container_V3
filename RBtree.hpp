@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/15 20:32:57 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/15 23:19:27 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ namespace ft
 				_leftest = NULL;
 				_rightest = NULL;
 			}
+
 			RBtree(T val)
 			{
 				Allocator alloc;
@@ -48,6 +49,23 @@ namespace ft
 				_leftest = _trunk;
 				_rightest = _trunk;
 			}
+			
+			void	destroyRecu(RBnode<T> *node)
+			{
+				Allocator	alloc;
+				if (node->left)
+					destroyRecu(node->left);
+				if (node->right)
+					destroyRecu(node->right);
+				alloc.destroy(node);
+				alloc.deallocate(node, sizeof(RBnode<T>));
+			}
+			
+			~RBtree()
+			{
+				destroyRecu(_trunk);
+			}
+
 			
 			RBnode<T>*			getTrunk()
 			{
@@ -162,6 +180,7 @@ namespace ft
 				}*/
 
 				//insert case I1
+				RBnode<T> *grandparent = lastInserted->getGrandparent();
 				
 				if (!lastInserted || !lastInserted->parent || (lastInserted->parent && !lastInserted->parent->colour))
 				{
@@ -170,18 +189,18 @@ std::cout << "I1" << std::endl;
 					return ;
 				}
 				//insert case I2
-				if (lastInserted->parent && lastInserted->parent->colour && lastInserted->getUncle() && lastInserted->getUncle()->colour)
+				else if (lastInserted->parent && lastInserted->parent->colour && lastInserted->getUncle() && lastInserted->getUncle()->colour)
 				{
 std::cout << "I2" << std::endl;
 
 					lastInserted->parent->colour = false;
 					lastInserted->getUncle()->colour = false;
 					lastInserted->getGrandparent()->colour = true;
-					balanceTree(lastInserted->parent->parent);
+					return (balanceTree(lastInserted->parent->parent));
 				}
 				//Insert case I3 (inside de I2)
 				//Insert case I4
-				if (lastInserted->parent && lastInserted->parent->colour && !lastInserted->getGrandparent())
+				else if (lastInserted->parent && lastInserted->parent->colour && !lastInserted->getGrandparent())
 				{
 std::cout << "I4" << std::endl;
 
@@ -189,14 +208,16 @@ std::cout << "I4" << std::endl;
 					return ;
 				}
 				//Insert case I5 (inner grandchild)
-				if (lastInserted->parent && lastInserted->parent->colour && lastInserted->getUncle() && !lastInserted->getUncle()->colour)
+				else if (lastInserted->parent && lastInserted->parent->colour && (!lastInserted->getUncle() || !lastInserted->getUncle()->colour))
 				{
 std::cout << "I5" << std::endl;
+print();
 
 					if (lastInserted->parent->isLeftChild())
 					{
-						if (lastInserted->isLeftChild())
+						if (lastInserted->isRightChild())
 						{
+							std::cout << "coucou" << std::endl;
 							if (lastInserted->parent->leftRotate())
 								_trunk = lastInserted->getGrandparent();
 							lastInserted = lastInserted->left;
@@ -213,17 +234,17 @@ std::cout << "I5" << std::endl;
 					}
 				}
 				//Insert case I6
-				RBnode<T> *grandparent = lastInserted->getGrandparent();
-				if (grandparent && lastInserted->parent->isLeftChild())
+				if (lastInserted->parent->isLeftChild())
 				{
 std::cout << "I6a" << std::endl;
-
+					print();
+					std::cout << "grandparent = " << grandparent->content << std::endl;
 					if (grandparent->rightRotate())
 						_trunk = grandparent->parent;
 					lastInserted->parent->colour = false;
 					grandparent->colour = true;
 				}
-				else if (grandparent && lastInserted->parent->isRightChild())
+				else if (lastInserted->parent->isRightChild())
 				{
 std::cout << "I6b" << std::endl;
 
