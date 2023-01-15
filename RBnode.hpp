@@ -38,9 +38,23 @@ namespace ft
 				return (*this);
 			}
 
+			bool isLeftChild(void)
+			{
+				if (parent && parent->left == this)
+					return (true);
+				return (false);
+			}
+
+			bool isRightChild(void)
+			{
+				if (parent && parent->right == this)
+					return (true);
+				return (false);
+			}
+
 			RBnode	*getUncle()
 			{
-				if (!parent)
+				if (!parent || !parent->parent)
 					return (NULL);
 				if (parent->parent->left == parent)
 					return (parent->parent->right);
@@ -87,32 +101,34 @@ namespace ft
 			//true si changement de racine
 			bool	leftRotate()
 			{
+				bool	trunk = false;
 				if (!right)
 					return (false);
+				if (!parent)
+					trunk = true;
 				RBnode tmp(*right);
 				right->parent = parent;
 				right->left = this;
 				parent = right;
 				right = tmp.left;
-				if (!parent->right->parent)
-					return (true);
-				return (false);
+				return (trunk);
 				//check les couleurs
 			}
 
 			//true si changement de racine
 			bool	rightRotate()
 			{
+				bool	trunk = false;
 				if (!left)
 					return (false);
+				if (!parent)
+					trunk = true;
 				RBnode tmp(*left);
 				left->parent = parent;
 				left->right = this;
 				parent = left;
 				left = tmp.right;
-				if (!parent->left->parent)
-					return (true);
-				return (false);
+				return (trunk);
 				//check les couleurs
 			}
 			

@@ -8,32 +8,44 @@ int main(void)
 	std::cout << "Trunk = " << tree.getTrunk()->content
 	<< " Leftest = " << tree.getLeftest()->content
 	<< " Rightest = " << tree.getRightest()->content << std::endl;
-
+	tree.print();
+std::cout << "**************************************************" << std::endl;
 	std::cout << "insert 1" << std::endl;
 	tree.insertNode(1);
 	std::cout << "Trunk = " << tree.getTrunk()->content
 	<< " Leftest = " << tree.getLeftest()->content
 	<< " Rightest = " << tree.getRightest()->content << std::endl;
+	tree.print();
+std::cout << "**************************************************" << std::endl;
+
 
 	std::cout << "insert 10" << std::endl;
 	tree.insertNode(10);
 	std::cout << "Trunk = " << tree.getTrunk()->content
 	<< " Leftest = " << tree.getLeftest()->content
 	<< " Rightest = " << tree.getRightest()->content << std::endl;
+	tree.print();
+std::cout << "**************************************************" << std::endl;
+
 
 	std::cout << "insert 8" << std::endl;
 	tree.insertNode(8);
 	std::cout << "Trunk = " << tree.getTrunk()->content
 	<< " Leftest = " << tree.getLeftest()->content
 	<< " Rightest = " << tree.getRightest()->content << std::endl;
+	tree.print();
+std::cout << "**************************************************" << std::endl;
+
 
 	std::cout << "insert 9" << std::endl;
 	tree.insertNode(9);
 	std::cout << "Trunk = " << tree.getTrunk()->content
 	<< " Leftest = " << tree.getLeftest()->content
 	<< " Rightest = " << tree.getRightest()->content << std::endl;
+tree.print();
+std::cout << "**************************************************" << std::endl;
 
-
+/*
 	std::cout << "insert 7" << std::endl;
 	tree.insertNode(7);
 	std::cout << "Trunk = " << tree.getTrunk()->content
@@ -77,6 +89,6 @@ std::cout << "insert 16" << std::endl;
 	<< " Rightest = " << tree.getRightest()->content << std::endl;
 
 	tree.print();
-
+*/
 	return 0;
 }
