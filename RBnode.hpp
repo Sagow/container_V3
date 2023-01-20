@@ -112,8 +112,12 @@ namespace ft
 				parent = right;
 				right = tmp.left;
 				return (trunk);*/
-				std::cout << "Original " << this->content << " has parent "<< parent->content << " and right " << right->content << std::endl;
-
+				std::cout << "Original " << this << " has parent "<< parent << " and right " << right << std::endl;
+				if (!right)
+				{
+					std::cout << RED << "alerte on switch " << this << " avec un truc vide" << END << std::endl;
+					printRecur();
+				}
 				RBnode	*grandparent = parent;
 				RBnode	*switchingWith = right;
 				RBnode	*pendulum = right->left;
@@ -121,8 +125,8 @@ namespace ft
 				right = pendulum;
 				switchingWith->parent = grandparent;
 				switchingWith->left = this;
-				std::cout << "Original " << this->content << " has new parent "<< parent->content << " and grandparent " << parent->parent->content << std::endl;
-
+				std::cout << "Original " << this << " has new parent "<< parent << " and grandparent " << parent->parent << std::endl;
+std::cout << "switchingWith " << switchingWith << " has new parent "<< switchingWith->parent << " and children" << switchingWith->left << " and " << switchingWith->right << std::endl;
 				return (!grandparent);
 			}
 
@@ -140,7 +144,12 @@ namespace ft
 				parent = left;
 				left = tmp.right;
 				return (trunk);*/
-				std::cout << "Original " << this->content << " has parent "<< parent->content << " and left " << left->content << std::endl;
+				//std::cout << "Original " << this->content << " has parent "<< parent->content << " and left " << left->content << std::endl;
+				if (!left)
+				{
+					std::cout << RED << "alerte on switch " << this->content << " avec un truc vide" << END << std::endl;
+					printRecur();
+				}
 				RBnode	*grandparent = parent;
 				RBnode	*switchingWith = left;
 				RBnode	*pendulum = left->right;
@@ -148,7 +157,7 @@ namespace ft
 				left = pendulum;
 				switchingWith->parent = grandparent;
 				switchingWith->right = this;
-				std::cout << "Original " << this->content << " has new parent "<< parent->content << " and grandparent " << parent->parent->content << std::endl;
+				//std::cout << "Original " << this->content << " has new parent "<< parent->content << " and grandparent " << parent->parent->content << std::endl;
 				return (!grandparent);
 			}
 			
@@ -187,15 +196,17 @@ namespace ft
 				return (false);
 			}
 	
-			void	printRecur(int decal = 0)
+			int	printRecur(int decal = 0)
 			{
+				int size = 1;
 				if (left)
-					left->printRecur(decal + 1);
+					size += left->printRecur(decal + 1);
 				for (int i = 0; i < decal; i++)
 					std::cout << "    ";
-				std::cout << (colour ? RED : BLACK) << content << END << std::endl;
+				std::cout << (colour ? RED : BLACK) << content << END << std::endl << std::endl;
 				if (right)
-					right->printRecur(decal + 1);
+					size += right->printRecur(decal + 1);
+				return (size);
 			}
 	};
 

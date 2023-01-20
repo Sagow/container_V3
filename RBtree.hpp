@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/20 08:38:52 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/20 12:55:26 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ namespace ft
 				Allocator alloc;
 				_trunk = alloc.allocate(sizeof(RBnode<T>));
 				alloc.construct(_trunk, RBnode<T>(val));
+				_trunk->colour = false;
 				_leftest = _trunk;
 				_rightest = _trunk;
 			}
@@ -111,7 +112,7 @@ namespace ft
 					}
 //std::cout << "balise 3" << std::endl;
 
-					if (val > parent->content)
+					if (parent->content < val)
 					{
 
 //std::cout << "balise 4a" << std::endl;
@@ -148,37 +149,23 @@ namespace ft
 				}
 				return (true);
 			}
-/*
-				bool	balancedThroughRecoloring(RBnode<T> &lastInserted)
-				{
-					if (lastInserted->parent == NULL)
-						return (true);
-					lastInserted->colour = true;
-					if (lastInserted->parent->colour)
-						lastInserted->parent->colour == false;
-					
-				}
 
-				void	balanceTroughPivot()
-				{
-					
-				}
-*/
 			void	balanceTree(RBnode<T> *lastInserted)
 			{
-				/*if (!(isBalanced()))
-				{
-					if (lastInserted->parent && lastInserted->onlyChild())
-					{
-						if (lastInserted->data < lastInserted->parent->data)
-							lastInserted->parent.rightRotate();
-						else
-							lastInserted->parent.leftRotate();
-					}
-					if (!balancedThroughRecoloring(lastInserted))
-						balanceTroughPivot();
-				}*/
+				if (!lastInserted)
+					return ;
+				//Version francaise de la page Wikipedia
+				if (!lastInserted->parent)
+					insertionCase1(lastInserted);
+				else if (!lastInserted->parent->colour)
+					return ;//l'arbre est ok
+				else if (lastInserted->getUncle() && lastInserted->getUncle()->colour)
+					insertionCase3(lastInserted);
+				else
+					insertionCase4(lastInserted);
 
+/* Version anglaise de la page Wikipedia
+{				
 				//insert case I1
 				RBnode<T> *grandparent = lastInserted->getGrandparent();
 				
@@ -211,13 +198,13 @@ std::cout << "I4" << std::endl;
 				else if (lastInserted->parent && lastInserted->parent->colour && (!lastInserted->getUncle() || !lastInserted->getUncle()->colour))
 				{
 std::cout << "I5" << std::endl;
-print();
+//print();
 
 					if (lastInserted->parent->isLeftChild())
 					{
 						if (lastInserted->isRightChild())
 						{
-							std::cout << "coucou" << std::endl;
+							//std::cout << "coucou" << std::endl;
 							if (lastInserted->parent->leftRotate())
 								_trunk = lastInserted->getGrandparent();
 							lastInserted = lastInserted->left;
@@ -237,7 +224,7 @@ print();
 				if (lastInserted->parent->isLeftChild())
 				{
 std::cout << "I6a" << std::endl;
-					print();
+					//print();
 					std::cout << "grandparent = " << grandparent->content << std::endl;
 					if (grandparent->rightRotate())
 						_trunk = grandparent->parent;
@@ -253,8 +240,56 @@ std::cout << "I6b" << std::endl;
 					lastInserted->parent->colour = false;
 					grandparent->colour = true;
 				}
+}
+*/
+
 			}
-				
+			
+			void	insertionCase1(RBnode<T> *n)
+			{
+				if (!n->parent)
+					n->colour = false;
+			}
+			
+			//insertionCase2 n'est pas necessaire puisque c'est le cas ou l'arbre est valide
+			
+			void	insertionCase3(RBnode<T> *n)
+			{
+				n->getUncle()->colour = false;
+				n->parent->colour = false;
+				n->getGrandparent()->colour = true;
+				balanceTree(n->getGrandparent());
+			}
+
+			void	insertionCase4(RBnode<T> *n)
+			{
+				RBnode<T>	*p = n->parent;
+				RBnode<T>	*g = n->getGrandparent();
+				if (!g)
+					return ;
+				if (g->left && n == g->left->right)
+				{
+					leftRotate(p);
+					n = n->left;
+				}
+				else if (g->right && n == g->right->left)
+				{
+					rightRotate(p);
+					n = n->right;
+				}
+				insertionCase5(n);
+			}
+			void	insertionCase5(RBnode<T> *n)
+			{
+				RBnode<T>	*p = n->parent;
+				RBnode<T>	*g = n->getGrandparent();
+				if (n->isLeftChild())
+					rightRotate(g);
+				else
+					leftRotate(g);
+				p->colour = false;
+				g->colour = true;
+			}
 			
 			void			deleteNode(T* ptr)
 			{
@@ -272,25 +307,7 @@ std::cout << "I6b" << std::endl;
 				}
 				return (*this);
 			}
-			/*void			balanceTree()
-			{
-				//aussi penser a mettre a jour rightest et leftest
-				RBnode	*pivot = findUnbalancedNode();
-				
-				if (pivot)
-				{
-					//la branche gauche est plus lourde
-					if (pivot->left.getDepth() > pivot->right.getDepth())
-					{
-						
-					}
-					//la branche droite est plus lourde
-					else
-					{
-						
-					}
-				}
-			}*/
+
 
 			
 			void	printDegre()
@@ -349,9 +366,22 @@ std::cout << "I6b" << std::endl;
 					std::cout << std::endl << std::endl;
 				}*/
 				//printDegre();
-				_trunk->printRecur();
+				std::cout << "L'arbre contient " << std::endl << _trunk->printRecur() << " elements" << std::endl;
 			}
 			
+
+			private:
+				void	leftRotate(RBnode<T> *n)
+				{
+					if (n->leftRotate() && n->parent)
+						_trunk = n->parent;
+				}
+
+				void	rightRotate(RBnode<T> *n)
+				{
+					if (n->rightRotate() && n->parent)
+						_trunk = n->parent;
+				}
 			
 	};
 }
