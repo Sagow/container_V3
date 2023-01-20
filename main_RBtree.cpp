@@ -15,11 +15,11 @@ std::cout << "**************************************************" << std::endl;
 	std::cout << "Trunk = " << tree.getTrunk()->content
 	<< " Leftest = " << tree.getLeftest()->content
 	<< " Rightest = " << tree.getRightest()->content << std::endl;
+	//tree.print();
+	//tree.getTrunk()->rightRotate();
 	tree.print();
-	tree.getTrunk()->rightRotate();
-	tree.print();
-	ft::RBnode<int> test(*(tree.getTrunk()));
-	std::cout << "Test = " << test.content << std::endl;
+	//ft::RBnode<int> test(*(tree.getTrunk()));
+	//std::cout << "Test = " << test.content << std::endl;
 
 std::cout << "**************************************************" << std::endl;
 

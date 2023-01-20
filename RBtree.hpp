@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/15 23:19:27 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/20 08:38:52 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,29 +292,6 @@ std::cout << "I6b" << std::endl;
 				}
 			}*/
 
-			void fillTab(std::map<int, std::vector<T*> > &tab, RBnode<T>* node, int level, int maxlevel)
-			{
-				if (!node)
-				{
-					tab[level].push_back(NULL);
-					level++;
-					if (level < maxlevel)
-					{
-						fillTab(tab, NULL, level, maxlevel);
-						fillTab(tab, NULL, level, maxlevel);
-					}
-				}
-				else
-				{
-					tab[level].push_back(node->content);
-					level++;
-					if (level < maxlevel)
-					{
-						fillTab(tab, node->right, level, maxlevel);
-						fillTab(tab, node->left, level, maxlevel);
-					}
-				}
-			}
 			
 			void	printDegre()
 			{

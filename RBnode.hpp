@@ -112,6 +112,8 @@ namespace ft
 				parent = right;
 				right = tmp.left;
 				return (trunk);*/
+				std::cout << "Original " << this->content << " has parent "<< parent->content << " and right " << right->content << std::endl;
+
 				RBnode	*grandparent = parent;
 				RBnode	*switchingWith = right;
 				RBnode	*pendulum = right->left;
@@ -119,13 +121,15 @@ namespace ft
 				right = pendulum;
 				switchingWith->parent = grandparent;
 				switchingWith->left = this;
+				std::cout << "Original " << this->content << " has new parent "<< parent->content << " and grandparent " << parent->parent->content << std::endl;
+
 				return (!grandparent);
 			}
 
 			//true si changement de racine
 			bool	rightRotate()
 			{
-				bool	trunk = false;
+				/*bool	trunk = false;
 				if (!left)
 					return (false);
 				if (!parent)
@@ -135,7 +139,17 @@ namespace ft
 				left->right = this;
 				parent = left;
 				left = tmp.right;
-				return (trunk);
+				return (trunk);*/
+				std::cout << "Original " << this->content << " has parent "<< parent->content << " and left " << left->content << std::endl;
+				RBnode	*grandparent = parent;
+				RBnode	*switchingWith = left;
+				RBnode	*pendulum = left->right;
+				parent = switchingWith;
+				left = pendulum;
+				switchingWith->parent = grandparent;
+				switchingWith->right = this;
+				std::cout << "Original " << this->content << " has new parent "<< parent->content << " and grandparent " << parent->parent->content << std::endl;
+				return (!grandparent);
 			}
 			
 			RBnode	*nextLeaf()
