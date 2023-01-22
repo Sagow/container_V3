@@ -87,8 +87,6 @@ namespace ft
 			//true si changement de racine
 			bool	leftRotate()
 			{
-				//chamger l'enfamt dans le grand parent
-				std::cout << "Original " << this << " has parent "<< parent << " and right " << right << std::endl;
 				if (!right)
 				{
 					std::cout << RED << "alerte on switch " << this << " avec un truc vide" << END << std::endl;
@@ -99,21 +97,18 @@ namespace ft
 				RBnode	*pendulum = right->left;
 				if (isLeftChild())
 					grandparent->left = switchingWith;
-				else
+				else if (isRightChild())
 					grandparent->right = switchingWith;
 				parent = switchingWith;
 				right = pendulum;
 				switchingWith->parent = grandparent;
 				switchingWith->left = this;
-				std::cout << "Original " << this << " has new parent "<< parent << " and grandparent " << parent->parent << std::endl;
-std::cout << "switchingWith " << switchingWith << " has new parent "<< switchingWith->parent << " and children" << switchingWith->left << " and " << switchingWith->right << std::endl;
 				return (!grandparent);
 			}
 
 			//true si changement de racine
 			bool	rightRotate()
 			{
-				//std::cout << "Original " << this->content << " has parent "<< parent->content << " and left " << left->content << std::endl;
 				if (!left)
 				{
 					std::cout << RED << "alerte on switch " << this->content << " avec un truc vide" << END << std::endl;
@@ -130,10 +125,24 @@ std::cout << "switchingWith " << switchingWith << " has new parent "<< switching
 				left = pendulum;
 				switchingWith->parent = grandparent;
 				switchingWith->right = this;
-				//std::cout << "Original " << this->content << " has new parent "<< parent->content << " and grandparent " << parent->parent->content << std::endl;
 				return (!grandparent);
 			}
 			
+			RBnode	*find(T val)
+			{
+				RBnode	*ret = NULL;
+				if (content == val)
+					ret = this;
+				else
+				{
+					if (left)
+						ret = left->find(val);
+					if (!ret && right)
+						ret = right->find(val);
+				}
+				return (ret);
+			}
+
 			RBnode	*nextLeaf()
 			{
 				RBnode	*current = this;
@@ -181,5 +190,6 @@ std::cout << "switchingWith " << switchingWith << " has new parent "<< switching
 					size += right->printRecur(decal + 1);
 				return (size);
 			}
+
 	};
 }

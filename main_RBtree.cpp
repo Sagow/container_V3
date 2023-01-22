@@ -101,5 +101,79 @@ std::cout << "insert 16" << std::endl;
 
 	tree.print();
 
+std::cout << "**************************************************" << std::endl;
+std::cout << "remove 10" << std::endl;
+	tree.deleteNode(10);
+	//std::cout << "Trunk = " << tree.getTrunk()->content
+	//<< " Leftest = " << tree.getLeftest()->content
+	//<< " Rightest = " << tree.getRightest()->content << std::endl;
+
+	tree.print();
+	std::cout << "**************************************************" << std::endl;
+std::cout << "remove 17" << std::endl;
+	tree.deleteNode(17);
+	//std::cout << "Trunk = " << tree.getTrunk()->content
+	//<< " Leftest = " << tree.getLeftest()->content
+	//<< " Rightest = " << tree.getRightest()->content << std::endl;
+
+	tree.print();
+		std::cout << "**************************************************" << std::endl;
+std::cout << "remove 9" << std::endl;
+	tree.deleteNode(9);
+	//std::cout << "Trunk = " << tree.getTrunk()->content
+	//<< " Leftest = " << tree.getLeftest()->content
+	//<< " Rightest = " << tree.getRightest()->content << std::endl;
+
+	tree.print();
+		std::cout << "**************************************************" << std::endl;
+std::cout << "remove 1" << std::endl;
+	tree.deleteNode(1);
+	//std::cout << "Trunk = " << tree.getTrunk()->content
+	//<< " Leftest = " << tree.getLeftest()->content
+	//<< " Rightest = " << tree.getRightest()->content << std::endl;
+
+	tree.print();
+		std::cout << "**************************************************" << std::endl;
+std::cout << "remove 5" << std::endl; //7
+	tree.deleteNode(5);
+	//std::cout << "Trunk = " << tree.getTrunk()->content
+	//<< " Leftest = " << tree.getLeftest()->content
+	//<< " Rightest = " << tree.getRightest()->content << std::endl;
+
+	tree.print();
+		std::cout << "**************************************************" << std::endl;
+std::cout << "remove 8" << std::endl;
+	tree.deleteNode(8);
+	//std::cout << "Trunk = " << tree.getTrunk()->content
+	//<< " Leftest = " << tree.getLeftest()->content
+	//<< " Rightest = " << tree.getRightest()->content << std::endl;
+
+	tree.print();
+	
+	std::cout << "**************************************************" << std::endl;
+std::cout << "remove 16" << std::endl;
+	tree.deleteNode(16);
+	//std::cout << "Trunk = " << tree.getTrunk()->content
+	//<< " Leftest = " << tree.getLeftest()->content
+	//<< " Rightest = " << tree.getRightest()->content << std::endl;
+
+	tree.print();std::cout << "**************************************************" << std::endl;
+std::cout << "remove 7" << std::endl;
+	tree.deleteNode(7);
+	//std::cout << "Trunk = " << tree.getTrunk()->content
+	//<< " Leftest = " << tree.getLeftest()->content
+	//<< " Rightest = " << tree.getRightest()->content << std::endl;
+
+	tree.print();
+	std::cout << "**************************************************" << std::endl;
+std::cout << "remove 16" << std::endl;
+	tree.deleteNode(16);
+	//std::cout << "Trunk = " << tree.getTrunk()->content
+	//<< " Leftest = " << tree.getLeftest()->content
+	//<< " Rightest = " << tree.getRightest()->content << std::endl;
+
+	tree.print();
+	
+
 	return 0;
 }

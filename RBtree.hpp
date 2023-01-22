@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/22 06:53:26 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/22 10:10:08 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,7 @@ namespace ft
 					destroyRecu(node->left);
 				if (node->right)
 					destroyRecu(node->right);
-				alloc.destroy(node);
-				alloc.deallocate(node, sizeof(RBnode<T>));
+				destroyNode(node);
 			}
 			
 			~RBtree()
@@ -130,9 +129,9 @@ namespace ft
 				//Version francaise de la page Wikipedia
 				if (!lastInserted->parent)
 					insertionCase1(lastInserted);
-				else if (!lastInserted->parent->colour)
+				else if (isBlack(lastInserted->parent))
 					return ;//l'arbre est ok
-				else if (lastInserted->getUncle() && lastInserted->getUncle()->colour)
+				else if (!isBlack(lastInserted->getUncle()))
 					insertionCase3(lastInserted);
 				else
 					insertionCase4(lastInserted);
@@ -184,10 +183,52 @@ namespace ft
 				p->colour = false;
 				g->colour = true;
 			}
-			
-			void			deleteNode(T* ptr)
+
+			//base sur https://www.programiz.com/dsa/deletion-from-a-red-black-tree
+			void			deleteNode(T val)
 			{
-				(void) ptr;
+				RBnode<T>	*node = _trunk->find(val);
+				RBnode<T>	*x = NULL;
+				RBnode<T>	*y = node;
+				Allocator	alloc;
+
+
+				if (!node)
+					return ;
+				bool	yColour = y->colour;
+				//cas ou au moins un des enfants est nul
+				if (!node->left)
+				{
+					x = node->right;
+					transplant(node, node->right);
+				}
+				else if (!node->right)
+				{
+					x = node->left;
+					transplant(node, node->left);
+				}
+				//cas ou les deux enfants existent
+				else
+				{
+					y = minimum(node->right);
+					yColour = y->colour;
+					x = y->right;
+					if (y->parent == node)
+						x->parent = y;
+					else
+					{
+						transplant(y, y->right);
+						y->right = node->right;
+						y->right->parent = y;
+					}
+					transplant(node, y);
+					y->left = node->left;
+					y->left->parent = y;
+					y->colour = node->colour;
+				}
+				destroyNode(node);
+				if (!yColour)
+					deleteFix(x);
 			}
 			
 			//ATTENTION ce n'est pas une deep copy
@@ -226,6 +267,117 @@ namespace ft
 				//je teste l'existence d'un parent pour verifier que la rotation a bien eu lieu
 				if (n->rightRotate() && n->parent)
 					_trunk = n->parent;
+			}
+
+			void	transplant(RBnode<T> *u, RBnode<T> *v)
+			{
+				if (!u->parent)
+					_trunk = v;
+				else if (u->isLeftChild())
+					u->parent->left = v;
+				else
+					u->parent->right = v;
+				if (v)
+					v->parent = u->parent;
+			}
+
+			RBnode<T>	*minimum(RBnode<T>	*n)
+			{
+				while (n->left)
+					n = n->left;
+				return (n);
+			}
+
+			void	deleteFix(RBnode<T>	*x)
+			{
+				RBnode<T>	*s;
+				if (!x)
+					return ;
+				while (x != _trunk && isBlack(x))
+				{
+					if (x->isLeftChild())
+					{
+						s = x->parent->right;
+						if (!isBlack(s))
+						{
+							s->colour = false;
+							x->parent->colour = true;
+							leftRotate(x->parent);
+							s = x->parent->right;
+						}
+						if (isBlack(s->left) && isBlack(s->right))
+						{
+							s->colour = true;
+							x = x->parent;
+						}
+						else
+						{
+							if (isBlack(s->right))
+							{
+								s->left->colour = false;
+								s->colour = true;
+								rightRotate(s);
+								s = x->parent->right;
+							}
+							s->colour = x->parent->colour;
+							x->parent->colour = false;
+							s->right->colour = false;
+							leftRotate(x->parent);
+							x = _trunk;
+						}
+					}
+					else
+					{
+						s = x->parent->left;
+						if (!isBlack(s))
+						{
+							s->colour = false;
+							x->parent->colour = true;
+							rightRotate(x->parent);
+							s = x->parent->left;
+						}
+						//j'ai fait une correction par rapport au code d'origine
+						if (isBlack(s->left) && isBlack(s->right))
+						{
+							s->colour = true;
+							x = x->parent;
+						}
+						else
+						{
+							if (isBlack(s->left))
+							{
+								s->right->colour = false;
+								s->colour = true;
+								leftRotate(s);
+								s = x->parent->left;
+							}
+							s->colour = x->parent->colour;
+							x->parent->colour = false;
+							s->left->colour = false;
+							rightRotate(x->parent);
+							x = _trunk;
+						}
+					}
+				}
+				x->colour = false;
+			}
+
+			bool	isBlack(RBnode<T> *node)
+			{
+				if (!node || !node->colour)
+					return (true);
+				return (false);
+			}
+			
+			void	destroyNode(RBnode<T>	*node)
+			{
+				Allocator	alloc;
+				if (node->isLeftChild())
+					node->parent->left = NULL;
+				if (node->isRightChild())
+					node->parent->right = NULL;
+				alloc.destroy(node);
+				alloc.deallocate(node, sizeof(RBnode<T>));
 			}
 		
 	};
