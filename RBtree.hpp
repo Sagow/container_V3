@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/22 12:04:40 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/22 16:01:08 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,19 @@ namespace ft
 			RBtree()
 			{
 				_trunk = NULL;
+			}
+
+			void	insertRecu(RBnode<T> *node)
+			{
+				insert(node->content);
+				if (node->left)
+					insertRecu(node->left);
+				if (node->right)
+					insertRecu(node->right);
+			}
+			RBtree(RBtree<T> &other)
+			{
+				insertRecu(_trunk);
 			}
 
 			RBtree(T val)

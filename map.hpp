@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 18:22:09 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/22 15:27:21 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/22 17:33:20 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,25 @@ namespace ft
 
 
 		private:
+			class value_compare
+			{
+				private:
+					key_compare	_comp;
+				
+				public:
+					typedef bool		result_type;
+					typedef value_type	first_arg;
+					typedef value_type	second_arg;
+				
+				value_compare(key_compare c): _comp(c)
+				{
+				}
+
+				bool operator()(value_type const &x, value_type const &y) const
+				{
+					return (_comp(x.first, y.first));
+				}
+			};
 
 		protected:
 			RBtree<value_type>	tree;
@@ -62,7 +81,11 @@ namespace ft
 			template <class InputIterator>
 				map(InputIterator first, InputIterator last, const key_compare &comp = Compare(), const Allocator &alloc = Allocator()) : _alloc(alloc), _comp(comp)
 				{
-					//recuperer les Input
+					while (first != last)
+					{
+						insert(first);
+						first++;
+					}
 				}
 			map(const map &other) : _tree(other.tree), _alloc(other._alloc), _comp(other._comp), _size(other._size)
 			{}
@@ -104,10 +127,7 @@ namespace ft
 			//Element access
 			mapped_type& operator[] (const key_type& k)
 			{
-				RBnode<T>	*node = _tree.find(k);
-				if (!node)
-					return (insert(make_pair(k, mapped_type())).second);
-				return (node->content.second);
+				return ((insert(ft::make_pair(key, data_type())).first)->second);
 			}
 			mapped_type& at (const key_type& k)
 			{
@@ -149,6 +169,7 @@ namespace ft
 			}
 			void erase (iterator first, iterator last)
 			{
+				
 				
 			}
 			void swap (map& x)
