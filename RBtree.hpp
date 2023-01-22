@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/22 10:10:08 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/22 12:04:40 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,12 @@ namespace ft
 	{
 		private:
 			RBnode<T>	*_trunk;
-			RBnode<T>	*_leftest;
-			RBnode<T>	*_rightest;
 			
 		public:
 		
 			RBtree()
 			{
 				_trunk = NULL;
-				_leftest = NULL;
-				_rightest = NULL;
 			}
 
 			RBtree(T val)
@@ -44,8 +40,6 @@ namespace ft
 				_trunk = alloc.allocate(sizeof(RBnode<T>));
 				alloc.construct(_trunk, RBnode<T>(val));
 				_trunk->colour = false;
-				_leftest = _trunk;
-				_rightest = _trunk;
 			}
 			
 			void	destroyRecu(RBnode<T> *node)
@@ -69,16 +63,6 @@ namespace ft
 				return (_trunk);
 			}
 			
-			RBnode<T>*			getLeftest()
-			{
-				return (_leftest);
-			}
-			
-			RBnode<T>*			getRightest()
-			{
-				return (_rightest);
-			}
-			
 			void			insertNode(T val)
 			{
 				RBnode<T> *next = _trunk;
@@ -89,8 +73,6 @@ namespace ft
 				{
 					_trunk = alloc.allocate(sizeof(RBnode<T>));
 					alloc.construct(_trunk, RBnode<T>(val));
-					_leftest = _trunk;
-					_rightest = _trunk;
 				}
 				else
 				{
@@ -115,10 +97,6 @@ namespace ft
 					}
 					alloc.construct(next, RBnode<T>(parent, val));
 					balanceTree(next);
-					if (val < _leftest->content)
-						_leftest = next;
-					else if (_rightest->content < val)
-						_rightest = next;
 				}
 			}
 
@@ -184,10 +162,15 @@ namespace ft
 				g->colour = true;
 			}
 
+			RBnode<T>	*find(T val)
+			{
+				return (_trunk->find(val));
+			}
+
 			//base sur https://www.programiz.com/dsa/deletion-from-a-red-black-tree
 			void			deleteNode(T val)
 			{
-				RBnode<T>	*node = _trunk->find(val);
+				RBnode<T>	*node = find(val);
 				RBnode<T>	*x = NULL;
 				RBnode<T>	*y = node;
 				Allocator	alloc;
@@ -235,11 +218,7 @@ namespace ft
 			RBtree &operator=(const RBtree &src)
 			{
 				if (this != &src)
-				{
 					_trunk = src._trunk;
-					_leftest = src._leftest;
-					_rightest = src._rightest;
-				}
 				return (*this);
 			}
 			
@@ -251,6 +230,26 @@ namespace ft
 					return ;
 				}
 				std::cout << "L'arbre contient " << std::endl << _trunk->printRecur() << " elements" << std::endl;
+			}
+
+			RBnode<T>	*leftest()
+			{
+				if (!_trunk)
+					return (NULL);
+				RBnode<T>	*node = _trunk;
+				while (node->left)
+					node = node->left;
+				return (node);
+			}
+
+			RBnode<T>	*rightest()
+			{
+				if (!_trunk)
+					return (NULL);
+				RBnode<T>	*node = _trunk;
+				while (node->right)
+					node = node->right;
+				return (node);
 			}
 			
 
