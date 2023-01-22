@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/20 12:55:26 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/22 06:53:26 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,6 @@
 #include <iterator>
 #include <iostream>
 #include "RBnode.hpp"
-
-/*Notes : pour resoudre les conflits de couleur, faire une rotation quand on a bien right et left de completes, sinon push la couleur plus haut dans l'arbre*/
-//en vrai je suis plus sure. Franchement je sais pas c'est bizarre
 
 namespace ft
 {
@@ -89,8 +86,6 @@ namespace ft
 				RBnode<T> *parent = NULL;
 				Allocator	alloc;
 				
-//std::cout << "balise 1" << std::endl;
-				
 				if (!_trunk)
 				{
 					_trunk = alloc.allocate(sizeof(RBnode<T>));
@@ -100,8 +95,6 @@ namespace ft
 				}
 				else
 				{
-//std::cout << "balise 2" << std::endl;
-					
 					while (next)
 					{
 						parent = next;
@@ -110,44 +103,24 @@ namespace ft
 						else
 							next = next->left;
 					}
-//std::cout << "balise 3" << std::endl;
 
 					if (parent->content < val)
 					{
-
-//std::cout << "balise 4a" << std::endl;
 						parent->right = alloc.allocate(sizeof(RBnode<T>));
 						next = parent->right;
 					}
 					else
 					{
-
-//std::cout << "balise 4b" << std::endl;
 						parent->left = alloc.allocate(sizeof(RBnode<T>));
 						next = parent->left;
 					}
 					alloc.construct(next, RBnode<T>(parent, val));
 					balanceTree(next);
-//std::cout << "balise 5" << std::endl;
 					if (val < _leftest->content)
 						_leftest = next;
 					else if (_rightest->content < val)
 						_rightest = next;
 				}
-			}
-
-			bool	isBalanced(void)
-			{
-				RBnode<T> *testedNode = _leftest;
-				size_t	depth = _leftest->getDepth();
-
-				while (testedNode != _rightest)
-				{
-					testedNode = testedNode->nextLeaf();
-					if (testedNode->getDepth() != depth)
-						return (false);
-				}
-				return (true);
 			}
 
 			void	balanceTree(RBnode<T> *lastInserted)
@@ -163,86 +136,6 @@ namespace ft
 					insertionCase3(lastInserted);
 				else
 					insertionCase4(lastInserted);
-
-/* Version anglaise de la page Wikipedia
-{				
-				//insert case I1
-				RBnode<T> *grandparent = lastInserted->getGrandparent();
-				
-				if (!lastInserted || !lastInserted->parent || (lastInserted->parent && !lastInserted->parent->colour))
-				{
-std::cout << "I1" << std::endl;
-					
-					return ;
-				}
-				//insert case I2
-				else if (lastInserted->parent && lastInserted->parent->colour && lastInserted->getUncle() && lastInserted->getUncle()->colour)
-				{
-std::cout << "I2" << std::endl;
-
-					lastInserted->parent->colour = false;
-					lastInserted->getUncle()->colour = false;
-					lastInserted->getGrandparent()->colour = true;
-					return (balanceTree(lastInserted->parent->parent));
-				}
-				//Insert case I3 (inside de I2)
-				//Insert case I4
-				else if (lastInserted->parent && lastInserted->parent->colour && !lastInserted->getGrandparent())
-				{
-std::cout << "I4" << std::endl;
-
-					lastInserted->parent->colour = false;
-					return ;
-				}
-				//Insert case I5 (inner grandchild)
-				else if (lastInserted->parent && lastInserted->parent->colour && (!lastInserted->getUncle() || !lastInserted->getUncle()->colour))
-				{
-std::cout << "I5" << std::endl;
-//print();
-
-					if (lastInserted->parent->isLeftChild())
-					{
-						if (lastInserted->isRightChild())
-						{
-							//std::cout << "coucou" << std::endl;
-							if (lastInserted->parent->leftRotate())
-								_trunk = lastInserted->getGrandparent();
-							lastInserted = lastInserted->left;
-						}
-					}
-					else
-					{
-						if (lastInserted->isLeftChild())
-						{
-							if (lastInserted->parent->rightRotate())
-								_trunk = lastInserted->getGrandparent();
-							lastInserted = lastInserted->right;
-						}
-					}
-				}
-				//Insert case I6
-				if (lastInserted->parent->isLeftChild())
-				{
-std::cout << "I6a" << std::endl;
-					//print();
-					std::cout << "grandparent = " << grandparent->content << std::endl;
-					if (grandparent->rightRotate())
-						_trunk = grandparent->parent;
-					lastInserted->parent->colour = false;
-					grandparent->colour = true;
-				}
-				else if (lastInserted->parent->isRightChild())
-				{
-std::cout << "I6b" << std::endl;
-
-					if (grandparent->leftRotate())
-						_trunk = grandparent->parent;
-					lastInserted->parent->colour = false;
-					grandparent->colour = true;
-				}
-}
-*/
-
 			}
 			
 			void	insertionCase1(RBnode<T> *n)
@@ -279,6 +172,7 @@ std::cout << "I6b" << std::endl;
 				}
 				insertionCase5(n);
 			}
+			
 			void	insertionCase5(RBnode<T> *n)
 			{
 				RBnode<T>	*p = n->parent;
@@ -307,43 +201,6 @@ std::cout << "I6b" << std::endl;
 				}
 				return (*this);
 			}
-
-
-			
-			void	printDegre()
-			{
-				RBnode<int> *sample = _leftest;
-
-				while (sample != _rightest)
-				{
-					std::cout << sample->content << " a pour parent " << sample->parent  << " et pour enfants " << sample->left << " et " << sample->right
-					 << std::endl;
-					//redescendre ici
-					if (sample->left)
-					{
-						std::cout << "case1" << std::endl;
-						sample = sample->left;
-					}
-					else if (sample->right)
-					{
-						std::cout << "case2" << std::endl;
-						sample = sample->right;						
-					}
-					else if (sample->parent->right && sample->parent->right != sample)
-					{
-						std::cout << "case3" << std::endl;						
-						sample = sample->parent->right;
-					}
-					else
-					{
-						std::cout << "case4" << std::endl;
-						sample = sample->getUncle();
-					}
-				}
-				std::cout << sample->content << " a pour parent " << sample->parent  << " et pour enfants " << sample->left << " et " << sample->right
-					 << std::endl;
-				
-			}
 			
 			void	print(void)
 			{
@@ -352,37 +209,25 @@ std::cout << "I6b" << std::endl;
 					std::cout << "Cet arbre est vide" << std::endl;
 					return ;
 				}
-				/*std::map<int, std::vector<T*> > tab; //int pour la pronfondeur, mettre NULL si le node n existe pas
-				int depth = _trunk->getDepth();
-				fillTab(tab, _trunk, 0, depth);
-				for(typename std::map<int, std::vector<T*> >::iterator it = tab.begin(); it != tab.end(); it++)
-				{
-					for (typename std::vector<T*>::iterator ite = (*it).second.begin(); ite != (*it).second.end(); ite++)
-					{
-						for (int i = 0; i < depth * 5 / (*it).first; i++)
-							std::cout << " ";
-						std::cout << std::setw(10) << std::setiosflags(std::ios::right) *it;
-					}
-					std::cout << std::endl << std::endl;
-				}*/
-				//printDegre();
 				std::cout << "L'arbre contient " << std::endl << _trunk->printRecur() << " elements" << std::endl;
 			}
 			
 
-			private:
-				void	leftRotate(RBnode<T> *n)
-				{
-					if (n->leftRotate() && n->parent)
-						_trunk = n->parent;
-				}
+		private:
+			void	leftRotate(RBnode<T> *n)
+			{
+				//je teste l'existence d'un parent pour verifier que la rotation a bien eu lieu
+				if (n->leftRotate() && n->parent)
+					_trunk = n->parent;
+			}
 
-				void	rightRotate(RBnode<T> *n)
-				{
-					if (n->rightRotate() && n->parent)
-						_trunk = n->parent;
-				}
-			
+			void	rightRotate(RBnode<T> *n)
+			{
+				//je teste l'existence d'un parent pour verifier que la rotation a bien eu lieu
+				if (n->rightRotate() && n->parent)
+					_trunk = n->parent;
+			}
+		
 	};
 }
 

@@ -27,6 +27,10 @@ namespace ft
 
 			RBnode(RBnode *par, const T val) : content(val), left(NULL), right(NULL), parent(par), colour(true)
 			{}
+
+			~RBnode()
+			{}
+
 			
 			RBnode &operator=(const RBnode &src)
 			{
@@ -70,28 +74,10 @@ namespace ft
 
 			size_t			getDepth(size_t depth = 0)
 			{
-				/*size_t add;
-				
-				if (!this)
-					return (depth);
-				if (!colour)
-					depth++;
-				if (right)
-				{
-					add = right->getDepth(depth);
-					if (add > depth)
-						depth = add;
-				}
-				if (left)
-				{
-					add = left->getDepth(depth);
-					if (add > depth)
-						depth = add;
-				}*/
 				RBnode<T> *dad = parent;
 				while (dad)
 				{
-					//if (!dad->colour)
+					if (!dad->colour)
 						depth++;
 					dad = dad->parent;
 				}
@@ -101,17 +87,7 @@ namespace ft
 			//true si changement de racine
 			bool	leftRotate()
 			{
-				/*bool	trunk = false;
-				if (!right)
-					return (false);
-				if (!parent)
-					trunk = true;
-				RBnode tmp(*right);
-				right->parent = parent;
-				right->left = this;
-				parent = right;
-				right = tmp.left;
-				return (trunk);*/
+				//chamger l'enfamt dans le grand parent
 				std::cout << "Original " << this << " has parent "<< parent << " and right " << right << std::endl;
 				if (!right)
 				{
@@ -121,6 +97,10 @@ namespace ft
 				RBnode	*grandparent = parent;
 				RBnode	*switchingWith = right;
 				RBnode	*pendulum = right->left;
+				if (isLeftChild())
+					grandparent->left = switchingWith;
+				else
+					grandparent->right = switchingWith;
 				parent = switchingWith;
 				right = pendulum;
 				switchingWith->parent = grandparent;
@@ -133,17 +113,6 @@ std::cout << "switchingWith " << switchingWith << " has new parent "<< switching
 			//true si changement de racine
 			bool	rightRotate()
 			{
-				/*bool	trunk = false;
-				if (!left)
-					return (false);
-				if (!parent)
-					trunk = true;
-				RBnode tmp(*left);
-				left->parent = parent;
-				left->right = this;
-				parent = left;
-				left = tmp.right;
-				return (trunk);*/
 				//std::cout << "Original " << this->content << " has parent "<< parent->content << " and left " << left->content << std::endl;
 				if (!left)
 				{
@@ -153,6 +122,10 @@ std::cout << "switchingWith " << switchingWith << " has new parent "<< switching
 				RBnode	*grandparent = parent;
 				RBnode	*switchingWith = left;
 				RBnode	*pendulum = left->right;
+				if (isLeftChild())
+					grandparent->left = switchingWith;
+				else
+					grandparent->right = switchingWith;
 				parent = switchingWith;
 				left = pendulum;
 				switchingWith->parent = grandparent;
@@ -209,11 +182,4 @@ std::cout << "switchingWith " << switchingWith << " has new parent "<< switching
 				return (size);
 			}
 	};
-
-	/*template <class T, class Allocator = std::allocator<RBnode<T> > >
-	RBnode<T>*			createNode(T data, RBnode<T>* parent, Allocator alloc)
-	{
-		RBnode<T>* ptr = alloc.allocate(sizeof(RBnode<T>(parent, data)));
-		return (ptr);
-	};*/
 }
