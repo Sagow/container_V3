@@ -1,5 +1,6 @@
-#include "RBnode.hpp"
-#include "RBtree.hpp"
+#include "map/RBnode.hpp"
+#include "map/RBtree.hpp"
+#include "map/map.hpp"
 
 int main(void)
 {
@@ -173,6 +174,8 @@ std::cout << "remove 16" << std::endl;
 	//<< " Rightest = " << tree.getRightest()->content << std::endl;
 
 	tree.print();
+
+	ft::map<int, int> truc;
 	
 
 	return 0;

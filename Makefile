@@ -1,7 +1,9 @@
 SRCS =	main_RBtree.cpp
 
-HEADERS =	RBnode.hpp \
-			RBtree.hpp
+HEADERS =	map/RBnode.hpp \
+			map/RBtree.hpp \
+			map/map.hpp    \
+			algorithm.hpp
 
 OBJS =  ${SRCS:.cpp=.o}
 
