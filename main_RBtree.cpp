@@ -4,7 +4,7 @@
 
 int main(void)
 {
-	ft::RBtree<int>	tree(5);
+	/*ft::RBtree<int, int>	tree(5, 7);
 
 	//std::cout << "Trunk = " << tree.getTrunk()->content
 	//<< " Leftest = " << tree.getLeftest()->content
@@ -175,8 +175,10 @@ std::cout << "remove 16" << std::endl;
 
 	tree.print();
 
+	*/
 	ft::map<int, int> truc;
-	
 
+	std::cout << truc.size() << std::endl;
+	truc[5] = 8;
 	return 0;
 }

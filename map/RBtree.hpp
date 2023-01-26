@@ -6,10 +6,11 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/25 03:38:28 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/26 21:56:56 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#pragma once
 #include <memory>
 #include <iomanip>
 #include <vector>
@@ -20,8 +21,6 @@
 
 namespace ft
 {
-	template <class Key, class <T> >
-	class RBnode;
 	
 	template <class Key, class T, class Comparator = ft::less<T>, class Allocator = std::allocator<RBnode<const Key, T> > >
 	class RBtree
@@ -46,9 +45,9 @@ namespace ft
 				if (node->right)
 					insertRecu(node->right);
 			}
-			RBtree(RBtree<T> &other)
+			RBtree(RBtree<const Key, T> &other)
 			{
-				insertRecu(_trunk);
+				insertRecu(other._trunk);
 			}
 
 			RBtree(ft::pair<const Key, T> val)
@@ -61,7 +60,7 @@ namespace ft
 			}
 
 			//pas de setter parce que RBtree se gere seul
-			size_t	getSize()
+			size_t	getSize() const
 			{
 				return (_size);
 			}
@@ -69,6 +68,8 @@ namespace ft
 			void	destroyRecu(RBnode<const Key, T> *node)
 			{
 				Allocator	alloc;
+				if (!node)
+					return ;
 				if (node->left)
 					destroyRecu(node->left);
 				if (node->right)
@@ -190,7 +191,7 @@ namespace ft
 
 			RBnode<const Key, T>	*find(Key key)
 			{
-				return (_trunk->find(val));
+				return (_trunk->find(key));
 			}
 
 			//base sur https://www.programiz.com/dsa/deletion-from-a-red-black-tree
@@ -282,13 +283,13 @@ namespace ft
 				return (node);
 			}
 			
-			void		swap(RBnode	&a, RBnode &b)
+			/*void		swap(RBnode	&a, RBnode &b)
 			{
 				RBnode	aTmp(a);
 				RBnode	bTmp(b);
 
 				//a creuser
-			}
+			}*/
 
 		private:
 			void	leftRotate(RBnode<const Key, T> *n)

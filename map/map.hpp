@@ -6,25 +6,27 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 18:22:09 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/25 04:01:12 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/26 22:03:11 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //based on cppreference.com
 
-#include "ToDo.hpp"
+//#include "ToDo.hpp"
 #include <memory>
 #include <cstddef>
+#include <iostream>
+#include <sstream>
 #include "RBtree.hpp"
 #include "RBnode.hpp"
-#include "algorithm.hpp"
+#include "../algorithm.hpp"
 
 namespace ft
 {
 	template <
 		class Key,                                     // map::key_type
 		class T,                                       // map::mapped_type
-		class Compare = ft::less<Key>,                     // map::key_compare
+		class Compare = ft::less<Key>,                    // map::key_compare
 		class Allocator = std::allocator<ft::pair<const Key,T> >    // map::allocator_type
 	> class map
 	{
@@ -38,12 +40,12 @@ namespace ft
 			typedef Allocator								allocator_type;
 			typedef value_type&								reference;
 			typedef const value_type&						const_reference;
-			typedef Allocator::pointer						pointer;
-			typedef Allocator::const_pointer				const_pointer;
-			typedef ft::iterator							iterator;
-			typedef ft::const_iterator						const_iterator;
-			typedef ft::reverse_iterator<iterator>			reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
+			typedef typename Allocator::pointer				pointer;
+			typedef typename Allocator::const_pointer		const_pointer;
+			typedef typename  std::map<const Key, T>::iterator		iterator;
+			typedef typename  std::map<const Key, T>::const_iterator	const_iterator;
+			typedef std::reverse_iterator<iterator>			reverse_iterator;
+			typedef std::reverse_iterator<const_iterator>	const_reverse_iterator;
 
 
 		private:
@@ -68,7 +70,7 @@ namespace ft
 			};
 
 		protected:
-			RBtree<value_type>	_tree;
+			RBtree<const Key, T>	_tree;
 			Allocator _alloc;
 			key_compare	_comp;
 
@@ -78,9 +80,10 @@ namespace ft
 			explicit	map(const key_compare &comp, const Allocator &alloc = Allocator()) : _alloc(alloc), _comp(comp)
 			{}
 			template <class InputIterator>
-				map(InputIterator first, InputIterator last, const key_compare &comp = Compare(), const Allocator &alloc = Allocator()
-					typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type) : _alloc(alloc), _comp(comp)
-				{
+				map(InputIterator first, InputIterator last, const key_compare &comp = Compare(), const Allocator &alloc = Allocator(),
+					typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
+				{	_alloc(alloc);
+					 _comp(comp);
 					while (first != last)
 					{
 						insert(first);
@@ -138,17 +141,31 @@ namespace ft
 			//Element access
 			mapped_type& operator[] (const key_type& k)
 			{
-				return ((insert(ft::make_pair(key, data_type())).first)->second);
+				return ((insert(ft::make_pair(k, mapped_type())).first)->second);
 			}
 			mapped_type& at (const key_type& k)
 			{
 				RBnode<Key, T>	*node = _tree.find(k);
 				if (!node)
-					throw (std::out_of_range()); //a completer
+				{
+					std::ostringstream	oss;
+
+					oss << "map key (which is " << k << ") does not exist";
+					throw (std::out_of_range(oss.str()));
+				}
+				return (*node);
 			}
-			const mapped_type& at (const key_type& k) const
+			const mapped_type& at(const key_type& k) const
 			{
-				
+				RBnode<Key, T>	*node = _tree.find(k);
+				if (!node)
+				{
+					std::ostringstream	oss;
+
+					oss << "map key (which is " << k << ") does not exist";
+					throw (std::out_of_range(oss.str()));
+				}
+				return (*node);
 			}
 
 			//Modifiers
@@ -157,7 +174,7 @@ namespace ft
 				pair<iterator,bool>	res;
 
 				res.first = find(val.first);
-				if (res.first)
+				if (res.first != end())
 					res.second = false;
 				else
 					res.second = true;
@@ -166,12 +183,13 @@ namespace ft
 			
 			iterator insert (iterator position, const value_type& val)
 			{
-				RBnode<value_type>	*node = NULL;
+				RBnode<key_type, mapped_type>	*node = NULL;
+				(void)position;
 				_tree.insertNode(val);
 				node = find(val);
 				return ((iterator) node);
 			}
-			template <class InputIterator> 
+			template <class InputIterator>
 				void insert (InputIterator first, InputIterator last)
 				{
 					for (InputIterator it = first; it != last; it++)
@@ -192,10 +210,11 @@ namespace ft
 				}
 				return (0);
 			}
-			void erase (iterator first, iterator last)
+			template <class InputIterator>
+			void erase (InputIterator first, InputIterator last)
 			{
 				for (InputIterator it = first; it != last; it++)
-					_tree.removeNode(toRemove);				
+					_tree.removeNode(it->pair.first);				
 			}
 			void swap (map& x)
 			{
@@ -225,19 +244,18 @@ namespace ft
 			//Observers
 			key_compare key_comp() const
 			{
-				return (_comp);
+				return (key_compare());
+
 			}
 			value_compare value_comp() const
 			{
-				friend class T;
-
-				return ()
+				return (value_compare(key_compare()));
 			}
 
 			//Operation
 			iterator find (const key_type& k)
 			{
-				return (iterator(_tree.find(k)));
+				return (reinterpret_cast<iterator>(_tree.find(k)));
 			}	
 			const_iterator find (const key_type& k) const
 			{
