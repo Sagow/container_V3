@@ -6,13 +6,14 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 18:22:09 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/26 22:03:11 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/27 06:05:17 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //based on cppreference.com
 
 //#include "ToDo.hpp"
+#pragma once
 #include <memory>
 #include <cstddef>
 #include <iostream>
@@ -20,20 +21,21 @@
 #include "RBtree.hpp"
 #include "RBnode.hpp"
 #include "../algorithm.hpp"
+#include "../iterator.hpp"
 
 namespace ft
 {
 	template <
 		class Key,                                     // map::key_type
 		class T,                                       // map::mapped_type
-		class Compare = ft::less<Key>,                    // map::key_compare
-		class Allocator = std::allocator<ft::pair<const Key,T> >    // map::allocator_type
+		class Compare = less<Key>,                    // map::key_compare
+		class Allocator = std::allocator<pair<const Key,T> >    // map::allocator_type
 	> class map
 	{
 		public:
 			typedef Key										key_type;
 			typedef T										mapped_type;
-			typedef ft::pair<const Key, T>					value_type;
+			typedef pair<const Key, T>					value_type;
 			typedef std::size_t								size_type;
 			typedef std::ptrdiff_t							difference_type;
 			typedef Compare									key_compare;
@@ -42,7 +44,7 @@ namespace ft
 			typedef const value_type&						const_reference;
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
-			typedef typename  std::map<const Key, T>::iterator		iterator;
+			typedef bidirectional_iterator< RBnode<const Key, T> *>		iterator;
 			typedef typename  std::map<const Key, T>::const_iterator	const_iterator;
 			typedef std::reverse_iterator<iterator>			reverse_iterator;
 			typedef std::reverse_iterator<const_iterator>	const_reverse_iterator;
@@ -81,7 +83,7 @@ namespace ft
 			{}
 			template <class InputIterator>
 				map(InputIterator first, InputIterator last, const key_compare &comp = Compare(), const Allocator &alloc = Allocator(),
-					typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
+					typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
 				{	_alloc(alloc);
 					 _comp(comp);
 					while (first != last)
@@ -141,7 +143,12 @@ namespace ft
 			//Element access
 			mapped_type& operator[] (const key_type& k)
 			{
-				return ((insert(ft::make_pair(k, mapped_type())).first)->second);
+				iterator tmp = find(k);
+
+				if (tmp == end())
+					insert(make_pair(k, mapped_type()));
+				tmp = find(k);
+				return ((*tmp)->pair.second);
 			}
 			mapped_type& at (const key_type& k)
 			{
@@ -255,7 +262,7 @@ namespace ft
 			//Operation
 			iterator find (const key_type& k)
 			{
-				return (reinterpret_cast<iterator>(_tree.find(k)));
+				return (iterator(_tree.find(k)));
 			}	
 			const_iterator find (const key_type& k) const
 			{
@@ -301,11 +308,11 @@ namespace ft
 			}
 			pair<iterator,iterator>             equal_range (const key_type& k)
 			{
-				return (ft::make_pair(lower_bound(k), upper_bound(k)));
+				return (make_pair(lower_bound(k), upper_bound(k)));
 			}
 			pair<const_iterator,const_iterator> equal_range (const key_type& k) const
 			{
-				return (ft::make_pair(lower_bound(k), upper_bound(k)));
+				return (make_pair(lower_bound(k), upper_bound(k)));
 			}
 
 			//Allocator

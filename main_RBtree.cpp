@@ -180,5 +180,5 @@ std::cout << "remove 16" << std::endl;
 
 	std::cout << truc.size() << std::endl;
 	truc[5] = 8;
-	return 0;
+	return (0);
 }

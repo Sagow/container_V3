@@ -11,7 +11,7 @@ namespace ft
 	template <class Key, class T >
 	class RBnode{
 		public:
-			ft::pair<const Key, T> pair;
+			ft::pair<const Key, T>			pair;
 			RBnode<const Key, T>*			left;
 			RBnode<const Key, T>*			right;
 			RBnode<const Key, T>*			parent;
@@ -71,6 +71,74 @@ namespace ft
 				if (!parent)
 					return (NULL);
 				return (parent->parent);
+			}
+
+			RBnode<const Key, T>	*getNext()
+			{
+				RBnode<const Key, T>	*node;
+				if (right)
+				{
+					node = right;
+					while (node->left)
+						node = node->left;
+					return (node);
+				}
+				else if (isLeftChild())
+				{
+					return (parent);
+				}
+				else if (biggerCousin())
+				{
+					node = biggerCousin();
+					while (node->left)
+						node = node->left;
+					return (node);
+				}
+				else
+					return (this + 1);
+			}
+
+			RBnode<const Key, T>	*getPrevious()
+			{
+				RBnode<const Key, T>	*node;
+				if (left)
+				{
+					node = left;
+					while (node->right)
+						node = node->right;
+					return (node);
+				}
+				else if (isRightChild())
+				{
+					return (parent);
+				}
+				else if (smallerCousin())
+				{
+					node = smallerCousin();
+					while (node->left)
+						node = node->left;
+					return (node);
+				}
+				else
+					return (this + 1);
+			}
+
+			RBnode<const Key, T>	*biggerCousin()
+			{
+				if (!parent)
+					return (this);
+				if (isLeftChild() && parent->right)
+					return (parent->right);
+				return (biggerCousin(parent));
+			}
+
+			RBnode<const Key, T>	*smallerCousin()
+			{
+				if (!parent)
+					return (this);
+				if (isRightChild() && parent->left)
+					return (parent->left);
+				return (smallerCousin(parent));
 			}
 
 			size_t			getDepth(size_t depth = 0)

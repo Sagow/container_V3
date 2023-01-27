@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/26 21:56:56 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/27 05:17:30 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,7 @@ namespace ft
 				g->colour = true;
 			}
 
-			RBnode<const Key, T>	*find(Key key)
+			RBnode<const Key, T>	*find(const Key key)
 			{
 				return (_trunk->find(key));
 			}
@@ -263,7 +263,7 @@ namespace ft
 				std::cout << "L'arbre contient " << std::endl << _trunk->printRecur() << " elements" << std::endl;
 			}
 
-			RBnode<const Key, T>	*leftest()
+			RBnode<const Key, T>	*leftest() const
 			{
 				if (!_trunk)
 					return (NULL);
@@ -273,7 +273,7 @@ namespace ft
 				return (node);
 			}
 
-			RBnode<const Key, T>	*rightest()
+			RBnode<const Key, T>	*rightest() const
 			{
 				if (!_trunk)
 					return (NULL);
