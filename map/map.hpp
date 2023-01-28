@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 18:22:09 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/27 06:05:17 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/28 21:13:08 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@
 namespace ft
 {
 	template <
-		class Key,                                     // map::key_type
-		class T,                                       // map::mapped_type
-		class Compare = less<Key>,                    // map::key_compare
+		class Key,                                    			// map::key_type
+		class T,                                      			// map::mapped_type
+		class Compare = less<Key>,                    			// map::key_compare
 		class Allocator = std::allocator<pair<const Key,T> >    // map::allocator_type
 	> class map
 	{
@@ -44,8 +44,8 @@ namespace ft
 			typedef const value_type&						const_reference;
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
-			typedef bidirectional_iterator< RBnode<const Key, T> *>		iterator;
-			typedef typename  std::map<const Key, T>::const_iterator	const_iterator;
+			typedef bidirectional_iterator< RBnode<const Key, T> >		iterator;
+			typedef bidirectional_iterator< RBnode<const Key, T> >	const_iterator;
 			typedef std::reverse_iterator<iterator>			reverse_iterator;
 			typedef std::reverse_iterator<const_iterator>	const_reverse_iterator;
 
@@ -141,16 +141,16 @@ namespace ft
 			}
 
 			//Element access
-			mapped_type& operator[] (const key_type& k)
+			mapped_type& operator[] (key_type &k) const
 			{
 				iterator tmp = find(k);
 
 				if (tmp == end())
 					insert(make_pair(k, mapped_type()));
 				tmp = find(k);
-				return ((*tmp)->pair.second);
+				return (tmp->pair.second);
 			}
-			mapped_type& at (const key_type& k)
+			mapped_type& at (key_type& k) const
 			{
 				RBnode<Key, T>	*node = _tree.find(k);
 				if (!node)
@@ -160,7 +160,8 @@ namespace ft
 					oss << "map key (which is " << k << ") does not exist";
 					throw (std::out_of_range(oss.str()));
 				}
-				return (*node);
+				return (node->pair.second);
+
 			}
 			const mapped_type& at(const key_type& k) const
 			{
@@ -172,7 +173,7 @@ namespace ft
 					oss << "map key (which is " << k << ") does not exist";
 					throw (std::out_of_range(oss.str()));
 				}
-				return (*node);
+				return (node->pair.second);
 			}
 
 			//Modifiers
@@ -260,13 +261,9 @@ namespace ft
 			}
 
 			//Operation
-			iterator find (const key_type& k)
+			iterator find (key_type& k) const
 			{
-				return (iterator(_tree.find(k)));
-			}	
-			const_iterator find (const key_type& k) const
-			{
-				return (const_iterator(_tree.find(k)));
+				return (iterator(*_tree.find(k)));
 			}
 			size_type count (const key_type& k) const
 			{

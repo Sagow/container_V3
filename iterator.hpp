@@ -57,7 +57,7 @@ namespace ft
 				}
 				pointer operator-> (void)
 				{
-					return (&(_elem->pair));
+					return ((_elem->pair));
 				}
 
 			protected:

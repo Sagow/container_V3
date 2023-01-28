@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/27 05:17:30 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/01/28 21:05:09 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,7 @@ namespace ft
 				g->colour = true;
 			}
 
-			RBnode<const Key, T>	*find(const Key key)
+			RBnode<Key, T>	*find(Key key) const
 			{
 				return (_trunk->find(key));
 			}

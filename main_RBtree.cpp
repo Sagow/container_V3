@@ -179,6 +179,7 @@ std::cout << "remove 16" << std::endl;
 	ft::map<int, int> truc;
 
 	std::cout << truc.size() << std::endl;
-	truc[5] = 8;
+	std::cout << truc.max_size() << std::endl;
+	std::cout << truc.at(5) << std::endl;
 	return (0);
 }
