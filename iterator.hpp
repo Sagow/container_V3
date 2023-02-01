@@ -21,7 +21,7 @@ namespace ft
 				typedef	Reference	reference;
 				typedef	Tag			iterator_category;
 
-				iterator() : _elem(nullptr_t())
+				iterator() : _elem(ft::nullptr_t())
 				{
 				}
 

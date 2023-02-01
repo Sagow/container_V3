@@ -180,6 +180,14 @@ std::cout << "remove 16" << std::endl;
 
 	std::cout << truc.size() << std::endl;
 	std::cout << truc.max_size() << std::endl;
+	try
+	{
 	std::cout << truc.at(5) << std::endl;
+
+	}
+	catch (const std::exception &e)
+	{
+		std::cout << "pouet exception" << std::endl;
+	}
 	return (0);
 }

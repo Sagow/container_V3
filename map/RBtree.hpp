@@ -22,11 +22,11 @@
 namespace ft
 {
 	
-	template <class Key, class T, class Comparator = ft::less<T>, class Allocator = std::allocator<RBnode<const Key, T> > >
+	template <class Key, class T, class Comparator = ft::less<T>, class Allocator = std::allocator<RBnode<Key, T> > >
 	class RBtree
 	{
 		private:
-			RBnode<const Key, T>	*_trunk;
+			RBnode<Key, T>	*_trunk;
 			size_t			_size;
 			
 		public:
@@ -37,7 +37,7 @@ namespace ft
 				_size = 0;
 			}
 
-			void	insertRecu(RBnode<const Key, T> *node)
+			void	insertRecu(RBnode<Key, T> *node)
 			{
 				insertNode(node->pair);
 				if (node->left)
@@ -45,16 +45,16 @@ namespace ft
 				if (node->right)
 					insertRecu(node->right);
 			}
-			RBtree(RBtree<const Key, T> &other)
+			RBtree(RBtree<Key, T> &other)
 			{
 				insertRecu(other._trunk);
 			}
 
-			RBtree(ft::pair<const Key, T> val)
+			RBtree(ft::pair<Key, T> val)
 			{
 				Allocator alloc;
-				_trunk = alloc.allocate(sizeof(RBnode<const Key, T>));
-				alloc.construct(_trunk, RBnode<const Key, T>(val));
+				_trunk = alloc.allocate(sizeof(RBnode<Key, T>));
+				alloc.construct(_trunk, RBnode<Key, T>(val));
 				_size = 1;
 				_trunk->colour = false;
 			}
@@ -65,7 +65,7 @@ namespace ft
 				return (_size);
 			}
 			
-			void	destroyRecu(RBnode<const Key, T> *node)
+			void	destroyRecu(RBnode<Key, T> *node)
 			{
 				Allocator	alloc;
 				if (!node)
@@ -84,22 +84,22 @@ namespace ft
 			}
 
 			
-			RBnode<const Key, T>*			getTrunk()
+			RBnode<Key, T>*			getTrunk()
 			{
 				return (_trunk);
 			}
 			
-			void			insertNode(ft::pair<const Key, T> val)
+			void			insertNode(ft::pair<Key, T> val)
 			{
-				RBnode<const Key, T> *next = _trunk;
-				RBnode<const Key, T> *parent = NULL;
+				RBnode<Key, T> *next = _trunk;
+				RBnode<Key, T> *parent = NULL;
 				Allocator	alloc;
 				
 				_size++;
 				if (!_trunk)
 				{
-					_trunk = alloc.allocate(sizeof(RBnode<const Key, T>));
-					alloc.construct(_trunk, RBnode<const Key, T>(val));
+					_trunk = alloc.allocate(sizeof(RBnode<Key, T>));
+					alloc.construct(_trunk, RBnode<Key, T>(val));
 				}
 				else
 				{
@@ -114,20 +114,20 @@ namespace ft
 
 					if (parent->pair.first < val)
 					{
-						parent->right = alloc.allocate(sizeof(RBnode<const Key, T>));
+						parent->right = alloc.allocate(sizeof(RBnode<Key, T>));
 						next = parent->right;
 					}
 					else
 					{
-						parent->left = alloc.allocate(sizeof(RBnode<const Key, T>));
+						parent->left = alloc.allocate(sizeof(RBnode<Key, T>));
 						next = parent->left;
 					}
-					alloc.construct(next, RBnode<const Key, T>(parent, val));
+					alloc.construct(next, RBnode<Key, T>(parent, val));
 					balanceTree(next);
 				}
 			}
 
-			void	balanceTree(RBnode<const Key, T> *lastInserted)
+			void	balanceTree(RBnode<Key, T> *lastInserted)
 			{
 				if (!lastInserted)
 					return ;
@@ -142,7 +142,7 @@ namespace ft
 					insertionCase4(lastInserted);
 			}
 			
-			void	insertionCase1(RBnode<const Key, T> *n)
+			void	insertionCase1(RBnode<Key, T> *n)
 			{
 				if (!n->parent)
 					n->colour = false;
@@ -150,7 +150,7 @@ namespace ft
 			
 			//insertionCase2 n'est pas necessaire puisque c'est le cas ou l'arbre est valide
 			
-			void	insertionCase3(RBnode<const Key, T> *n)
+			void	insertionCase3(RBnode<Key, T> *n)
 			{
 				n->getUncle()->colour = false;
 				n->parent->colour = false;
@@ -158,10 +158,10 @@ namespace ft
 				balanceTree(n->getGrandparent());
 			}
 
-			void	insertionCase4(RBnode<const Key, T> *n)
+			void	insertionCase4(RBnode<Key, T> *n)
 			{
-				RBnode<const Key, T>	*p = n->parent;
-				RBnode<const Key, T>	*g = n->getGrandparent();
+				RBnode<Key, T>	*p = n->parent;
+				RBnode<Key, T>	*g = n->getGrandparent();
 				if (!g)
 					return ;
 				if (g->left && n == g->left->right)
@@ -177,10 +177,10 @@ namespace ft
 				insertionCase5(n);
 			}
 			
-			void	insertionCase5(RBnode<const Key, T> *n)
+			void	insertionCase5(RBnode<Key, T> *n)
 			{
-				RBnode<const Key, T>	*p = n->parent;
-				RBnode<const Key, T>	*g = n->getGrandparent();
+				RBnode<Key, T>	*p = n->parent;
+				RBnode<Key, T>	*g = n->getGrandparent();
 				if (n->isLeftChild())
 					rightRotate(g);
 				else
@@ -191,15 +191,17 @@ namespace ft
 
 			RBnode<Key, T>	*find(Key key) const
 			{
+				if (!_trunk)
+					return (NULL);
 				return (_trunk->find(key));
 			}
 
 			//base sur https://www.programiz.com/dsa/deletion-from-a-red-black-tree
 			void			deleteNode(T val)
 			{
-				RBnode<const Key, T>	*node = find(val);
-				RBnode<const Key, T>	*x = NULL;
-				RBnode<const Key, T>	*y = node;
+				RBnode<Key, T>	*node = find(val);
+				RBnode<Key, T>	*x = NULL;
+				RBnode<Key, T>	*y = node;
 				Allocator	alloc;
 
 
@@ -263,21 +265,21 @@ namespace ft
 				std::cout << "L'arbre contient " << std::endl << _trunk->printRecur() << " elements" << std::endl;
 			}
 
-			RBnode<const Key, T>	*leftest() const
+			RBnode<Key, T>	*leftest() const
 			{
 				if (!_trunk)
 					return (NULL);
-				RBnode<const Key, T>	*node = _trunk;
+				RBnode<Key, T>	*node = _trunk;
 				while (node->left)
 					node = node->left;
 				return (node);
 			}
 
-			RBnode<const Key, T>	*rightest() const
+			RBnode<Key, T>	*rightest() const
 			{
 				if (!_trunk)
 					return (NULL);
-				RBnode<const Key, T>	*node = _trunk;
+				RBnode<Key, T>	*node = _trunk;
 				while (node->right)
 					node = node->right;
 				return (node);
@@ -292,21 +294,21 @@ namespace ft
 			}*/
 
 		private:
-			void	leftRotate(RBnode<const Key, T> *n)
+			void	leftRotate(RBnode<Key, T> *n)
 			{
 				//je teste l'existence d'un parent pour verifier que la rotation a bien eu lieu
 				if (n->leftRotate() && n->parent)
 					_trunk = n->parent;
 			}
 
-			void	rightRotate(RBnode<const Key, T> *n)
+			void	rightRotate(RBnode<Key, T> *n)
 			{
 				//je teste l'existence d'un parent pour verifier que la rotation a bien eu lieu
 				if (n->rightRotate() && n->parent)
 					_trunk = n->parent;
 			}
 
-			void	transplant(RBnode<const Key, T> *u, RBnode<const Key, T> *v)
+			void	transplant(RBnode<Key, T> *u, RBnode<Key, T> *v)
 			{
 				if (!u->parent)
 					_trunk = v;
@@ -318,16 +320,16 @@ namespace ft
 					v->parent = u->parent;
 			}
 
-			RBnode<const Key, T>	*minimum(RBnode<const Key, T>	*n)
+			RBnode<Key, T>	*minimum(RBnode<Key, T>	*n)
 			{
 				while (n->left)
 					n = n->left;
 				return (n);
 			}
 
-			void	deleteFix(RBnode<const Key, T>	*x)
+			void	deleteFix(RBnode<Key, T>	*x)
 			{
-				RBnode<const Key, T>	*s;
+				RBnode<Key, T>	*s;
 				if (!x)
 					return ;
 				while (x != _trunk && isBlack(x))
@@ -399,14 +401,14 @@ namespace ft
 				x->colour = false;
 			}
 
-			bool	isBlack(RBnode<const Key, T> *node)
+			bool	isBlack(RBnode<Key, T> *node)
 			{
 				if (!node || !node->colour)
 					return (true);
 				return (false);
 			}
 			
-			void	destroyNode(RBnode<const Key, T>	*node)
+			void	destroyNode(RBnode<Key, T>	*node)
 			{
 				Allocator	alloc;
 				if (node->isLeftChild())
@@ -414,7 +416,7 @@ namespace ft
 				if (node->isRightChild())
 					node->parent->right = NULL;
 				alloc.destroy(node);
-				alloc.deallocate(node, sizeof(RBnode<const Key, T>));
+				alloc.deallocate(node, sizeof(RBnode<Key, T>));
 			}
 		
 	};

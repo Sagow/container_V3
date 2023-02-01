@@ -29,13 +29,13 @@ namespace ft
 		class Key,                                    			// map::key_type
 		class T,                                      			// map::mapped_type
 		class Compare = less<Key>,                    			// map::key_compare
-		class Allocator = std::allocator<pair<const Key,T> >    // map::allocator_type
+		class Allocator = std::allocator<pair<Key,T> >    // map::allocator_type
 	> class map
 	{
 		public:
 			typedef Key										key_type;
 			typedef T										mapped_type;
-			typedef pair<const Key, T>					value_type;
+			typedef pair<Key, T>					value_type;
 			typedef std::size_t								size_type;
 			typedef std::ptrdiff_t							difference_type;
 			typedef Compare									key_compare;
@@ -44,8 +44,8 @@ namespace ft
 			typedef const value_type&						const_reference;
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
-			typedef bidirectional_iterator< RBnode<const Key, T> >		iterator;
-			typedef bidirectional_iterator< RBnode<const Key, T> >	const_iterator;
+			typedef bidirectional_iterator< RBnode<Key, T> >		iterator;
+			typedef bidirectional_iterator< RBnode<Key, T> >	const_iterator;
 			typedef std::reverse_iterator<iterator>			reverse_iterator;
 			typedef std::reverse_iterator<const_iterator>	const_reverse_iterator;
 
@@ -72,17 +72,17 @@ namespace ft
 			};
 
 		protected:
-			RBtree<const Key, T>	_tree;
+			RBtree<Key, T>	_tree;
 			Allocator _alloc;
 			key_compare	_comp;
 
 		public:
 			map()
 			{}
-			explicit	map(const key_compare &comp, const Allocator &alloc = Allocator()) : _alloc(alloc), _comp(comp)
+			explicit	map(key_compare &comp, const Allocator &alloc = Allocator()) : _alloc(alloc), _comp(comp)
 			{}
 			template <class InputIterator>
-				map(InputIterator first, InputIterator last, const key_compare &comp = Compare(), const Allocator &alloc = Allocator(),
+				map(InputIterator first, InputIterator last, key_compare &comp = Compare(), const Allocator &alloc = Allocator(),
 					typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
 				{	_alloc(alloc);
 					 _comp(comp);
@@ -150,7 +150,7 @@ namespace ft
 				tmp = find(k);
 				return (tmp->pair.second);
 			}
-			mapped_type& at (key_type& k) const
+			mapped_type& at (key_type k) const
 			{
 				RBnode<Key, T>	*node = _tree.find(k);
 				if (!node)
@@ -163,7 +163,7 @@ namespace ft
 				return (node->pair.second);
 
 			}
-			const mapped_type& at(const key_type& k) const
+			/*const mapped_type& at(key_type& k) const
 			{
 				RBnode<Key, T>	*node = _tree.find(k);
 				if (!node)
@@ -174,7 +174,7 @@ namespace ft
 					throw (std::out_of_range(oss.str()));
 				}
 				return (node->pair.second);
-			}
+			}*/
 
 			//Modifiers
 			pair<iterator,bool> insert (const value_type& val)
@@ -208,9 +208,9 @@ namespace ft
 			{
 				_tree.removeNode(*position);
 			}
-			size_type erase (const key_type& k)
+			size_type erase (key_type k)
 			{
-				RBnode<const Key, T>	*toRemove = find(k);
+				RBnode<Key, T>	*toRemove = find(k);
 				if (toRemove)
 				{
 					_tree.removeNode(toRemove);
@@ -265,13 +265,13 @@ namespace ft
 			{
 				return (iterator(*_tree.find(k)));
 			}
-			size_type count (const key_type& k) const
+			size_type count (key_type k) const
 			{
 				if (_tree.find(k))
 					return (1);
 				return (0);
 			}
-			iterator lower_bound (const key_type& k)
+			iterator lower_bound (key_type k)
 			{
 				for (iterator it = begin(); it != end(); it++)
 				{
@@ -279,7 +279,7 @@ namespace ft
 						return (it);
 				}
 			}
-			const_iterator lower_bound (const key_type& k) const
+			const_iterator lower_bound (key_type k) const
 			{
 				for (iterator it = begin(); it != end(); it++)
 				{
@@ -287,7 +287,7 @@ namespace ft
 						return ((const_iterator)it);
 				}
 			}
-			iterator upper_bound (const key_type& k)
+			iterator upper_bound (key_type& k)
 			{
 				for (iterator it = begin(); it != end(); it++)
 				{
@@ -295,7 +295,7 @@ namespace ft
 						return (it);
 				}
 			}
-			const_iterator upper_bound (const key_type& k) const
+			const_iterator upper_bound (key_type& k) const
 			{
 				for (iterator it = begin(); it != end(); it++)
 				{
@@ -303,11 +303,11 @@ namespace ft
 						return ((const_iterator)it);
 				}
 			}
-			pair<iterator,iterator>             equal_range (const key_type& k)
+			pair<iterator,iterator>             equal_range (key_type& k)
 			{
 				return (make_pair(lower_bound(k), upper_bound(k)));
 			}
-			pair<const_iterator,const_iterator> equal_range (const key_type& k) const
+			pair<const_iterator,const_iterator> equal_range (key_type& k) const
 			{
 				return (make_pair(lower_bound(k), upper_bound(k)));
 			}

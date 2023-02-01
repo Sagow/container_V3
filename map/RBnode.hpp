@@ -11,29 +11,29 @@ namespace ft
 	template <class Key, class T >
 	class RBnode{
 		public:
-			ft::pair<const Key, T>			pair;
-			RBnode<const Key, T>*			left;
-			RBnode<const Key, T>*			right;
-			RBnode<const Key, T>*			parent;
+			ft::pair<Key, T>			pair;
+			RBnode<Key, T>*			left;
+			RBnode<Key, T>*			right;
+			RBnode<Key, T>*			parent;
 			bool			colour;
 			
 			RBnode() : left(NULL), right(NULL), parent(NULL), colour(true)
 			{}
 
-			RBnode(const RBnode<const Key, T> &src) : pair(src.pair), left(src.left), right(src.right), parent(src.parent), colour(src.colour)
+			RBnode(const RBnode<Key, T> &src) : pair(src.pair), left(src.left), right(src.right), parent(src.parent), colour(src.colour)
 			{}
 			
-			RBnode(ft::pair<const Key, T> p) : pair(p), left(NULL), right(NULL), parent(NULL), colour(true)
+			RBnode(ft::pair<Key, T> p) : pair(p), left(NULL), right(NULL), parent(NULL), colour(true)
 			{}
 
-			RBnode(RBnode<const Key, T> *par, ft::pair<const Key, T> p) : pair(p), left(NULL), right(NULL), parent(par), colour(true)
+			RBnode(RBnode<Key, T> *par, ft::pair<Key, T> p) : pair(p), left(NULL), right(NULL), parent(par), colour(true)
 			{}
 
 			~RBnode()
 			{}
 
 			
-			RBnode<const Key, T> &operator=(const RBnode<const Key, T> &src)
+			RBnode<Key, T> &operator=(const RBnode<Key, T> &src)
 			{
 				pair.second = src.pair.second;
 				left = src.left;
@@ -57,7 +57,7 @@ namespace ft
 				return (false);
 			}
 
-			RBnode<const Key, T>	*getUncle()
+			RBnode<Key, T>	*getUncle()
 			{
 				if (!parent || !parent->parent)
 					return (NULL);
@@ -66,16 +66,16 @@ namespace ft
 				return (parent->parent->left);
 			}
 
-			RBnode<const Key, T> *getGrandparent()
+			RBnode<Key, T> *getGrandparent()
 			{
 				if (!parent)
 					return (NULL);
 				return (parent->parent);
 			}
 
-			RBnode<const Key, T>	*getNext()
+			RBnode<Key, T>	*getNext()
 			{
-				RBnode<const Key, T>	*node;
+				RBnode<Key, T>	*node;
 				if (right)
 				{
 					node = right;
@@ -98,9 +98,9 @@ namespace ft
 					return (this + 1);
 			}
 
-			RBnode<const Key, T>	*getPrevious()
+			RBnode<Key, T>	*getPrevious()
 			{
-				RBnode<const Key, T>	*node;
+				RBnode<Key, T>	*node;
 				if (left)
 				{
 					node = left;
@@ -123,7 +123,7 @@ namespace ft
 					return (this + 1);
 			}
 
-			RBnode<const Key, T>	*biggerCousin()
+			RBnode<Key, T>	*biggerCousin()
 			{
 				if (!parent)
 					return (this);
@@ -132,7 +132,7 @@ namespace ft
 				return (biggerCousin(parent));
 			}
 
-			RBnode<const Key, T>	*smallerCousin()
+			RBnode<Key, T>	*smallerCousin()
 			{
 				if (!parent)
 					return (this);
@@ -143,7 +143,7 @@ namespace ft
 
 			size_t			getDepth(size_t depth = 0)
 			{
-				RBnode<const Key, T> *dad = parent;
+				RBnode<Key, T> *dad = parent;
 				while (dad)
 				{
 					if (!dad->colour)
@@ -161,9 +161,9 @@ namespace ft
 					std::cout << RED << "alerte on switch " << this << " avec un truc vide" << END << std::endl;
 					printRecur();
 				}
-				RBnode<const Key, T>	*grandparent = parent;
-				RBnode<const Key, T>	*switchingWith = right;
-				RBnode<const Key, T>	*pendulum = right->left;
+				RBnode<Key, T>	*grandparent = parent;
+				RBnode<Key, T>	*switchingWith = right;
+				RBnode<Key, T>	*pendulum = right->left;
 				if (isLeftChild())
 					grandparent->left = switchingWith;
 				else if (isRightChild())
@@ -183,9 +183,9 @@ namespace ft
 					std::cout << RED << "alerte on switch " << this->content << " avec un truc vide" << END << std::endl;
 					printRecur();
 				}
-				RBnode<const Key, T>	*grandparent = parent;
-				RBnode<const Key, T>	*switchingWith = left;
-				RBnode<const Key, T>	*pendulum = left->right;
+				RBnode<Key, T>	*grandparent = parent;
+				RBnode<Key, T>	*switchingWith = left;
+				RBnode<Key, T>	*pendulum = left->right;
 				if (isLeftChild())
 					grandparent->left = switchingWith;
 				else
@@ -199,7 +199,7 @@ namespace ft
 			
 			RBnode<Key, T>	*find(Key val)
 			{
-				RBnode<const Key, T>	*ret = NULL;
+				RBnode<Key, T>	*ret = NULL;
 				if (pair.first == val)
 					ret = this;
 				else
@@ -212,9 +212,9 @@ namespace ft
 				return (ret);
 			}
 
-			RBnode<const Key, T>	*nextLeaf()
+			RBnode<Key, T>	*nextLeaf()
 			{
-				RBnode<const Key, T>	*current = this;
+				RBnode<Key, T>	*current = this;
 				if (current->parent == NULL)
 					return (NULL);
 				if (current->parent->left == current && current->parent->right)
