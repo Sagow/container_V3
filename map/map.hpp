@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 18:22:09 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/01/28 21:13:08 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/01 17:24:00 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,13 @@ namespace ft
 		class Key,                                    			// map::key_type
 		class T,                                      			// map::mapped_type
 		class Compare = less<Key>,                    			// map::key_compare
-		class Allocator = std::allocator<pair<Key,T> >    // map::allocator_type
+		class Allocator = std::allocator<pair<const Key,T> >    // map::allocator_type
 	> class map
 	{
 		public:
 			typedef Key										key_type;
 			typedef T										mapped_type;
-			typedef pair<Key, T>					value_type;
+			typedef pair<const Key, T>					value_type;
 			typedef std::size_t								size_type;
 			typedef std::ptrdiff_t							difference_type;
 			typedef Compare									key_compare;
@@ -44,11 +44,10 @@ namespace ft
 			typedef const value_type&						const_reference;
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
-			typedef bidirectional_iterator< RBnode<Key, T> >		iterator;
-			typedef bidirectional_iterator< RBnode<Key, T> >	const_iterator;
+			typedef bidirectional_iterator< RBnode<const Key, T> >		iterator;
+			typedef bidirectional_iterator< RBnode<const Key, T> >	const_iterator;
 			typedef std::reverse_iterator<iterator>			reverse_iterator;
 			typedef std::reverse_iterator<const_iterator>	const_reverse_iterator;
-
 
 		private:
 			class value_compare
@@ -179,9 +178,7 @@ namespace ft
 			//Modifiers
 			pair<iterator,bool> insert (const value_type& val)
 			{
-				pair<iterator,bool>	res;
-
-				res.first = find(val.first);
+				pair<iterator,bool>	res = ft::make_pair(find(val.first), false);
 				if (res.first != end())
 					res.second = false;
 				else

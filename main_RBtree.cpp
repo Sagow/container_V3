@@ -180,6 +180,7 @@ std::cout << "remove 16" << std::endl;
 
 	std::cout << truc.size() << std::endl;
 	std::cout << truc.max_size() << std::endl;
+	//truc.insert(ft::make_pair(1, 2));
 	try
 	{
 	std::cout << truc.at(5) << std::endl;
