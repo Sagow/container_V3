@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 18:22:09 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/01 17:24:00 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/04 15:23:13 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <cstddef>
 #include <iostream>
 #include <sstream>
+#include <functional>
 #include "RBtree.hpp"
 #include "RBnode.hpp"
 #include "../algorithm.hpp"
@@ -50,29 +51,22 @@ namespace ft
 			typedef std::reverse_iterator<const_iterator>	const_reverse_iterator;
 
 		private:
-			class value_compare
+			class value_compare : public std::binary_function<value_type,value_type,bool>
 			{
-				private:
-					key_compare	_comp;
-				
+				friend class map;
+				protected:
+					Compare comp;
+					value_compare(Compare c) : comp(c) {}
 				public:
-					typedef bool		result_type;
-					typedef value_type	first_arg;
-					typedef value_type	second_arg;
-				
-				value_compare(key_compare c): _comp(c)
-				{
-				}
-
-				bool operator()(value_type const &x, value_type const &y) const
-				{
-					return (_comp(x.first, y.first));
-				}
+					bool operator()(const value_type& x, const value_type& y) const
+					{
+						return comp(x.first, y.first);
+					}
 			};
 
 		protected:
 			RBtree<Key, T>	_tree;
-			Allocator _alloc;
+			allocator_type _alloc;
 			key_compare	_comp;
 
 		public:
@@ -83,13 +77,8 @@ namespace ft
 			template <class InputIterator>
 				map(InputIterator first, InputIterator last, key_compare &comp = Compare(), const Allocator &alloc = Allocator(),
 					typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
-				{	_alloc(alloc);
-					 _comp(comp);
-					while (first != last)
-					{
-						insert(first);
-						first++;
-					}
+				{
+					insert(first, last);
 				}
 			map(const map &other) : _tree(other.tree), _alloc(other._alloc), _comp(other._comp)
 			{}
@@ -117,11 +106,11 @@ namespace ft
 			}
 			iterator end()
 			{
-				return (iterator(_tree.rightest())); //pas bon
+				return (iterator(NULL)); //pas bon
 			}
 			const_iterator end() const
 			{
-				return (const_iterator(_tree.rightest())); //pas bon
+				return (const_iterator(NULL)); //pas bon
 			}
 			//toutes les declinaisons
 
@@ -254,7 +243,7 @@ namespace ft
 			}
 			value_compare value_comp() const
 			{
-				return (value_compare(key_compare()));
+				return (value_compare());
 			}
 
 			//Operation
