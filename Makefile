@@ -1,8 +1,8 @@
 SRCS =	main_RBtree.cpp
 
-HEADERS =	map/RBnode.hpp	\
-			map/RBtree.hpp	\
-			map/map.hpp		\
+HEADERS =	RBnode.hpp	\
+			RBtree.hpp	\
+			map.hpp		\
 			algorithm.hpp	\
 			iterator.hpp
 

@@ -4,37 +4,38 @@
 #define BLACK "\e[1;30m"
 #define RED "\e[1;31m"
 #define END "\e[0m"
+#include "algorithm.hpp"
 
 namespace ft
 {
-	template <class T>
+	template <class Key, class T >
 	class RBnode{
 		public:
-			T				content;
-			RBnode*			left;
-			RBnode*			right;
-			RBnode*			parent;
+			ft::pair<Key, T>			pair;
+			RBnode<Key, T>*			left;
+			RBnode<Key, T>*			right;
+			RBnode<Key, T>*			parent;
 			bool			colour;
 			
 			RBnode() : left(NULL), right(NULL), parent(NULL), colour(true)
 			{}
 
-			RBnode(const RBnode &src) : content(src.content), left(src.left), right(src.right), parent(src.parent), colour(src.colour)
+			RBnode(const RBnode<Key, T> &src) : pair(src.pair), left(src.left), right(src.right), parent(src.parent), colour(src.colour)
 			{}
 			
-			RBnode(const T val) : content(val), left(NULL), right(NULL), parent(NULL), colour(true)
+			RBnode(ft::pair<Key, T> p) : pair(p), left(NULL), right(NULL), parent(NULL), colour(true)
 			{}
 
-			RBnode(RBnode *par, const T val) : content(val), left(NULL), right(NULL), parent(par), colour(true)
+			RBnode(RBnode<Key, T> *par, ft::pair<Key, T> p) : pair(p), left(NULL), right(NULL), parent(par), colour(true)
 			{}
 
 			~RBnode()
 			{}
 
 			
-			RBnode &operator=(const RBnode &src)
+			RBnode<Key, T> &operator=(const RBnode<Key, T> &src)
 			{
-				content = src.content;
+				pair.second = src.pair.second;
 				left = src.left;
 				right = src.right;
 				parent = src.parent;
@@ -56,7 +57,7 @@ namespace ft
 				return (false);
 			}
 
-			RBnode	*getUncle()
+			RBnode<Key, T>	*getUncle()
 			{
 				if (!parent || !parent->parent)
 					return (NULL);
@@ -65,16 +66,84 @@ namespace ft
 				return (parent->parent->left);
 			}
 
-			RBnode *getGrandparent()
+			RBnode<Key, T> *getGrandparent()
 			{
 				if (!parent)
 					return (NULL);
 				return (parent->parent);
 			}
 
+			RBnode<Key, T>	*getNext()
+			{
+				RBnode<Key, T>	*node;
+				if (right)
+				{
+					node = right;
+					while (node->left)
+						node = node->left;
+					return (node);
+				}
+				else if (isLeftChild())
+				{
+					return (parent);
+				}
+				else if (biggerCousin())
+				{
+					node = biggerCousin();
+					while (node->left)
+						node = node->left;
+					return (node);
+				}
+				else
+					return (this + 1);
+			}
+
+			RBnode<Key, T>	*getPrevious()
+			{
+				RBnode<Key, T>	*node;
+				if (left)
+				{
+					node = left;
+					while (node->right)
+						node = node->right;
+					return (node);
+				}
+				else if (isRightChild())
+				{
+					return (parent);
+				}
+				else if (smallerCousin())
+				{
+					node = smallerCousin();
+					while (node->left)
+						node = node->left;
+					return (node);
+				}
+				else
+					return (this + 1);
+			}
+
+			RBnode<Key, T>	*biggerCousin()
+			{
+				if (!parent)
+					return (this);
+				if (isLeftChild() && parent->right)
+					return (parent->right);
+				return (biggerCousin(parent));
+			}
+
+			RBnode<Key, T>	*smallerCousin()
+			{
+				if (!parent)
+					return (this);
+				if (isRightChild() && parent->left)
+					return (parent->left);
+				return (smallerCousin(parent));
+			}
+
 			size_t			getDepth(size_t depth = 0)
 			{
-				RBnode<T> *dad = parent;
+				RBnode<Key, T> *dad = parent;
 				while (dad)
 				{
 					if (!dad->colour)
@@ -89,12 +158,12 @@ namespace ft
 			{
 				if (!right)
 				{
-					std::cout << RED << "alerte on switch " << this << " avec un truc vide" << END << std::endl;
+					std::cout << RED << "alerte on switch avec un truc vide" << END << std::endl;
 					printRecur();
 				}
-				RBnode	*grandparent = parent;
-				RBnode	*switchingWith = right;
-				RBnode	*pendulum = right->left;
+				RBnode<Key, T>	*grandparent = parent;
+				RBnode<Key, T>	*switchingWith = right;
+				RBnode<Key, T>	*pendulum = right->left;
 				if (isLeftChild())
 					grandparent->left = switchingWith;
 				else if (isRightChild())
@@ -111,12 +180,12 @@ namespace ft
 			{
 				if (!left)
 				{
-					std::cout << RED << "alerte on switch " << this->content << " avec un truc vide" << END << std::endl;
+					std::cout << RED << "alerte on switch avec un truc vide" << END << std::endl;
 					printRecur();
 				}
-				RBnode	*grandparent = parent;
-				RBnode	*switchingWith = left;
-				RBnode	*pendulum = left->right;
+				RBnode<Key, T>	*grandparent = parent;
+				RBnode<Key, T>	*switchingWith = left;
+				RBnode<Key, T>	*pendulum = left->right;
 				if (isLeftChild())
 					grandparent->left = switchingWith;
 				else
@@ -128,24 +197,24 @@ namespace ft
 				return (!grandparent);
 			}
 			
-			RBnode	*find(T val)
+			RBnode<Key, T>	*find(Key val)
 			{
-				RBnode	*ret = NULL;
-				if (content == val)
+				RBnode<Key, T>	*ret = NULL;
+				if (pair.first == val)
 					ret = this;
 				else
 				{
-					if (left)
+					if (pair.first > val && left)
 						ret = left->find(val);
-					if (!ret && right)
+					else if (right)
 						ret = right->find(val);
 				}
 				return (ret);
 			}
 
-			RBnode	*nextLeaf()
+			RBnode<Key, T>	*nextLeaf()
 			{
-				RBnode	*current = this;
+				RBnode<Key, T>	*current = this;
 				if (current->parent == NULL)
 					return (NULL);
 				if (current->parent->left == current && current->parent->right)
@@ -185,7 +254,7 @@ namespace ft
 					size += left->printRecur(decal + 1);
 				for (int i = 0; i < decal; i++)
 					std::cout << "    ";
-				std::cout << (colour ? RED : BLACK) << content << END << std::endl << std::endl;
+				std::cout << (colour ? RED : BLACK) << pair.first << ":" << pair.second << END << std::endl << std::endl;
 				if (right)
 					size += right->printRecur(decal + 1);
 				return (size);

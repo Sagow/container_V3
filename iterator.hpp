@@ -25,7 +25,7 @@ namespace ft
 				{
 				}
 
-				iterator(const Pointer &ptr) : _elem(ptr)
+				iterator(const Pointer ptr) : _elem(ptr)
 				{
 				}
 
@@ -57,7 +57,7 @@ namespace ft
 				}
 				pointer operator-> (void)
 				{
-					return ((_elem->pair));
+					return (&(_elem->pair));
 				}
 
 			protected:

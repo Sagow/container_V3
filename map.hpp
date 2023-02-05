@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 18:22:09 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/04 15:23:13 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/05 22:30:30 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,18 @@
 #include <iostream>
 #include <sstream>
 #include <functional>
+#include <iterator>
 #include "RBtree.hpp"
 #include "RBnode.hpp"
-#include "../algorithm.hpp"
-#include "../iterator.hpp"
+#include "algorithm.hpp"
+#include "iterator.hpp"
 
 namespace ft
 {
 	template <
 		class Key,                                    			// map::key_type
 		class T,                                      			// map::mapped_type
-		class Compare = less<Key>,                    			// map::key_compare
+		typename Compare = std::less<Key>,                    			// map::key_compare
 		class Allocator = std::allocator<pair<const Key,T> >    // map::allocator_type
 	> class map
 	{
@@ -45,13 +46,13 @@ namespace ft
 			typedef const value_type&						const_reference;
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
-			typedef bidirectional_iterator< RBnode<const Key, T> >		iterator;
-			typedef bidirectional_iterator< RBnode<const Key, T> >	const_iterator;
+			typedef std::bidirectional_iterator< RBnode<const Key, T> >		iterator;
+			typedef std::bidirectional_iterator< const RBnode<const Key, T> >	const_iterator;
 			typedef std::reverse_iterator<iterator>			reverse_iterator;
 			typedef std::reverse_iterator<const_iterator>	const_reverse_iterator;
 
 		private:
-			class value_compare : public std::binary_function<value_type,value_type,bool>
+			class value_compare// : public std::binary_function<value_type,value_type,bool>
 			{
 				friend class map;
 				protected:
@@ -65,26 +66,34 @@ namespace ft
 			};
 
 		protected:
-			RBtree<Key, T>	_tree;
-			allocator_type _alloc;
+			typedef RBtree<Key, T, value_compare> Tree;
+			typedef typename allocator_type::template rebind<Tree>::other	treeAllocator;
+			treeAllocator _alloc;
 			key_compare	_comp;
+			Tree*	_tree;
 
 		public:
-			map()
-			{}
-			explicit	map(key_compare &comp, const Allocator &alloc = Allocator()) : _alloc(alloc), _comp(comp)
-			{}
+			explicit	map(const key_compare &comp = Compare(), const Allocator &alloc = Allocator()) : _alloc(alloc), _comp(comp), _tree(_alloc.allocate(1))
+			{
+				_alloc.construct(_tree, Tree(value_comp()));
+			}
 			template <class InputIterator>
-				map(InputIterator first, InputIterator last, key_compare &comp = Compare(), const Allocator &alloc = Allocator(),
-					typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr)
+				map(InputIterator first, InputIterator last, const key_compare &comp = Compare(), const Allocator &alloc = Allocator()/*,
+					typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr*/)
+					: _alloc(alloc), _comp(comp), _tree(_alloc.allocate(1))
 				{
+					_alloc.construct(_tree, Tree(value_comp()));
 					insert(first, last);
 				}
-			map(const map &other) : _tree(other.tree), _alloc(other._alloc), _comp(other._comp)
-			{}
+			map(const map &other) : _alloc(other._alloc), _comp(other._comp), _tree(_alloc.allocate(1))
+			{
+				_alloc.construct(_tree, Tree(value_comp()));
+				insert(other.begin(), other.end());
+			}
 			~map()
 			{
-				clear();
+				_alloc.destroy(_tree);
+				_alloc.deallocate(_tree, 1);
 			}
 			map	&operator= (const map &x)
 			{
@@ -98,11 +107,12 @@ namespace ft
 			//iterators
 			iterator	begin()
 			{
-				return (iterator(_tree.leftest()));
+				return (iterator(_tree->leftest()));
 			}
 			const_iterator	begin()	const
 			{
-				return (const_iterator(_tree.leftest()));
+				const_iterator it(_tree->leftest());
+				return (it);
 			}
 			iterator end()
 			{
@@ -117,11 +127,11 @@ namespace ft
 			//Capacity
 			bool empty() const
 			{
-				return (_tree.getSize() == 0);
+				return (_tree->getSize() == 0);
 			}
 			size_type size() const
 			{
-				return (_tree.getSize());
+				return (_tree->getSize());
 			}
 			size_type max_size() const
 			{
@@ -140,7 +150,7 @@ namespace ft
 			}
 			mapped_type& at (key_type k) const
 			{
-				RBnode<Key, T>	*node = _tree.find(k);
+				RBnode<Key, T>	*node = _tree->find(k);
 				if (!node)
 				{
 					std::ostringstream	oss;
@@ -153,7 +163,7 @@ namespace ft
 			}
 			/*const mapped_type& at(key_type& k) const
 			{
-				RBnode<Key, T>	*node = _tree.find(k);
+				RBnode<Key, T>	*node = _tree->find(k);
 				if (!node)
 				{
 					std::ostringstream	oss;
@@ -179,7 +189,7 @@ namespace ft
 			{
 				RBnode<key_type, mapped_type>	*node = NULL;
 				(void)position;
-				_tree.insertNode(val);
+				_tree->insertNode(val);
 				node = find(val);
 				return ((iterator) node);
 			}
@@ -187,19 +197,19 @@ namespace ft
 				void insert (InputIterator first, InputIterator last)
 				{
 					for (InputIterator it = first; it != last; it++)
-						_tree.insertNode(*it);
+						_tree->insertNode(*it);
 					
 				}
 			void erase (iterator position)
 			{
-				_tree.removeNode(*position);
+				_tree->removeNode(*position);
 			}
 			size_type erase (key_type k)
 			{
 				RBnode<Key, T>	*toRemove = find(k);
 				if (toRemove)
 				{
-					_tree.removeNode(toRemove);
+					_tree->removeNode(toRemove);
 					return (1);
 				}
 				return (0);
@@ -208,7 +218,7 @@ namespace ft
 			void erase (InputIterator first, InputIterator last)
 			{
 				for (InputIterator it = first; it != last; it++)
-					_tree.removeNode(it->pair.first);				
+					_tree->removeNode(it->pair.first);				
 			}
 			void swap (map& x)
 			{
@@ -232,7 +242,7 @@ namespace ft
 			}
 			void clear()
 			{
-				_tree.destroyRecu(_tree.getTrunk());
+				_tree->destroyRecu(_tree->getTrunk());
 			}
 			
 			//Observers
@@ -243,21 +253,21 @@ namespace ft
 			}
 			value_compare value_comp() const
 			{
-				return (value_compare());
+				return (value_compare(_comp));
 			}
 
 			//Operation
 			iterator find (key_type& k) const
 			{
-				return (iterator(*_tree.find(k)));
+				return (iterator(*_tree->find(k)));
 			}
 			size_type count (key_type k) const
 			{
-				if (_tree.find(k))
+				if (_tree->find(k))
 					return (1);
 				return (0);
 			}
-			iterator lower_bound (key_type k)
+			iterator lower_bound (const key_type& k)
 			{
 				for (iterator it = begin(); it != end(); it++)
 				{
@@ -265,7 +275,7 @@ namespace ft
 						return (it);
 				}
 			}
-			const_iterator lower_bound (key_type k) const
+			const_iterator lower_bound (const key_type& k) const
 			{
 				for (iterator it = begin(); it != end(); it++)
 				{
@@ -273,7 +283,7 @@ namespace ft
 						return ((const_iterator)it);
 				}
 			}
-			iterator upper_bound (key_type& k)
+			iterator upper_bound (const key_type& k)
 			{
 				for (iterator it = begin(); it != end(); it++)
 				{
@@ -281,7 +291,7 @@ namespace ft
 						return (it);
 				}
 			}
-			const_iterator upper_bound (key_type& k) const
+			const_iterator upper_bound (const key_type& k) const
 			{
 				for (iterator it = begin(); it != end(); it++)
 				{

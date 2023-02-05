@@ -110,16 +110,6 @@ namespace ft
     template <typename T>
         struct is_integral : public is_integral_type<T> { };
 
-
-	template <class Key>
-	struct	less
-	{
-		bool	operator()(Key const &a, Key const &b) const
-		{
-			return (a < b);
-		}
-	};
-
 	template< class T1, class T2>
 		struct pair
 		{
