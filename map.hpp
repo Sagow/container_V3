@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 18:22:09 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/05 22:30:30 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/09 21:29:43 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ namespace ft
 					_alloc.construct(_tree, Tree(value_comp()));
 					insert(first, last);
 				}
-			map(const map &other) : _alloc(other._alloc), _comp(other._comp), _tree(_alloc.allocate(1))
+			map(const map<Key, T, Compare, Allocator> &other) : _alloc(other._alloc), _comp(other._comp), _tree(_alloc.allocate(1))
 			{
 				_alloc.construct(_tree, Tree(value_comp()));
 				insert(other.begin(), other.end());
@@ -95,7 +95,7 @@ namespace ft
 				_alloc.destroy(_tree);
 				_alloc.deallocate(_tree, 1);
 			}
-			map	&operator= (const map &x)
+			map<Key, T, Compare, Allocator>	&operator= (const map<Key, T, Compare, Allocator> &x)
 			{
 				if (&x == this)
 					return (*this);
@@ -123,6 +123,10 @@ namespace ft
 				return (const_iterator(NULL)); //pas bon
 			}
 			//toutes les declinaisons
+			/*reverse_iterator rbegin();
+			const_reverse_iterator rbegin() const;
+			reverse_iterator rend();
+			const_reverse_iterator rend() const;*/
 
 			//Capacity
 			bool empty() const
@@ -204,7 +208,7 @@ namespace ft
 			{
 				_tree->removeNode(*position);
 			}
-			size_type erase (key_type k)
+			size_type erase (const key_type k)
 			{
 				RBnode<Key, T>	*toRemove = find(k);
 				if (toRemove)
@@ -220,7 +224,7 @@ namespace ft
 				for (InputIterator it = first; it != last; it++)
 					_tree->removeNode(it->pair.first);				
 			}
-			void swap (map& x)
+			void swap (map<Key, T, Compare, Allocator>& x)
 			{
 				map	tmp;
 
@@ -257,11 +261,17 @@ namespace ft
 			}
 
 			//Operation
-			iterator find (key_type& k) const
+			iterator find (const key_type& k)
 			{
 				return (iterator(*_tree->find(k)));
 			}
-			size_type count (key_type k) const
+
+			const_iterator find(const key_type& x) const
+			{
+				return (const_iterator(*_tree->find(k)));
+			}
+			
+			size_type count (const key_type k) const
 			{
 				if (_tree->find(k))
 					return (1);
@@ -315,4 +325,47 @@ namespace ft
 			}
 			
 	};
+	template <class Key, class T, class Compare, class Allocator>
+	bool operator==(const map<Key,T,Compare,Allocator>& x,
+	const map<Key,T,Compare,Allocator>& y)
+	{
+		
+	}
+	template <class Key, class T, class Compare, class Allocator>
+	bool operator< (const map<Key,T,Compare,Allocator>& x,
+	const map<Key,T,Compare,Allocator>& y)
+	{
+		//return (true);
+	}
+	template <class Key, class T, class Compare, class Allocator>
+	bool operator!=(const map<Key,T,Compare,Allocator>& x,
+	const map<Key,T,Compare,Allocator>& y)
+	{
+		
+	}
+	template <class Key, class T, class Compare, class Allocator>
+	bool operator> (const map<Key,T,Compare,Allocator>& x,
+	const map<Key,T,Compare,Allocator>& y)
+	{
+		
+	}
+	template <class Key, class T, class Compare, class Allocator>
+	bool operator>=(const map<Key,T,Compare,Allocator>& x,
+	const map<Key,T,Compare,Allocator>& y)
+	{
+		
+	}
+	template <class Key, class T, class Compare, class Allocator>
+	bool operator<=(const map<Key,T,Compare,Allocator>& x,
+	const map<Key,T,Compare,Allocator>& y)
+	{
+		
+	}
+	// specialized algorithms:
+	template <class Key, class T, class Compare, class Allocator>
+	void swap(map<Key,T,Compare,Allocator>& x,
+	map<Key,T,Compare,Allocator>& y)
+	{
+		
+	}
 };
