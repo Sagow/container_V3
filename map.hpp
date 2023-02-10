@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 18:22:09 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/09 21:29:43 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/10 02:48:26 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ namespace ft
 			typedef const value_type&						const_reference;
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
-			typedef std::bidirectional_iterator< RBnode<const Key, T> >		iterator;
-			typedef std::bidirectional_iterator< const RBnode<const Key, T> >	const_iterator;
+			typedef bidirectional_iterator< RBnode<const Key, T> >		iterator;
+			typedef const bidirectional_iterator<RBnode<const Key, T> >	const_iterator;
 			typedef std::reverse_iterator<iterator>			reverse_iterator;
 			typedef std::reverse_iterator<const_iterator>	const_reverse_iterator;
 
@@ -107,7 +107,7 @@ namespace ft
 			//iterators
 			iterator	begin()
 			{
-				return (iterator(_tree->leftest()));
+				return (iterator(*_tree->leftest()));
 			}
 			const_iterator	begin()	const
 			{
@@ -266,7 +266,7 @@ namespace ft
 				return (iterator(*_tree->find(k)));
 			}
 
-			const_iterator find(const key_type& x) const
+			const_iterator find(const key_type& k) const
 			{
 				return (const_iterator(*_tree->find(k)));
 			}
@@ -309,11 +309,11 @@ namespace ft
 						return ((const_iterator)it);
 				}
 			}
-			pair<iterator,iterator>             equal_range (key_type& k)
+			pair<iterator,iterator>             equal_range (const key_type& k)
 			{
 				return (make_pair(lower_bound(k), upper_bound(k)));
 			}
-			pair<const_iterator,const_iterator> equal_range (key_type& k) const
+			pair<const_iterator,const_iterator> equal_range (const key_type& k) const
 			{
 				return (make_pair(lower_bound(k), upper_bound(k)));
 			}
@@ -325,47 +325,76 @@ namespace ft
 			}
 			
 	};
+	
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator==(const map<Key,T,Compare,Allocator>& x,
 	const map<Key,T,Compare,Allocator>& y)
 	{
-		
+		if (x.size() != y.size())
+			return (false);
+		typename map<Key, T>::iterator	itx = x.begin();
+		typename map<Key, T>::iterator	ity = y.begin();
+		while (itx != x.end() && ity != y.end())
+		{
+			if (*itx != *ity)
+				return (false);
+			itx++;
+			ity++;
+		}
+		if (itx == x.end() && ity == y.end())
+			return (true);
+		return (false);
 	}
+	
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator< (const map<Key,T,Compare,Allocator>& x,
 	const map<Key,T,Compare,Allocator>& y)
 	{
-		//return (true);
+		typename map<Key, T>::iterator	itx = x.begin();
+		typename map<Key, T>::iterator	ity = y.begin();
+		while (itx != x.end() && ity != y.end())
+		{
+			if (*itx < *ity)
+				return (true);
+			if (*itx > *ity)
+				return (false);
+			itx++;
+			ity++;
+		}
+		if (itx == x.end())
+			return (true);
+		return (false);
 	}
+	
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator!=(const map<Key,T,Compare,Allocator>& x,
 	const map<Key,T,Compare,Allocator>& y)
 	{
-		
+		return (!operator==(x, y));
 	}
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator> (const map<Key,T,Compare,Allocator>& x,
 	const map<Key,T,Compare,Allocator>& y)
 	{
-		
+		return (!(operator<(x, y) || operator==(x, y)));
 	}
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator>=(const map<Key,T,Compare,Allocator>& x,
 	const map<Key,T,Compare,Allocator>& y)
 	{
-		
+		return(!operator<(x, y));
 	}
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator<=(const map<Key,T,Compare,Allocator>& x,
 	const map<Key,T,Compare,Allocator>& y)
 	{
-		
+		return (operator<(x, y) || operator==(x, y));
 	}
 	// specialized algorithms:
 	template <class Key, class T, class Compare, class Allocator>
 	void swap(map<Key,T,Compare,Allocator>& x,
 	map<Key,T,Compare,Allocator>& y)
 	{
-		
+		x.swap(y);
 	}
 };

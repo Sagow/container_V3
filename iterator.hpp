@@ -51,6 +51,22 @@ namespace ft
 				{
 					return (!operator==(other));
 				}
+				
+
+			protected:
+				pointer	_elem;
+		};
+
+	template <class T, class Distance = ptrdiff_t, class Pointer = T*, class Reference = T&>
+		class bidirectional_iterator : public iterator<ft::bidirectional_iterator_tag, T>
+		{
+			public:
+				typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::iterator_category		iterator_category;			
+				typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::value_type			value_type;
+				typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::difference_type		difference_type;
+				typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::pointer				pointer;			
+				typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::reference				reference;
+
 				reference operator* (void)
 				{
 					return (_elem->pair);
@@ -60,20 +76,6 @@ namespace ft
 					return (&(_elem->pair));
 				}
 
-			protected:
-				pointer	_elem;
-		};
-
-	template <class T>
-		class bidirectional_iterator : public ft::iterator<ft::bidirectional_iterator_tag, T>
-		{
-			public:
-				typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::iterator_category		iterator_category;			
-				typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::value_type			value_type;
-				typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::difference_type		difference_type;
-				typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::pointer				pointer;			
-				typedef typename ft::iterator<ft::bidirectional_iterator_tag, T>::reference				reference;
-			
 				bidirectional_iterator &operator++()
 				{
 					if (this->right)
