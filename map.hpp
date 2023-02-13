@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 18:22:09 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/10 02:48:26 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/13 22:40:31 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ namespace ft
 			typedef const value_type&						const_reference;
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
-			typedef bidirectional_iterator< RBnode<const Key, T> >		iterator;
-			typedef const bidirectional_iterator<RBnode<const Key, T> >	const_iterator;
+			//typedef bidirectional_iterator< RBnode<const Key, T> >		iterator;
+			//typedef const_bidirectional_iterator<RBnode<const Key, T> >	const_iterator;
 			typedef std::reverse_iterator<iterator>			reverse_iterator;
 			typedef std::reverse_iterator<const_iterator>	const_reverse_iterator;
 

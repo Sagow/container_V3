@@ -11,6 +11,8 @@ namespace ft
 	class bidirectional_iterator_tag {};
 	class random_access_iterator_tag {};
 
+	//virer iterator, faire heriter random et bidirectional de iterator_traits
+
 	template <class Tag, class T, class Distance = ptrdiff_t, class Pointer = T*, class Reference = T&>
 		class iterator
 		{
@@ -33,6 +35,10 @@ namespace ft
 				{
 				}
 
+				iterator(const const_iterator &src) : _elem(src._elem)
+				{
+				}
+
 				iterator	&operator=(const iterator &src)
 				{
 					if (&src == this)
@@ -51,7 +57,55 @@ namespace ft
 				{
 					return (!operator==(other));
 				}
-				
+
+			protected:
+				pointer	_elem;
+		};
+	
+	template <class Tag, class T, class Distance, class Pointer, class Reference>
+		class const_iterator
+		{
+			public:
+				typedef	T				value_type;
+				typedef	Distance		difference_type;
+				typedef	const Pointer	pointer;
+				typedef	const Reference	reference;
+				typedef	Tag				iterator_category;
+
+				const_iterator() : _elem(ft::nullptr_t())
+				{
+				}
+
+				const_iterator(const Pointer ptr) : _elem(ptr)
+				{
+				}
+
+				const_iterator(const const_iterator &src) : _elem(src._elem)
+				{
+				}
+
+				const_iterator(const iterator &src) : _elem(src._elem)
+				{
+				}
+
+				const_iterator	&operator=(const_iterator &src)
+				{
+					if (&src == this)
+						return (*this);
+					_elem = src._elem;
+				}
+
+
+				bool	operator==(const_iterator &other)
+				{
+					if (_elem == other._elem)
+						return (true);
+					return (false);
+				}
+				bool	operator!=(const_iterator &other)
+				{
+					return (!operator==(other));
+				}
 
 			protected:
 				pointer	_elem;
@@ -69,11 +123,11 @@ namespace ft
 
 				reference operator* (void)
 				{
-					return (_elem->pair);
+					return (this->_elem->pair);
 				}
 				pointer operator-> (void)
 				{
-					return (&(_elem->pair));
+					return (&(this->_elem->pair));
 				}
 
 				bidirectional_iterator &operator++()
@@ -144,6 +198,102 @@ namespace ft
 					for (difference_type i = 0; i < n - 1; i++)
 						operator--();
 					return (operator--());
+				}
+
+		};
+
+	template <class T, class Distance = ptrdiff_t, class Pointer = T*, class Reference = T&>
+		class const_bidirectional_iterator : public const_iterator<ft::bidirectional_iterator_tag, T>
+		{
+			public:
+				typedef typename ft::const_iterator<ft::bidirectional_iterator_tag, T>::iterator_category		iterator_category;			
+				typedef typename ft::const_iterator<ft::bidirectional_iterator_tag, T>::value_type			value_type;
+				typedef typename ft::const_iterator<ft::bidirectional_iterator_tag, T>::difference_type		difference_type;
+				typedef typename ft::const_iterator<ft::bidirectional_iterator_tag, T>::pointer				pointer;			
+				typedef typename ft::const_iterator<ft::bidirectional_iterator_tag, T>::reference				reference;
+
+				reference operator* (void)
+				{
+					return (this->_elem->pair);
+				}
+				pointer operator-> (void)
+				{
+					return (&(this->_elem->pair));
+				}
+
+				const_bidirectional_iterator &operator++()
+				{
+					if (this->right)
+					{
+						this = this->right;
+						while (this->left)
+							this = this->leftt;
+						return (this);
+					}
+					if (this->getNext() != this)
+						return (this->getNext());
+					return (this + 1);
+				}
+				const_bidirectional_iterator &operator--()
+				{
+					if (this->left)
+					{
+						this = this->left;
+						while (this->right)
+							this = this->right;
+						return (this);
+					}
+					if (this->getPrevious() != this)
+						return (this->getPrevious());
+					return (this + 1);
+				}
+
+				const_bidirectional_iterator operator++(int)
+				{
+					const_bidirectional_iterator save = *this;
+					if (this->right)
+					{
+						this = this->right;
+						while (this->left)
+							this = this->leftt;
+					}
+					else if (this->getNext() != this)
+						this = this->getNext();
+					else
+						this = this + 1;
+					return (save);
+				}
+				const_bidirectional_iterator operator--(int)
+				{
+					const_bidirectional_iterator save = *this;
+					if (this->left)
+					{
+						this = this->left;
+						while (this->right)
+							this = this->right;
+					}
+					if (this->getPrevious() != this)
+						this = this->getPrevious();
+					this = this + 1;
+					return (save);
+				}
+
+				const_bidirectional_iterator &operator+=(difference_type n)
+				{
+					for (difference_type i = 0; i < n - 1; i++)
+						operator++();
+					return (operator++());
+				}
+				const_bidirectional_iterator &operator-=(difference_type n)
+				{
+					for (difference_type i = 0; i < n - 1; i++)
+						operator--();
+					return (operator--());
+				}
+			private:
+				pointer operator (void)
+				{
+					return (this->_elem);
 				}
 
 		};
