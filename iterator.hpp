@@ -43,12 +43,13 @@ namespace ft
 			typedef T const*									pointer;
 			typedef T const&									reference;
 	};
-	
-	template <class T, class Distance = ptrdiff_t, class Pointer = T*, class Reference = T&>
+	//rajouter dans le template une classe pour le RBnode, et garder T pour la pair
+	template <class T, class p, class Distance = ptrdiff_t, class Pointer = T*, class Reference = T&>
 		class bidirectional_iterator : public iterator_traits<T*>
 		{
 			protected:
 				Pointer _elem;
+
 
 			public:
 				typedef typename iterator_traits<T*>::difference_type			difference_type;
@@ -114,30 +115,19 @@ namespace ft
 				bidirectional_iterator operator++(int)
 				{
 					bidirectional_iterator save = *this;
-					if (this->right)
-					{
-						this = this->right;
-						while (this->left)
-							this = this->leftt;
-					}
-					else if (this->getNext() != this)
+					if (this->getNext() != this)
 						this = this->getNext();
 					else
-						this = this + 1;
+						this = nullptr_t;
 					return (save);
 				}
 				bidirectional_iterator operator--(int)
 				{
 					bidirectional_iterator save = *this;
-					if (this->left)
-					{
-						this = this->left;
-						while (this->right)
-							this = this->right;
-					}
 					if (this->getPrevious() != this)
 						this = this->getPrevious();
-					this = this + 1;
+					else
+						this = nullptr_t;
 					return (save);
 				}
 
@@ -156,11 +146,11 @@ namespace ft
 
 				reference operator* (void)
 				{
-					return (this->_elem->pair);
+					return (this->_elem->getPair());
 				}
 				pointer operator-> (void)
 				{
-					return (&(this->_elem->pair));
+					return (&(this->_elem->getPair()));
 				}
 
 		};
