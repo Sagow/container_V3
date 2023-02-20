@@ -49,6 +49,7 @@ namespace ft
 		{
 			protected:
 				Pointer _elem;
+				Pointer _nullPointer;
 
 
 			public:
@@ -58,13 +59,13 @@ namespace ft
 				typedef typename iterator_traits<T*>::reference					reference;
 				typedef bidirectional_iterator_tag	iterator_category;
 
-				bidirectional_iterator() : _elem(NULL)
+				bidirectional_iterator() : _elem(NULL), _nullPointer(nullptr_t())
 				{}
 
-				bidirectional_iterator(const Pointer ptr) : _elem(ptr)
+				bidirectional_iterator(const Pointer ptr) : _elem(ptr), _nullPointer(nullptr_t())
 				{}
 
-				bidirectional_iterator(const bidirectional_iterator &src) : _elem(src._elem)
+				bidirectional_iterator(const bidirectional_iterator &src) : _elem(src._elem), _nullPointer(nullptr_t())
 				{}
 
 				bidirectional_iterator	&operator=(const bidirectional_iterator &src)
@@ -85,6 +86,7 @@ namespace ft
 					return (!operator==(other));
 				}
 
+				//les ++ et -- ne marchent juste plus
 				bidirectional_iterator &operator++()
 				{
 					if (this->right)
@@ -96,7 +98,7 @@ namespace ft
 					}
 					if (this->getNext() != this)
 						return (this->getNext());
-					return (this + 1);
+					return (bidirectional_iterator(_nullPointer));
 				}
 				bidirectional_iterator &operator--()
 				{
@@ -118,7 +120,7 @@ namespace ft
 					if (this->getNext() != this)
 						this = this->getNext();
 					else
-						this = nullptr_t;
+						this = nullptr_t();
 					return (save);
 				}
 				bidirectional_iterator operator--(int)
@@ -127,7 +129,7 @@ namespace ft
 					if (this->getPrevious() != this)
 						this = this->getPrevious();
 					else
-						this = nullptr_t;
+						this = nullptr_t();
 					return (save);
 				}
 
@@ -146,11 +148,11 @@ namespace ft
 
 				reference operator* (void)
 				{
-					return (this->_elem->getPair());
+					return (*_elem);
 				}
-				pointer operator-> (void)
+				pointer operator-> (void) const
 				{
-					return (&(this->_elem->getPair()));
+					return (_elem);
 				}
 
 		};

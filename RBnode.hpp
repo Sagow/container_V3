@@ -23,9 +23,9 @@ namespace ft
 			
 		public:
 
-			pair& getPair(void) const
+			pair* getPair(void)
 			{
-				return (_pair);
+				return (&_pair);
 			}
 
 			void	setPair(pair p)
@@ -50,19 +50,34 @@ namespace ft
 				_pair.second = v;
 			}
 
-			node&	getLeft(void)
+			node*	getLeft(void)
 			{
 				return (left);
 			}
 
-			node&	getRight(void)
+			node*	getRight(void)
 			{
 				return (right);
 			}
 
-			node&	getParent(void)
+			node*	getParent(void)
 			{
 				return (parent);
+			}
+
+			void	setLeft(node *n)
+			{
+				left = n;
+			}
+
+			void	setRight(node *n)
+			{
+				right = n;
+			}
+
+			void	setParent(node *n)
+			{
+				parent = n;
 			}
 
 			bool&	getColour(void)

@@ -46,8 +46,8 @@ namespace ft
 			typedef const value_type&						const_reference;
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
-			typedef bidirectional_iterator< RBnode<const Key, T>, value_type >		iterator;
-			typedef bidirectional_iterator< RBnode<const Key, T>, value_type >	const_iterator;
+			typedef bidirectional_iterator< value_type, RBnode<const Key, T> >		iterator;
+			typedef bidirectional_iterator< value_type, RBnode<const Key, T> >	const_iterator;
 			typedef std::reverse_iterator<iterator>			reverse_iterator;
 			typedef std::reverse_iterator<const_iterator>	const_reverse_iterator;
 
@@ -107,11 +107,11 @@ namespace ft
 			//iterators
 			iterator	begin()
 			{
-				return (iterator(*_tree->leftest()));
+				return (iterator(_tree->leftest()->getPair()));
 			}
 			const_iterator	begin()	const
 			{
-				const_iterator it(_tree->leftest());
+				const_iterator it(_tree->leftest()->getPair());
 				return (it);
 			}
 			iterator end()
@@ -281,7 +281,7 @@ namespace ft
 			{
 				for (iterator it = begin(); it != end(); it++)
 				{
-					if (it->pair.first >= k)
+					if (it->first >= k)
 						return (it);
 				}
 			}
@@ -289,7 +289,7 @@ namespace ft
 			{
 				for (iterator it = begin(); it != end(); it++)
 				{
-					if (it->pair.first >= k)
+					if (it->first >= k)
 						return ((const_iterator)it);
 				}
 			}
@@ -297,7 +297,7 @@ namespace ft
 			{
 				for (iterator it = begin(); it != end(); it++)
 				{
-					if (it->pair.first > k)
+					if ((*it).first > k)
 						return (it);
 				}
 			}
@@ -305,7 +305,7 @@ namespace ft
 			{
 				for (iterator it = begin(); it != end(); it++)
 				{
-					if (it->pair.first > k)
+					if (it->first > k)
 						return ((const_iterator)it);
 				}
 			}

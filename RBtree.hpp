@@ -110,20 +110,20 @@ namespace ft
 					while (next)
 					{
 						parent = next;
-						if (_comp(next->getPair(), val))
+						if (_comp(*(next->getPair()), val))
 							next = next->getRight();
 						else
 							next = next->getLeft();
 					}
 
-					if (_comp(parent->getPair(), val))
+					if (_comp(*(parent->getPair()), val))
 					{
-						parent->getRight() = alloc.allocate(sizeof(node));
+						parent->setRight(alloc.allocate(sizeof(node)));
 						next = parent->getRight();
 					}
 					else
 					{
-						parent->getLeft() = alloc.allocate(sizeof(node));
+						parent->setLeft(alloc.allocate(sizeof(node)));
 						next = parent->getLeft();
 					}
 					alloc.construct(next, node(parent, val));
@@ -301,14 +301,14 @@ namespace ft
 			void	leftRotate(node *n)
 			{
 				//je teste l'existence d'un parent pour verifier que la rotation a bien eu lieu
-				if (n->getLeft()Rotate() && n->getParent())
+				if (n->leftRotate() && n->getParent())
 					_trunk = n->getParent();
 			}
 
 			void	rightRotate(node *n)
 			{
 				//je teste l'existence d'un parent pour verifier que la rotation a bien eu lieu
-				if (n->getRight()Rotate() && n->getParent())
+				if (n->rightRotate() && n->getParent())
 					_trunk = n->getParent();
 			}
 
@@ -416,9 +416,9 @@ namespace ft
 			{
 				Allocator	alloc;
 				if (n->isLeftChild())
-					n->getParent().getLeft() = NULL;
+					n->getParent()->setLeft(NULL);
 				if (n->isRightChild())
-					n->getParent().getRight() = NULL;
+					n->getParent()->setRight(NULL);
 				alloc.destroy(n);
 				alloc.deallocate(n, sizeof(node));
 			}
