@@ -16,7 +16,7 @@
 #include <cstring>
 #include <vector>
 #include "algorithm.hpp"
-#include "iterator.hpp"
+#include "random_access_iterator.hpp"
 #include <iostream>
 #include <sstream>
 
@@ -35,8 +35,8 @@ namespace ft {
 			typedef 			Allocator								allocator_type;
 			typedef typename 	Allocator::pointer						pointer;
 			typedef typename 	Allocator::const_pointer				const_pointer;
-			typedef 			std::reverse_iterator<iterator>			reverse_iterator;
-			typedef 			std::reverse_iterator<const_iterator>	const_reverse_iterator;
+			typedef 			ft::reverse_random_access_iterator<iterator>			reverse_iterator;
+			typedef 			ft::reverse_random_access_iterator<const_iterator>	const_reverse_iterator;
 		private:
 			size_type	next_size(size_type n)
 			{

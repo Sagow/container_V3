@@ -1,10 +1,12 @@
 #include <vector>
+#include <list>
 #include <string>
 #include <fstream>
 #include <iostream>
 #include <iterator>
 #include <stdlib.h>
 #include <time.h>
+#include "vector.hpp"
 #include "stack.hpp"
 /*
 int main(void)
@@ -42,6 +44,10 @@ int		main(void)
 	ctnr.push_back(19);
 	ctnr.push_back(0);
 	ctnr.push_back(183792);
+
+	ft::stack<int, std::vector<int> > tets;
+	tets.push(4789);
+	std::cout << tets.size() << std::endl;
 
 	t_stack_	stck(ctnr);
 	t_stack_	stck2(ctnr);

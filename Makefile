@@ -12,7 +12,7 @@ OBJS =  ${SRCS:.cpp=.o}
 
 CC =	c++
 
-FLAGS = -std=c++98 -Wall -Werror -Wextra -g3 -fsanitize=address -I.
+FLAGS = -std=c++98 -Wall -Werror -Wextra -g3 -fsanitize=address -I. -Iiterators
 
 NAME =  RBtest
 

@@ -1,13 +1,6 @@
 #pragma once
-#include <iterator>
-#include <memory>
-#include <cstring>
-#include <vector>
 #include "algorithm.hpp"
-#include "iterator.hpp"
 #include "vector.hpp"
-#include <iostream>
-#include <sstream>
 
 namespace ft
 {

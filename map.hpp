@@ -23,7 +23,7 @@
 #include "RBtree.hpp"
 #include "RBnode.hpp"
 #include "algorithm.hpp"
-#include "iterator.hpp"
+#include "iterators/bidirectional_iterator.hpp"
 
 namespace ft
 {
