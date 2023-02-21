@@ -197,7 +197,7 @@ namespace ft
 					return (this);
 				if (isLeftChild() && parent->right)
 					return (parent->right);
-				return (biggerCousin(parent));
+				return (parent->biggerCousin());
 			}
 
 			node	*smallerCousin()
@@ -206,7 +206,7 @@ namespace ft
 					return (this);
 				if (isRightChild() && parent->left)
 					return (parent->left);
-				return (smallerCousin(parent));
+				return (parent->smallerCousin());
 			}
 
 			size_t			getDepth(size_t depth = 0)

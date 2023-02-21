@@ -107,12 +107,12 @@ namespace ft
 			//iterators
 			iterator	begin()
 			{
-				return (iterator(_tree->leftest()->getPair()));
+				return (_tree->leftest());
 			}
 			const_iterator	begin()	const
 			{
-				const_iterator it(_tree->leftest()->getPair());
-				return (it);
+				//return (const_iterator(_tree->leftest()));
+				return (const_iterator(NULL));
 			}
 			iterator end()
 			{
@@ -279,35 +279,43 @@ namespace ft
 			}
 			iterator lower_bound (const key_type& k)
 			{
-				for (iterator it = begin(); it != end(); it++)
+				iterator it;
+				for (it = begin(); it != end(); it++)
 				{
 					if (it->first >= k)
-						return (it);
+						break ;
 				}
+				return (it);
 			}
 			const_iterator lower_bound (const key_type& k) const
 			{
-				for (iterator it = begin(); it != end(); it++)
+				iterator it;
+				for (it = begin(); it != end(); it++)
 				{
 					if (it->first >= k)
-						return ((const_iterator)it);
+						break ;
 				}
+				return ((const_iterator)it);
 			}
 			iterator upper_bound (const key_type& k)
 			{
-				for (iterator it = begin(); it != end(); it++)
+				iterator it;
+				for (it = begin(); it != end(); it++)
 				{
 					if ((*it).first > k)
-						return (it);
+						break ;
 				}
+				return (it);
 			}
 			const_iterator upper_bound (const key_type& k) const
 			{
-				for (iterator it = begin(); it != end(); it++)
+				iterator it;
+				for (it = begin(); it != end(); it++)
 				{
-					if (it->first > k)
-						return ((const_iterator)it);
+					if ((*it).first > k)
+						break ;
 				}
+				return ((const_iterator)it);
 			}
 			pair<iterator,iterator>             equal_range (const key_type& k)
 			{

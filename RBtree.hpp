@@ -22,11 +22,11 @@
 namespace ft
 {
 	
-	template <class Key, class T, typename Comparator = std::less<T>, class Allocator = std::allocator<RBnode<Key, T> > >
+	template <class Key, class T, typename Comparator = std::less<T>, class Allocator = std::allocator<RBnode<const Key, T> > >
 	class RBtree
 	{
 		public:
-			typedef RBnode<Key, T>	node;
+			typedef RBnode<const Key, T>	node;
 			typedef ft::pair<const Key, T> pair;
 
 		private:
@@ -49,12 +49,12 @@ namespace ft
 				if (n->getRight())
 					insertRecu(n->getRight());
 			}
-			RBtree(RBtree<Key, T> &other): _trunk(NULL), _size(0), _comp(other._comp)
+			RBtree(RBtree<const Key, T> &other): _trunk(NULL), _size(0), _comp(other._comp)
 			{
 				insertRecu(other._trunk);
 			}
 
-			RBtree(ft::pair<Key, T> val, Comparator &c): _trunk(NULL), _size(0), _comp(c)
+			RBtree(pair val, Comparator &c): _trunk(NULL), _size(0), _comp(c)
 			{
 				Allocator alloc;
 				_trunk = alloc.allocate(sizeof(node));
@@ -93,7 +93,7 @@ namespace ft
 				return (_trunk);
 			}
 			
-			void			insertNode(ft::pair<Key, T> val)
+			void			insertNode(pair val)
 			{
 				node *next = _trunk;
 				node *parent = NULL;
