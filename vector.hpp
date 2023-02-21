@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 20:05:21 by mdelwaul          #+#    #+#             */
-/*   Updated: 2022/12/26 18:42:13 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/21 16:06:08 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <cstring>
 #include <vector>
 #include "algorithm.hpp"
+#include "iterator.hpp"
 #include <iostream>
 #include <sstream>
 
@@ -27,8 +28,8 @@ namespace ft {
 			typedef 			T										value_type;
 			typedef typename 	Allocator::reference					reference;
 			typedef typename 	Allocator::const_reference				const_reference;
-			typedef typename	std::vector<T>::iterator				iterator; // See 23.1
-			typedef typename	std::vector<T>::const_iterator			const_iterator; // See 23.1
+			typedef typename	ft::random_access_iterator<T>			iterator; // See 23.1
+			typedef typename	const ft::random_access_iterator<T>		const_iterator; // See 23.1
 			typedef 			std::size_t								size_type; // See 23.1
 			typedef 			std::ptrdiff_t							difference_type;// See 23.1
 			typedef 			Allocator								allocator_type;
@@ -39,16 +40,9 @@ namespace ft {
 		private:
 			size_type	next_size(size_type n)
 			{
-				//std::cout << "next_size va se lancer" << std::endl;
-				
 				size_type res = n > max_size() / 2 ? max_size() : _capacity * 2;
 				if (!res)
 					res = 1;
-				/*while (res < n && res != max_size())
-				//{
-					res = res > max_size() / 2 ? max_size() : res * 2;
-					//std::cout << "res = " << res << " n = " << n << " max = " << max_size() << std::endl;
-				//}*/
 				if (res < n)
 					return (n);
 				return (res);
@@ -103,22 +97,14 @@ namespace ft {
 			vector(InputIterator first, InputIterator last,
 			const Allocator& alloc= Allocator()) : _ptr(NULL), _alloc(alloc), _size(0), _capacity(0)
 			{
-				//std::cout << "Vector assign " << std::endl;
-				/*for (InputIterator it = first; it != last; it++)
-					_capacity++;
-				_ptr = _alloc.allocate(_capacity);
-				this->assign(first, last);*/
 				typedef typename ft::is_integral<InputIterator>	_Integral;
 
 				_init_vec(first, last, _Integral());
 			}
 			vector(const vector<T,Allocator>& x) : _ptr(NULL), _alloc(x._alloc), _size(0), _capacity(0)
 			{
-				//std::cout << "Copy constr " << std::endl;
 				reserve(x._size);
 				assign(x.begin(), x.end());
-				//std::cout << "res : " << *(begin()) << " a +" << end() - begin() << " size = " << _size << std::endl;
-
 			}
 			~vector()
 			{
@@ -128,7 +114,6 @@ namespace ft {
 			};
 			vector<T,Allocator>& operator=(const vector<T,Allocator>& x)
 			{
-				//std::cout << "=" << std::endl;
 				_alloc = x._alloc;
 				if (&x != this)
 					assign(x.begin(), x.end());
@@ -140,7 +125,6 @@ namespace ft {
 				assign(InputIterator first, InputIterator last)
 				{
 					clear();
-					//std::cout << "assign de " << *first << " a +" << last - first << std::endl;
 					insert(begin(), first, last);
 				}
 			
@@ -148,7 +132,6 @@ namespace ft {
 			{
 
 				clear();
-				//std::cout << "assign va se lancer" << std::endl;
 				insert(begin(), n, u);
 			}
 			
@@ -230,9 +213,7 @@ namespace ft {
 			{
 				pointer ptr = _ptr;
 				size_t	capacity = _capacity;
-				//std::cout << "reserve va se lancer" << std::endl;
 
-				
 				if (n > max_size())
 					throw (std::length_error("vector::reserve")); //aller chercher p 349 du livre pour les classes d'exceptions
 				if (!_capacity && !n)
@@ -252,33 +233,24 @@ namespace ft {
 			// element access:
 			reference operator[](size_type n)
 			{
-				/*pointer ret = _ptr + n;
-				return (*ret);*/
 				return (_ptr[n]);
 			}
 			
 			const_reference operator[](size_type n) const
 			{
-				/*pointer ret = _ptr + n;
-				return (*ret);*/
 				return (_ptr[n]);
 			}
 
 			const_reference at(size_type n) const
 			{
 				check_index(n);
-				/*pointer ret = _ptr + n;
-				return (*ret);*/
 				return (_ptr[n]);
-				
 			}
 			
 			
 			reference at(size_type n)
 			{
 				check_index(n);
-				/*pointer ret = _ptr + n;
-				return (*ret);*/
 				return (_ptr[n]);
 			}
 			
@@ -307,11 +279,7 @@ namespace ft {
 			// 23.2.4.3 modifiers:
 			void push_back(const T& x)
 			{
-				//std::cout << "dans push_back" << std::endl;
 				insert(end(), x);
-				/*reserve(_size + 1);
-				_alloc.construct(_ptr + _size, x);
-				_size++;*/
 			}
 			
 			void pop_back()
@@ -325,13 +293,10 @@ namespace ft {
 			
 			iterator insert(iterator position, const T& x)
 			{
-					//std::cout << "insert a " << &position << std::endl;
-			
 				size_type index = position - begin();
 				if (_capacity < _size + 1)
 				{
 					reserve(next_size(_size + 1));
-					//std::cout << "on a reserve " << _capacity << " pour " << _size + 1 << std::endl;
 					position = begin() + index;
 				}
 				size_type i = _size;
@@ -339,8 +304,6 @@ namespace ft {
 					_alloc.construct(_ptr + i, x);
 				else
 				{
-					//std::cout << "le else" << std::endl;
-					
 					_alloc.construct(_ptr + i, _ptr[i - 1]);
 					i--;
 					for(; i > index; i--)
@@ -348,9 +311,6 @@ namespace ft {
 					_ptr[i] = x;
 				}
 				_size++;
-				//std::cout << "a inse a " << &position << std::endl;
-
-					//std::cout << "derniere val" << _ptr[i] << std::endl;
 				return (position);
 			}
 			
@@ -360,7 +320,6 @@ namespace ft {
 				if (_capacity < _size + n)
 				{
 					size_type	index = position - begin();
-				//std::cout << "insert va se lancer" << std::endl;
 					reserve(next_size(_size + n));
 					position = begin() + index;
 				}
@@ -372,12 +331,10 @@ namespace ft {
 				typename ft::enable_if<!ft::is_integral<InputIterator>::state>::type
 				insert(iterator position, InputIterator first, InputIterator last)
 			{
-				//std::cout << "c est le bon" << std::endl;
 				for (; first != last; first++)
 				{
 					position = insert(position, *first);
 					position++;
-					//std::cout << &position << std::endl;
 				}
 			}
 			

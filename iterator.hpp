@@ -139,5 +139,83 @@ namespace ft
 			public:
 				typedef random_access_iterator_tag	iterator_category;
 
+			private:
+				pointer		_ptr;
+
+			public:
+				random_access_iterator(void): _ptr(NULL)
+				{}
+
+				random_access_iterator(pointer ptr): _ptr(ptr)
+				{}
+
+				random_access_iterator(random_access_iterator src): _ptr(src._ptr)
+				{}
+
+				~random_access_iterator()
+				{}
+
+				random_access_iterator	&operator=(const random_access_iterator &src)
+				{
+					if (&src != this)
+						_ptr = src._ptr;
+					return (*this);
+				}
+
+				bool	operator==(const random_access_iterator &other)
+				{
+					if (_ptr == other._ptr)
+						return (true);
+					return (false);
+				}
+				bool	operator!=(const random_access_iterator &other)
+				{
+					return (!operator==(other));
+				}
+
+				random_access_iterator &operator++()
+				{
+					_ptr++;
+					return (*this);
+				}
+				random_access_iterator &operator--()
+				{
+					_ptr--;
+					return (*this);
+				}
+
+				random_access_iterator operator++(int)
+				{
+					random_access_iterator save = *this;
+					_ptr++;;
+					return (save);
+				}
+				random_access_iterator operator--(int)
+				{
+					random_access_iterator save = *this;
+					_ptr--;
+					return (save);
+				}
+
+				random_access_iterator &operator+=(difference_type n)
+				{
+					_ptr += n;
+					return (*this);
+				}
+				random_access_iterator &operator-=(difference_type n)
+				{
+					_ptr -= n;
+					return (*this);
+				}
+
+				reference operator* (void)
+				{
+					return(*_ptr);
+				}
+
+				pointer operator-> (void) const
+				{
+					return (_ptr);
+				}
 		};
 }
