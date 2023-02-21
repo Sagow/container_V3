@@ -17,6 +17,7 @@
 #include <vector>
 #include "algorithm.hpp"
 #include "random_access_iterator.hpp"
+#include "const_random_access_iterator.hpp"
 #include <iostream>
 #include <sstream>
 
@@ -25,18 +26,18 @@ namespace ft {
 	class vector {
 		public:
 		// types:
-			typedef 			T										value_type;
-			typedef typename 	Allocator::reference					reference;
-			typedef typename 	Allocator::const_reference				const_reference;
-			typedef typename	ft::random_access_iterator<T>			iterator; // See 23.1
-			typedef typename	ft::random_access_iterator<T>			const_iterator; // See 23.1
-			typedef 			std::size_t								size_type; // See 23.1
-			typedef 			std::ptrdiff_t							difference_type;// See 23.1
-			typedef 			Allocator								allocator_type;
-			typedef typename 	Allocator::pointer						pointer;
-			typedef typename 	Allocator::const_pointer				const_pointer;
-			typedef 			ft::reverse_random_access_iterator<iterator>			reverse_iterator;
-			typedef 			ft::reverse_random_access_iterator<const_iterator>	const_reverse_iterator;
+			typedef 			T															value_type;
+			typedef typename 	Allocator::reference										reference;
+			typedef typename 	Allocator::const_reference									const_reference;
+			typedef typename	ft::random_access_iterator<T>								iterator; // See 23.1
+			typedef typename	ft::const_random_access_iterator<T>							const_iterator; // See 23.1
+			typedef 			std::size_t													size_type; // See 23.1
+			typedef 			std::ptrdiff_t												difference_type;// See 23.1
+			typedef 			Allocator													allocator_type;
+			typedef typename 	Allocator::pointer											pointer;
+			typedef typename 	Allocator::const_pointer									const_pointer;
+			typedef 			ft::reverse_random_access_iterator<iterator>				reverse_iterator;
+			typedef 			ft::reverse_const_random_access_iterator<const_iterator>	const_reverse_iterator;
 		private:
 			size_type	next_size(size_type n)
 			{
