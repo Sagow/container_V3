@@ -137,6 +137,10 @@ namespace ft
 		class random_access_iterator : public iterator_traits<T*>
 		{
 			public:
+				typedef typename iterator_traits<T*>::difference_type			difference_type;
+				typedef typename iterator_traits<T*>::value_type				value_type;
+				typedef typename iterator_traits<T*>::pointer					pointer;
+				typedef typename iterator_traits<T*>::reference					reference;
 				typedef random_access_iterator_tag	iterator_category;
 
 			private:
@@ -149,7 +153,7 @@ namespace ft
 				random_access_iterator(pointer ptr): _ptr(ptr)
 				{}
 
-				random_access_iterator(random_access_iterator src): _ptr(src._ptr)
+				random_access_iterator(const random_access_iterator &src): _ptr(src._ptr)
 				{}
 
 				~random_access_iterator()
@@ -208,12 +212,36 @@ namespace ft
 					return (*this);
 				}
 
+				random_access_iterator operator+(difference_type n)
+				{
+					return (_ptr + n);
+				}
+				random_access_iterator operator-(difference_type n)
+				{
+					return (_ptr - n);
+				}
+
+				difference_type operator-(random_access_iterator &other)
+				{
+					return (_ptr - other._ptr);
+				}
+
 				reference operator* (void)
 				{
 					return(*_ptr);
 				}
 
 				pointer operator-> (void) const
+				{
+					return (_ptr);
+				}
+
+				reference operator[](difference_type n)
+				{
+					return (*(_ptr + n));
+				}
+
+				pointer	base() const
 				{
 					return (_ptr);
 				}

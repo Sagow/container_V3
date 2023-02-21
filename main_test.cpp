@@ -96,6 +96,7 @@ void	display_my_vector(ft::vector<int> v)
 {
 	for (ft::vector<int>::iterator it = v.begin(); it != v.end(); it++)
 		std::cout << "[" << (*it) << "]" << std::endl;
+	(void)v;
 }
 void	display_vector(std::vector<int> v)
 {

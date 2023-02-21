@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 20:05:21 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/21 16:06:08 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/21 17:45:49 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ namespace ft {
 			typedef typename 	Allocator::reference					reference;
 			typedef typename 	Allocator::const_reference				const_reference;
 			typedef typename	ft::random_access_iterator<T>			iterator; // See 23.1
-			typedef typename	const ft::random_access_iterator<T>		const_iterator; // See 23.1
+			typedef typename	ft::random_access_iterator<T>			const_iterator; // See 23.1
 			typedef 			std::size_t								size_type; // See 23.1
 			typedef 			std::ptrdiff_t							difference_type;// See 23.1
 			typedef 			Allocator								allocator_type;
@@ -98,7 +98,7 @@ namespace ft {
 			const Allocator& alloc= Allocator()) : _ptr(NULL), _alloc(alloc), _size(0), _capacity(0)
 			{
 				typedef typename ft::is_integral<InputIterator>	_Integral;
-
+				
 				_init_vec(first, last, _Integral());
 			}
 			vector(const vector<T,Allocator>& x) : _ptr(NULL), _alloc(x._alloc), _size(0), _capacity(0)
@@ -121,7 +121,7 @@ namespace ft {
 			}
 			
 			template <class InputIterator>
-				typename ft::enable_if<!ft::is_integral<InputIterator>::state>::type
+				typename ft::enable_if<!is_integral<InputIterator>::value>::type
 				assign(InputIterator first, InputIterator last)
 				{
 					clear();
@@ -328,7 +328,7 @@ namespace ft {
 			}
 			
 			template <class InputIterator>
-				typename ft::enable_if<!ft::is_integral<InputIterator>::state>::type
+				typename ft::enable_if<!is_integral<InputIterator>::value>::type
 				insert(iterator position, InputIterator first, InputIterator last)
 			{
 				for (; first != last; first++)
