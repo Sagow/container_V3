@@ -221,7 +221,7 @@ namespace ft
 					return (_ptr - n);
 				}
 
-				difference_type operator-(random_access_iterator &other)
+				difference_type operator-(const random_access_iterator &other)
 				{
 					return (_ptr - other._ptr);
 				}
