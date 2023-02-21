@@ -1,45 +1,30 @@
 #include "base.hpp"
 #if !defined(USING_STD)
-# include "map.hpp"
+# include "vector.hpp"
 #else
-# include <map>
+# include <vector>
 #endif /* !defined(STD) */
 
-#define _pair TESTED_NAMESPACE::pair
+#define T_SIZE_TYPE typename TESTED_NAMESPACE::vector<T>::size_type
 
 template <typename T>
-std::string	printPair(const T &iterator, bool nl = true, std::ostream &o = std::cout)
+void	printSize(TESTED_NAMESPACE::vector<T> const &vct, bool print_content = true)
 {
-	o << "key: " << iterator->first << " | value: " << iterator->second;
-	if (nl)
-		o << std::endl;
-	return ("");
-}
+	const T_SIZE_TYPE size = vct.size();
+	const T_SIZE_TYPE capacity = vct.capacity();
+	const std::string isCapacityOk = (capacity >= size) ? "OK" : "KO";
+	// Cannot limit capacity's max value because it's implementation dependent
 
-template <typename T_MAP>
-void	printSize(T_MAP const &mp, bool print_content = 1)
-{
-	std::cout << "size: " << mp.size() << std::endl;
-	std::cout << "max_size: " << mp.max_size() << std::endl;
+	std::cout << "size: " << size << std::endl;
+	std::cout << "capacity: " << isCapacityOk << std::endl;
+	std::cout << "max_size: " << vct.max_size() << std::endl;
 	if (print_content)
 	{
-		typename T_MAP::iterator it = mp.begin(), ite = mp.end();
+		typename TESTED_NAMESPACE::vector<T>::const_iterator it = vct.begin();
+		typename TESTED_NAMESPACE::vector<T>::const_iterator ite = vct.end();
 		std::cout << std::endl << "Content is:" << std::endl;
 		for (; it != ite; ++it)
-			std::cout << "- " << printPair(it, false) << std::endl;
+			std::cout << "- " << *it << std::endl;
 	}
 	std::cout << "###############################################" << std::endl;
-}
-
-template <typename T1, typename T2>
-void	printReverse(TESTED_NAMESPACE::map<T1, T2> &mp)
-{
-	typename TESTED_NAMESPACE::map<T1, T2>::iterator it = mp.end(), ite = mp.begin();
-
-	std::cout << "printReverse:" << std::endl;
-	while (it != ite) {
-		it--;
-		std::cout << "-> " << printPair(it, false) << std::endl;
-	}
-	std::cout << "_______________________________________________" << std::endl;
 }

@@ -215,7 +215,7 @@ namespace ft {
 				size_t	capacity = _capacity;
 
 				if (n > max_size())
-					throw (std::length_error("vector::reserve")); //aller chercher p 349 du livre pour les classes d'exceptions
+					throw (std::length_error("allocator<T>::allocate(size_t n) 'n' exceeds maximum supported size")); //aller chercher p 349 du livre pour les classes d'exceptions
 				if (!_capacity && !n)
 					n = 1;
 				if (n > _capacity)

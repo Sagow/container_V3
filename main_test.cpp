@@ -1,3 +1,4 @@
+#define USING_ST
 #include "vector.hpp"
 #include <vector>
 #include <string>
@@ -6,135 +7,37 @@
 #include <iterator>
 #include <stdlib.h>
 #include <time.h>
+#include "common.hpp"
 
-#define FILE_TO_READ "./Makefile"
 
-		// for (; it != end; it++)
-		// 	std::cout << *it;
-		// std::cout << std::endl;
+#define TESTED_TYPE int
 
-template <typename T_vector, typename T_iter>
-void	exec_test(std::string msg)
+int		main(void)
 {
-	typedef std::istream_iterator<char>	is_iterator;
-	std::ifstream		file;
-	is_iterator			my_it;
+	TESTED_NAMESPACE::vector<TESTED_TYPE> vct(7);
 
-	std::cout << msg << std::endl;
-	file.open(FILE_TO_READ);
-	my_it = is_iterator(file);
-
-	T_vector vec(my_it, is_iterator());
-	T_iter it(vec.begin());
-	T_iter end(vec.end());
-
-	size_t x = end - it;
-	std::cout << msg << " len = " << x << " : " << std::endl;
-	it += (x/2);
-	std::cout << "split in half : " << it - vec.begin() << std::endl << std::endl;
-	file.close();
-}
-
-template <typename T_vector, typename T_iter>
-void	exec_rev_test(std::string msg)
-{
-	typedef std::istream_iterator<char>	is_iterator;
-	std::ifstream		file;
-	is_iterator			my_it;
-
-	std::cout << msg << std::endl;
-	file.open(FILE_TO_READ);
-	my_it = is_iterator(file);
-
-	T_vector vec(my_it, is_iterator());
-	T_iter it(vec.rbegin());
-	T_iter end(vec.rend());
-
-	size_t x = end - it;
-	std::cout << msg << " len = " << x << " : " << std::endl;
-/*
-	for (; it != end; it++)
-		std::cout << *it;
-	std::cout << std::endl;
-*/
-	it += (x / 2);
-	std::cout << "split in half : " << it - vec.rbegin() << std::endl << std::endl;
-	file.close();
-}
-
-template <typename t_vec>
-void	exec_compare(std::string msg)
-{
-	typedef std::istream_iterator<char>	is_iterator;
-	std::ifstream		file;
-	is_iterator			my_it;
-
-	file.open(FILE_TO_READ);
-	my_it = is_iterator(file);
-
-	std::cout << msg << std::endl;
-	t_vec ref(my_it, is_iterator());
-	std::cout << "Pass 1" << std::endl;
-	t_vec vec(ref);
-	std::cout << "Pass 2" << std::endl;
-	if (ref == vec)
-		std::cout << "PASS ref == vec" << std::endl;
-	if (ref <= vec)
-		std::cout << "PASS ref <= vec" << std::endl;
-	if (ref >= vec)
-		std::cout << "PASS ref >= vec" << std::endl;
-	vec.pop_back();
-	if (ref != vec)
-		std::cout << "PASS ref != vec" << std::endl;
-	if (!(ref < vec))
-		std::cout << "PASS !(ref < vec)" << std::endl;
-	
-	file.close();
-}
-
-void	display_my_vector(ft::vector<int> v)
-{
-	for (ft::vector<int>::iterator it = v.begin(); it != v.end(); it++)
-		std::cout << "[" << (*it) << "]" << std::endl;
-	(void)v;
-}
-void	display_vector(std::vector<int> v)
-{
-	for (std::vector<int>::iterator it = v.begin(); it != v.end(); it++)
-		std::cout << "[" << (*it) << "]" << std::endl;
-}
-int main()
-{
-	
-	//AT
-	/*ft::vector<std::string> MIKE(8, "pouet");
-	std::vector<std::string> BOB(8, "pouet");
-	std::cout << "\nAT\n";
-	try
+	for (unsigned long int i = 0; i < vct.size(); ++i)
 	{
-		std::cout << MIKE.at(2) << '\n';
-		std::cout << MIKE.at(87) << '\n';
+		vct.at(i) = (vct.size() - i) * 3;
+		std::cout << "vct.at(): " << vct.at(i) << " | ";
+		std::cout << "vct[]: " << vct[i] << std::endl;
 	}
-	catch (std::out_of_range& oor)
-	{
-		(void)oor;
-		std::cout << "OOR error caught\n" << oor.what();
-	}*/
-	ft::vector<int>			test(3, 3);
-	ft::vector<ft::vector<int> > BOB(5, test);
-	ft::vector<ft::vector<int> > truc;
+	printSize(vct);
 
+	TESTED_NAMESPACE::vector<TESTED_TYPE> const vct_c(vct);
 
-	test.assign(3, 17);
-	test.assign(23, 19);
-size_t	bob_resize = 2;
-	std::cout << "\nRESIZE" << std::endl;
-	BOB.resize(bob_resize);
-	test.assign(2, 42);
-	BOB.push_back(test);
-	BOB.pop_back();
-	BOB.pop_back();
+	std::cout << "front(): " << vct.front() << " " << vct_c.front() << std::endl;
+	std::cout << "back(): " << vct.back() << " " <<  vct_c.back() << std::endl;
 
-	//BOB.swap(truc);
-	return 0;
+	try {
+		vct.at(10) = 42;
+	}
+	catch (std::out_of_range &e) {
+		std::cout << "Catch out_of_range exception!" << std::endl;
+	}
+	catch (std::exception &e) {
+		std::cout << "Catch exception: " << e.what() << std::endl;
+	}
+	return (0);
 }
+

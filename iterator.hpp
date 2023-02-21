@@ -4,24 +4,24 @@
 
 namespace ft
 {
-	//tags
+	/*
 	class input_iterator_tag {};
 	class output_iterator_tag {};
     class forward_iterator_tag {};
 	class bidirectional_iterator_tag {};
-	class random_access_iterator_tag {};
+	class random_access_iterator_tag {};*/
 
 	//virer iterator, faire heriter random et bidirectional de iterator_traits
 
-	template<class Iterator>
+	template<class Iter>
 	class iterator_traits
 	{
 		public:
-			typedef typename Iterator::difference_type			difference_type;
-			typedef typename Iterator::value_type				value_type;
-			typedef typename Iterator::pointer					pointer;
-			typedef typename Iterator::reference				reference;
-			typedef typename Iterator::iterator_category		iterator_category;
+			typedef typename Iter::difference_type			difference_type;
+			typedef typename Iter::value_type				value_type;
+			typedef typename Iter::pointer					pointer;
+			typedef typename Iter::reference				reference;
+			typedef typename Iter::iterator_category		iterator_category;
 	};
 
 	template<typename T>
@@ -32,6 +32,7 @@ namespace ft
 			typedef T									value_type;
 			typedef T*									pointer;
 			typedef T&									reference;
+			typedef std::random_access_iterator_tag				iterator_category;
 	};
 
 	template<typename T>
@@ -42,6 +43,7 @@ namespace ft
 			typedef T											value_type;
 			typedef T const*									pointer;
 			typedef T const&									reference;
+			typedef std::random_access_iterator_tag						iterator_category;
 	};
 	//rajouter dans le template une classe pour le RBnode, et garder T pour la pair
 	template <class T, class p, class Distance = ptrdiff_t, class Pointer = T*, class Reference = T&>
@@ -56,7 +58,7 @@ namespace ft
 				typedef typename iterator_traits<T*>::value_type					value_type;
 				typedef typename iterator_traits<T*>::pointer					pointer;
 				typedef typename iterator_traits<T*>::reference					reference;
-				typedef bidirectional_iterator_tag	iterator_category;
+				typedef std::bidirectional_iterator_tag	iterator_category;
 
 				bidirectional_iterator() : _node(NULL)
 				{}
@@ -141,7 +143,7 @@ namespace ft
 				typedef typename iterator_traits<T*>::value_type				value_type;
 				typedef typename iterator_traits<T*>::pointer					pointer;
 				typedef typename iterator_traits<T*>::reference					reference;
-				typedef random_access_iterator_tag	iterator_category;
+				typedef std::random_access_iterator_tag	iterator_category;
 
 			private:
 				pointer		_ptr;
@@ -175,6 +177,25 @@ namespace ft
 				bool	operator!=(const random_access_iterator &other)
 				{
 					return (!operator==(other));
+				}
+				bool	operator<(const random_access_iterator &other)
+				{
+					return (_ptr < other._ptr);
+				}
+
+				bool	operator<=(const random_access_iterator &other)
+				{
+					return (operator<(other) || operator==(other));
+				}
+
+				bool	operator>(const random_access_iterator &other)
+				{
+					return (!operator<=(other));
+				}
+
+				bool	operator>=(const random_access_iterator &other)
+				{
+					return (!operator<(other));
 				}
 
 				random_access_iterator &operator++()
