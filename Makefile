@@ -1,11 +1,12 @@
-SRCS =	main_test.cpp
+SRCS =	main_stack.cpp
 
 HEADERS =	RBnode.hpp	\
 			RBtree.hpp	\
 			map.hpp		\
 			algorithm.hpp	\
 			iterator.hpp	\
-			vector.hpp
+			vector.hpp	\
+			stack.hpp
 
 OBJS =  ${SRCS:.cpp=.o}
 
