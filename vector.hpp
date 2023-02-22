@@ -191,10 +191,11 @@ namespace ft {
 			}
 			void resize(size_type sz, T c = T())
 			{
+                size_type oldSize = size();
 				if (sz > size())
 				{
 					reserve(next_size(sz));
-					for (size_type i = 0; i < sz; i++)
+					for (size_type i = oldSize; i < sz; i++)
 						push_back(c);
 				}
 				else if (sz < size())
