@@ -1,4 +1,4 @@
-SRCS =	main_stack.cpp
+SRCS =	main_ite.cpp
 
 HEADERS =	RBnode.hpp	\
 			RBtree.hpp	\

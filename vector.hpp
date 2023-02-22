@@ -17,7 +17,6 @@
 #include <vector>
 #include "algorithm.hpp"
 #include "random_access_iterator.hpp"
-#include "const_random_access_iterator.hpp"
 #include <iostream>
 #include <sstream>
 
@@ -29,15 +28,15 @@ namespace ft {
 			typedef 			T															value_type;
 			typedef typename 	Allocator::reference										reference;
 			typedef typename 	Allocator::const_reference									const_reference;
-			typedef typename	ft::random_access_iterator<T>								iterator; // See 23.1
-			typedef typename	ft::const_random_access_iterator<T>							const_iterator; // See 23.1
-			typedef 			std::size_t													size_type; // See 23.1
-			typedef 			std::ptrdiff_t												difference_type;// See 23.1
+			typedef typename	ft::random_access_iterator<T>								iterator;
+			typedef typename	ft::random_access_iterator<const T>							const_iterator;
+			typedef 			std::size_t													size_type;
+			typedef 			std::ptrdiff_t												difference_type;
 			typedef 			Allocator													allocator_type;
 			typedef typename 	Allocator::pointer											pointer;
 			typedef typename 	Allocator::const_pointer									const_pointer;
 			typedef 			ft::reverse_random_access_iterator<iterator>				reverse_iterator;
-			typedef 			ft::reverse_const_random_access_iterator<const_iterator>	const_reverse_iterator;
+			typedef 			ft::reverse_random_access_iterator<const_iterator>			const_reverse_iterator;
 		private:
 			size_type	next_size(size_type n)
 			{
@@ -68,7 +67,7 @@ namespace ft {
 				assign(first, last);
 			}
 			
-			void	check_index(size_type index)
+			void	check_index(size_type index) const
 			{
 				if (!(index < size()))
 				{
@@ -195,7 +194,8 @@ namespace ft {
 				if (sz > size())
 				{
 					reserve(next_size(sz));
-					insert(end(), sz-size(), c);
+					for (size_type i = 0; i < sz; i++)
+						push_back(c);
 				}
 				else if (sz < size())
 				erase(begin()+sz, end());
@@ -302,14 +302,17 @@ namespace ft {
 				}
 				size_type i = _size;
 				if (i == index)
+				{
+					//std::cout << "Marina est passée par là" << std::endl;
 					_alloc.construct(_ptr + i, x);
+				}
 				else
 				{
 					_alloc.construct(_ptr + i, _ptr[i - 1]);
 					i--;
 					for(; i > index; i--)
-						_ptr[i] = _ptr[i - 1];
-					_ptr[i] = x;
+						_alloc.construct(_ptr + i, _ptr[i - 1]);
+					_alloc.construct(_ptr + i, x);
 				}
 				_size++;
 				return (position);
