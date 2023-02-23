@@ -17,48 +17,54 @@
 #include <map>
 #include <iterator>
 #include <iostream>
-#include "RBnode.hpp"
+#include "algorithm.hpp"
 
 namespace ft
 {
+    template <class Key, class T>
+    class RBnode;
 	
-	template <class Key, class T, typename Comparator = std::less<T>, class Allocator = std::allocator<RBnode<const Key, T> > >
+	template <class Key, class T, typename Comparator = std::less<Key>, class Allocator = std::allocator<RBnode<const Key, T> > >
 	class RBtree
 	{
 		public:
-			typedef RBnode<const Key, T>	node;
-			typedef ft::pair<const Key, T> pair;
+			typedef RBnode<Key, T>	node;
+			typedef ft::pair<Key, T> pair;
 
 		private:
 			node			*_trunk;
 			size_t			_size;
 			Comparator		_comp;
+            node            _endNode;
 			
 		public:
-		
-			RBtree(const Comparator &c): _trunk(NULL), _size(0), _comp(c)
+
+            RBtree(): _trunk(NULL), _size(0), _comp(Comparator())
 			{
 				
 			}
 
 			void	insertRecu(node *n)
 			{
-				insertNode(n->getPair());
+                if (!n)
+                    return ;
+				insertNode(*n->getPair());
 				if (n->getLeft())
 					insertRecu(n->getLeft());
 				if (n->getRight())
 					insertRecu(n->getRight());
 			}
-			RBtree(RBtree<const Key, T> &other): _trunk(NULL), _size(0), _comp(other._comp)
+			RBtree(const RBtree<Key, T> &other): _trunk(NULL), _size(0), _comp(other._comp)
 			{
 				insertRecu(other._trunk);
 			}
 
-			RBtree(pair val, Comparator &c): _trunk(NULL), _size(0), _comp(c)
+
+        RBtree(pair val, Comparator &c): _trunk(NULL), _size(0), _comp(c)
 			{
 				Allocator alloc;
 				_trunk = alloc.allocate(sizeof(node));
-				alloc.construct(_trunk, node(val));
+				alloc.construct(_trunk, node(val, this));
 				_size = 1;
 				_trunk->getColour() = false;
 			}
@@ -68,6 +74,11 @@ namespace ft
 			{
 				return (_size);
 			}
+
+            node *getEndNode()
+            {
+                return (&_endNode);
+            }
 			
 			void	destroyRecu(node *n)
 			{
@@ -108,20 +119,20 @@ namespace ft
 				if (!_trunk)
 				{
 					_trunk = alloc.allocate(sizeof(node));
-					alloc.construct(_trunk, node(val));
+					alloc.construct(_trunk, node(val, this));
 				}
 				else
 				{
 					while (next)
 					{
 						parent = next;
-						if (_comp(*(next->getPair()), val))
+						if (_comp((next->getPair())->first, val.first))
 							next = next->getRight();
 						else
 							next = next->getLeft();
 					}
 
-					if (_comp(*(parent->getPair()), val))
+					if (_comp(parent->getPair()->first, val.first))
 					{
 						parent->setRight(alloc.allocate(sizeof(node)));
 						next = parent->getRight();

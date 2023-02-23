@@ -66,7 +66,7 @@ namespace ft
 			};
 
 		protected:
-			typedef RBtree<Key, T, value_compare> Tree;
+			typedef RBtree<const Key, T> Tree;
 			typedef typename allocator_type::template rebind<Tree>::other	treeAllocator;
 			treeAllocator _alloc;
 			key_compare	_comp;
@@ -75,19 +75,19 @@ namespace ft
 		public:
 			explicit	map(const key_compare &comp = Compare(), const Allocator &alloc = Allocator()) : _alloc(alloc), _comp(comp), _tree(_alloc.allocate(1))
 			{
-				_alloc.construct(_tree, Tree(value_comp()));
+				_alloc.construct(_tree, Tree());
 			}
 			template <class InputIterator>
 				map(InputIterator first, InputIterator last, const key_compare &comp = Compare(), const Allocator &alloc = Allocator()/*,
 					typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr*/)
 					: _alloc(alloc), _comp(comp), _tree(_alloc.allocate(1))
 				{
-					_alloc.construct(_tree, Tree(value_comp()));
+					_alloc.construct(_tree, Tree());
 					insert(first, last);
 				}
 			map(const map<Key, T, Compare, Allocator> &other) : _alloc(other._alloc), _comp(other._comp), _tree(_alloc.allocate(1))
 			{
-				_alloc.construct(_tree, Tree(value_comp()));
+				_alloc.construct(_tree, Tree());
 				insert(other.begin(), other.end());
 			}
 			~map()
@@ -165,7 +165,7 @@ namespace ft
 			}
 			mapped_type& at(key_type k) const
 			{
-				RBnode<Key, T>	*node = _tree->find(k);
+				RBnode<const Key, T>	*node = _tree->find(k);
 				if (!node)
 				{
 					std::ostringstream	oss;

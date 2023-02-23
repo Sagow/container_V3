@@ -5,14 +5,16 @@
 #define RED "\e[1;31m"
 #define END "\e[0m"
 #include "algorithm.hpp"
+#include "RBtree.hpp"
+
 
 namespace ft
 {
-	template <class Key, class T >
+    template <class Key, class T>
 	class RBnode{
 		public:
 			typedef RBnode<Key, T>	node;
-			typedef ft::pair<const Key, T> pair;
+			typedef ft::pair<Key, T> pair;
 
 		private:
 			pair		_pair;
@@ -20,6 +22,7 @@ namespace ft
 			node*		right;
 			node*		parent;
 			bool		colour;
+            RBtree<Key, T>* _belongsTo;
 			
 		public:
 
@@ -85,16 +88,26 @@ namespace ft
 				return (colour);
 			}
 
-			RBnode() : left(NULL), right(NULL), parent(NULL), colour(true)
+            RBtree<Key, T>* getBelongsTo(void)
+            {
+                return (_belongsTo);
+            }
+
+            void    setBelongsTo(RBtree<Key, T> belongsTo)
+            {
+                _belongsTo = belongsTo;
+            }
+
+			RBnode(RBtree<Key, T>* belongsTo = NULL) : left(NULL), right(NULL), parent(NULL), colour(true), _belongsTo(belongsTo)
 			{}
 
-			RBnode(const node &src) : _pair(src._pair), left(src.left), right(src.right), parent(src.parent), colour(src.colour)
+			RBnode(const node &src) : _pair(src._pair), left(src.left), right(src.right), parent(src.parent), colour(src.colour), _belongsTo(src._belongsTo)
 			{}
 			
-			RBnode(ft::pair<Key, T> p) : _pair(p), left(NULL), right(NULL), parent(NULL), colour(true)
+			RBnode(ft::pair<Key, T> p, RBtree<Key, T>* belongsTo = NULL) : _pair(p), left(NULL), right(NULL), parent(NULL), colour(true), _belongsTo(belongsTo)
 			{}
 
-			RBnode(node *par, ft::pair<Key, T> p) : _pair(p), left(NULL), right(NULL), parent(par), colour(true)
+			RBnode(node *par, ft::pair<Key, T> p) : _pair(p), left(NULL), right(NULL), parent(par), colour(true), _belongsTo(par->_belongsTo)
 			{}
 
 			~RBnode()
@@ -110,6 +123,13 @@ namespace ft
 				colour = src.colour;
 				return (*this);
 			}
+
+            bool isNull(void)
+            {
+                if (getBelongsTo() && this == getBelongsTo()->getEndNode())
+                    return (true);
+                return (false);
+            }
 
 			bool isLeftChild(void)
 			{
@@ -165,7 +185,7 @@ namespace ft
 
 			node	*getPrevious()
 			{
-				node	*n;
+				node	*n = this;
 				if (left)
 				{
 					n = left;
