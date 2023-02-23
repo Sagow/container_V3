@@ -93,7 +93,7 @@ namespace ft
                 return (_belongsTo);
             }
 
-            void    setBelongsTo(RBtree<Key, T> belongsTo)
+            void    setBelongsTo(RBtree<Key, T> *belongsTo)
             {
                 _belongsTo = belongsTo;
             }

@@ -210,37 +210,35 @@ template <class Key, class T>
 void	print(map<Key, T>& lst)
 {
     for (typename map<Key, T>::iterator it = lst.begin(); it != lst.end(); it++)
-        std::cout << *it << ' ';
-    std::cout << '\n';
+        std::cout << it->first << " => " << it->second << '\n';
 }
 
-int main()
+int main ()
 {
-    pair<int, std::string>			my_pair(8, "salut");
-    map<int, std::string>			test;
-    map<int, std::string>::iterator	it;
+    map<char,int> mymap;
 
-    test.insert(my_pair);
-    test.insert(pair<int, std::string>(-4, "bar"));
-    test.insert(pair<int, std::string>(2, "machin"));
-    test.insert(pair<int, std::string>(3, "foo"));
-    test.insert(pair<int, std::string>(746, "Marcel"));
-    test.insert(pair<int, std::string>(1, "truc"));
-    it = test.begin();
-    std::cout << '\n';
+    mymap['b'] = 100;
+    mymap['a'] = 200;
+    mymap['c'] = 300;
 
-    while (it != test.end())
+    // show content:
+    int i = 0;
+    for (map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
     {
-        // std::cout << "start of while\n";
-        std::cout << it->first << ", " << it->second << '\n';
-        it++;
-// 		std::cout << "iterator incremented\n";
-
-// #ifndef STD
-// 		std::cout << it.getPointer() << '\n';
-// 		std::cout << test.end().getPointer() << '\n';
-// #endif
-
+        i++;
+        std::cout << it->first << " => " << it->second << '\n';
     }
-    std::cout << "End of display loop\n";
+
+    std::cout << "\n\n========\n\n";
+
+
+    map<char,int>::iterator it = mymap.end();
+    it--;
+    std::cout << "end - 1 " << it->first << '\n';
+    std::cout << "fonctionne encore" << std::endl;
+    for (it = --mymap.end(); it!=mymap.begin(); --it)
+        std::cout << it->first << " => " << it->second << '\n';
+    std::cout << it->first << " => " << it->second << '\n';
+
+    return 0;
 }

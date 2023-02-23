@@ -56,9 +56,15 @@ namespace ft
 
 				bidirectional_iterator &operator++()
 				{
-                    if (_node)
-                        _node = _node->getNext();
-					return (*this);
+                    if (_node && !_node->isNull())
+                    {
+                        p*  next = _node->getNext();
+                        if (next)
+                            _node = next;
+                        else
+                            _node = _node->getBelongsTo()->getEndNode();
+                    }
+                    return (*this);
 				}
 				bidirectional_iterator &operator--()
 				{
@@ -72,8 +78,14 @@ namespace ft
 				bidirectional_iterator operator++(int)
 				{
 					bidirectional_iterator save = *this;
-                    if (_node)
-                        _node = _node->getNext();
+                    if (_node && !_node->isNull())
+                    {
+                        p*  next = _node->getNext();
+                        if (next)
+                            _node = next;
+                        else
+                            _node = _node->getBelongsTo()->getEndNode();
+                    }
 					return (save);
 				}
 				bidirectional_iterator operator--(int)

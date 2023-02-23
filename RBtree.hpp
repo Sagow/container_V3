@@ -41,7 +41,7 @@ namespace ft
 
             RBtree(): _trunk(NULL), _size(0), _comp(Comparator())
 			{
-				
+				_endNode.setBelongsTo(this);
 			}
 
 			void	insertRecu(node *n)
@@ -56,12 +56,14 @@ namespace ft
 			}
 			RBtree(const RBtree<Key, T> &other): _trunk(NULL), _size(0), _comp(other._comp)
 			{
+                _endNode.setBelongsTo(this);
 				insertRecu(other._trunk);
 			}
 
 
         RBtree(pair val, Comparator &c): _trunk(NULL), _size(0), _comp(c)
 			{
+                _endNode.setBelongsTo(this);
 				Allocator alloc;
 				_trunk = alloc.allocate(sizeof(node));
 				alloc.construct(_trunk, node(val, this));
@@ -209,11 +211,14 @@ namespace ft
 				g->getColour() = true;
 			}
 
-			node	*find(Key key) const
+			node	*find(Key key)
 			{
 				if (!_trunk)
-					return (NULL);
-				return (_trunk->find(key));
+					return (getEndNode());
+                node *found = _trunk->find(key);
+                if (found)
+				    return (found);
+                return (getEndNode());
 			}
 
 			//base sur https://www.programiz.com/dsa/deletion-from-a-red-black-tree
@@ -285,20 +290,20 @@ namespace ft
 				std::cout << "L'arbre contient " << std::endl << _trunk->printRecur() << " elements" << std::endl;
 			}
 
-			node	*leftest() const
+			node	*leftest()
 			{
 				if (!_trunk)
-					return (NULL);
+					return (getEndNode());
 				node	*n = _trunk;
 				while (n->getLeft())
 					n = n->getLeft();
 				return (n);
 			}
 
-			node	*rightest() const
+			node	*rightest()
 			{
 				if (!_trunk)
-					return (NULL);
+					return (getEndNode());
 				node	*n = _trunk;
 				while (n->getRight())
 					n = n->getRight();

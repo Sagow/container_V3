@@ -115,11 +115,11 @@ namespace ft
 			}
 			iterator end()
 			{
-				return (iterator(NULL)); //pas bon
+				return (iterator(_tree->getEndNode())); //pas bon
 			}
 			const_iterator end() const
 			{
-				return (const_iterator(NULL)); //pas bon
+				return (const_iterator(_tree->getEndNode())); //pas bon
 			}
 			//toutes les declinaisons
 			reverse_iterator rbegin()
