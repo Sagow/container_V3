@@ -7,7 +7,7 @@
 #include <iterator>
 #include <stdlib.h>
 #include <time.h>
-#include "common.hpp"
+#include "commonvector.hpp"
 
 
 #define TESTED_TYPE int

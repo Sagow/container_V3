@@ -92,6 +92,11 @@ namespace ft
 			{
 				return (_trunk);
 			}
+
+            void			setTrunk(node *n)
+            {
+                _trunk = n;
+            }
 			
 			void			insertNode(pair val)
 			{
@@ -201,7 +206,7 @@ namespace ft
 			}
 
 			//base sur https://www.programiz.com/dsa/deletion-from-a-red-black-tree
-			void			deleteNode(T val)
+			void			deleteNode(Key val)
 			{
 				node	*n = find(val);
 				node	*x = NULL;
@@ -231,16 +236,16 @@ namespace ft
 					yColour = y->getColour();
 					x = y->getRight();
 					if (y->getParent() == n)
-						x->getParent() = y;
+						x->setParent(y);
 					else
 					{
 						transplant(y, y->getRight());
-						y->getRight() = n->getRight();
-						y->getRight()->getParent() = y;
+						y->setRight(n->getRight());
+						y->getRight()->setParent(y);
 					}
 					transplant(n, y);
-					y->getLeft() = n->getLeft();
-					y->getLeft()->getParent() = y;
+					y->setLeft(n->getLeft());
+					y->getLeft()->setParent(y);
 					y->getColour() = n->getColour();
 				}
 				destroyNode(n);
@@ -317,11 +322,11 @@ namespace ft
 				if (!u->getParent())
 					_trunk = v;
 				else if (u->isLeftChild())
-					u->getParent()->getLeft() = v;
+					u->getParent()->setLeft(v);
 				else
-					u->getParent()->getRight() = v;
+					u->getParent()->setRight(v);
 				if (v)
-					v->getParent() = u->getParent();
+					v->setParent(u->getParent());
 			}
 
 			node	*minimum(node	*n)

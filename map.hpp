@@ -23,7 +23,7 @@
 #include "RBtree.hpp"
 #include "RBnode.hpp"
 #include "algorithm.hpp"
-#include "iterators/bidirectional_iterator.hpp"
+#include "bidirectional_iterator.hpp"
 
 namespace ft
 {
@@ -47,9 +47,9 @@ namespace ft
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
 			typedef bidirectional_iterator< value_type, RBnode<const Key, T> >		iterator;
-			typedef bidirectional_iterator< value_type, RBnode<const Key, T> >	const_iterator;
-			typedef std::reverse_iterator<iterator>			reverse_iterator;
-			typedef std::reverse_iterator<const_iterator>	const_reverse_iterator;
+			typedef bidirectional_iterator< const value_type, RBnode<const Key, T> >	const_iterator;
+			typedef reverse_bidirectional_iterator<iterator>			reverse_iterator;
+			typedef reverse_bidirectional_iterator<const_iterator>	const_reverse_iterator;
 
 		private:
 			class value_compare// : public std::binary_function<value_type,value_type,bool>
@@ -111,8 +111,7 @@ namespace ft
 			}
 			const_iterator	begin()	const
 			{
-				//return (const_iterator(_tree->leftest()));
-				return (const_iterator(NULL));
+				return (_tree->leftest());
 			}
 			iterator end()
 			{
@@ -123,10 +122,22 @@ namespace ft
 				return (const_iterator(NULL)); //pas bon
 			}
 			//toutes les declinaisons
-			/*reverse_iterator rbegin();
-			const_reverse_iterator rbegin() const;
-			reverse_iterator rend();
-			const_reverse_iterator rend() const;*/
+			reverse_iterator rbegin()
+            {
+                return (reverse_iterator(end()));
+            }
+			const_reverse_iterator rbegin() const
+            {
+                return (reverse_iterator(end()));
+            }
+			reverse_iterator rend()
+            {
+                return (reverse_iterator(begin()));
+            }
+			const_reverse_iterator rend() const
+            {
+                return (reverse_iterator(begin()));
+            }
 
 			//Capacity
 			bool empty() const
@@ -143,16 +154,16 @@ namespace ft
 			}
 
 			//Element access
-			mapped_type& operator[] (key_type &k) const
+			mapped_type& operator[] (const key_type &k) const
 			{
 				iterator tmp = find(k);
 
 				if (tmp == end())
-					insert(make_pair(k, mapped_type()));
+					insert(ft::make_pair(k, mapped_type()));
 				tmp = find(k);
-				return (tmp->pair.second);
+				return (tmp->second);
 			}
-			mapped_type& at (key_type k) const
+			mapped_type& at(key_type k) const
 			{
 				RBnode<Key, T>	*node = _tree->find(k);
 				if (!node)
@@ -179,23 +190,32 @@ namespace ft
 			}*/
 
 			//Modifiers
-			pair<iterator,bool> insert (const value_type& val)
+			pair<iterator,bool> insert (const value_type& val) const
 			{
+                /*
 				pair<iterator,bool>	res = ft::make_pair(find(val.first), false);
 				if (res.first != end())
 					res.second = false;
 				else
 					res.second = true;
-				return (res);
+				return (res);*/
+                iterator    it = find(val.first);
+                if (it != end())
+                    return (ft::make_pair(it, false));
+                _tree->insertNode(val);
+                it = find(val.first);
+                if (it != end())
+                    return (ft::make_pair(it, true));
+                return (ft::make_pair(it, false));
 			}
 			
 			iterator insert (iterator position, const value_type& val)
 			{
-				RBnode<key_type, mapped_type>	*node = NULL;
+				RBnode<const key_type, mapped_type>	*node = NULL;
 				(void)position;
 				_tree->insertNode(val);
-				node = find(val);
-				return ((iterator) node);
+				node = _tree->find(val.first);
+				return (iterator(node));
 			}
 			template <class InputIterator>
 				void insert (InputIterator first, InputIterator last)
@@ -206,15 +226,14 @@ namespace ft
 				}
 			void erase (iterator position)
 			{
-				_tree->removeNode(*position);
+				_tree->deleteNode(position->first);
 			}
 			size_type erase (const key_type k)
 			{
-				RBnode<Key, T>	*toRemove = find(k);
-				if (toRemove)
+				if (find(k) != end())
 				{
-					_tree->removeNode(toRemove);
-					return (1);
+                    _tree->deleteNode(k);
+                    return (1);
 				}
 				return (0);
 			}
@@ -222,7 +241,7 @@ namespace ft
 			void erase (InputIterator first, InputIterator last)
 			{
 				for (InputIterator it = first; it != last; it++)
-					_tree->removeNode(it->pair.first);				
+					erase(it);
 			}
 			void swap (map<Key, T, Compare, Allocator>& x)
 			{
@@ -235,7 +254,7 @@ namespace ft
 					_tree = x._tree;
 					_comp = x._comp;
 					x._tree = tmp._tree;
-					x._comp = tmp.c_comp;
+					x._comp = tmp._comp;
 				}
 				else
 				{
@@ -247,6 +266,7 @@ namespace ft
 			void clear()
 			{
 				_tree->destroyRecu(_tree->getTrunk());
+                _tree->setTrunk(NULL);
 			}
 			
 			//Observers
@@ -261,15 +281,15 @@ namespace ft
 			}
 
 			//Operation
-			iterator find (const key_type& k)
+			iterator find (const key_type& k) const
 			{
-				return (iterator(*_tree->find(k)));
+				return (iterator(_tree->find(k)));
 			}
 
-			const_iterator find(const key_type& k) const
-			{
-				return (const_iterator(*_tree->find(k)));
-			}
+//			const_iterator find(const key_type& k) const
+//			{
+//				return (const_iterator(*_tree->find(k)));
+//			}
 			
 			size_type count (const key_type k) const
 			{
@@ -289,13 +309,13 @@ namespace ft
 			}
 			const_iterator lower_bound (const key_type& k) const
 			{
-				iterator it;
-				for (it = begin(); it != end(); it++)
+				const_iterator it = begin();
+				for (; it != end(); it++)
 				{
 					if (it->first >= k)
 						break ;
 				}
-				return ((const_iterator)it);
+				return (it);
 			}
 			iterator upper_bound (const key_type& k)
 			{
@@ -309,21 +329,21 @@ namespace ft
 			}
 			const_iterator upper_bound (const key_type& k) const
 			{
-				iterator it;
+				const_iterator it;
 				for (it = begin(); it != end(); it++)
 				{
 					if ((*it).first > k)
 						break ;
 				}
-				return ((const_iterator)it);
+				return (it);
 			}
 			pair<iterator,iterator>             equal_range (const key_type& k)
 			{
-				return (make_pair(lower_bound(k), upper_bound(k)));
+				return (ft::make_pair(lower_bound(k), upper_bound(k)));
 			}
 			pair<const_iterator,const_iterator> equal_range (const key_type& k) const
 			{
-				return (make_pair(lower_bound(k), upper_bound(k)));
+				return (ft::make_pair(lower_bound(k), upper_bound(k)));
 			}
 
 			//Allocator
@@ -340,8 +360,8 @@ namespace ft
 	{
 		if (x.size() != y.size())
 			return (false);
-		typename map<Key, T>::iterator	itx = x.begin();
-		typename map<Key, T>::iterator	ity = y.begin();
+		typename map<const Key, T>::const_iterator	itx = x.begin();
+		typename map<const Key, T>::const_iterator	ity = y.begin();
 		while (itx != x.end() && ity != y.end())
 		{
 			if (*itx != *ity)
@@ -358,8 +378,8 @@ namespace ft
 	bool operator< (const map<Key,T,Compare,Allocator>& x,
 	const map<Key,T,Compare,Allocator>& y)
 	{
-		typename map<Key, T>::iterator	itx = x.begin();
-		typename map<Key, T>::iterator	ity = y.begin();
+		typename map<const Key, T>::const_iterator	itx = x.begin();
+		typename map<const Key, T>::const_iterator	ity = y.begin();
 		while (itx != x.end() && ity != y.end())
 		{
 			if (*itx < *ity)

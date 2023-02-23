@@ -143,70 +143,46 @@ namespace ft
 
 			node	*getNext()
 			{
-				node	*node;
+				node	*n = this;
 				if (right)
 				{
-					node = right;
-					while (node->left)
-						node = node->left;
-					return (node);
-				}
-				else if (isLeftChild())
-				{
-					return (parent);
-				}
-				else if (biggerCousin())
-				{
-					node = biggerCousin();
-					while (node->left)
-						node = node->left;
-					return (node);
+					n = right;
+					while (n->left)
+						n = n->left;
+					return (n);
 				}
 				else
-					return (this + 1);
+				{
+                    node    *prt = n->parent;
+				    while(prt && n->isRightChild())
+                    {
+                        n = prt;
+                        prt = n->parent;
+                    }
+                    return (prt);
+				}
 			}
 
 			node	*getPrevious()
 			{
-				node	*node;
+				node	*n;
 				if (left)
 				{
-					node = left;
-					while (node->right)
-						node = node->right;
-					return (node);
-				}
-				else if (isRightChild())
-				{
-					return (parent);
-				}
-				else if (smallerCousin())
-				{
-					node = smallerCousin();
-					while (node->left)
-						node = node->left;
-					return (node);
+					n = left;
+					while (n->right)
+						n = n->right;
+					return (n);
 				}
 				else
-					return (this + 1);
-			}
-
-			node	*biggerCousin()
-			{
-				if (!parent)
-					return (this);
-				if (isLeftChild() && parent->right)
-					return (parent->right);
-				return (parent->biggerCousin());
-			}
-
-			node	*smallerCousin()
-			{
-				if (!parent)
-					return (this);
-				if (isRightChild() && parent->left)
-					return (parent->left);
-				return (parent->smallerCousin());
+                {
+                    node    *prt = n->parent;
+                    while(prt && n->isLeftChild())
+                    {
+                        n = prt;
+                        prt = n->parent;
+                    }
+                    return (prt);
+                }
 			}
 
 			size_t			getDepth(size_t depth = 0)
@@ -224,23 +200,25 @@ namespace ft
 			//true si changement de racine
 			bool	leftRotate()
 			{
-				if (!right)
-				{
-					std::cout << RED << "alerte on switch avec un truc vide" << END << std::endl;
-					printRecur();
-				}
-				node	*grandparent = parent;
-				node	*switchingWith = right;
-				node	*pendulum = right->left;
-				if (isLeftChild())
-					grandparent->left = switchingWith;
-				else if (isRightChild())
-					grandparent->right = switchingWith;
-				parent = switchingWith;
-				right = pendulum;
-				switchingWith->parent = grandparent;
-				switchingWith->left = this;
-				return (!grandparent);
+                if (!right)
+                {
+                    std::cout << RED << "alerte on switch avec un truc vide" << END << std::endl;
+                    printRecur();
+                }
+                node	*switchingWith = right;
+
+                right = switchingWith->left;
+                if (switchingWith->left)
+                    switchingWith->left->parent = this;
+                switchingWith->parent = parent;
+                if (parent && this->isRightChild())
+                    parent->left = switchingWith;
+                else if (parent && this->isLeftChild())
+                    parent->left = switchingWith;
+
+                switchingWith->left = this;
+                parent = switchingWith;
+                return (!switchingWith->parent);
 			}
 
 			//true si changement de racine
@@ -251,18 +229,21 @@ namespace ft
 					std::cout << RED << "alerte on switch avec un truc vide" << END << std::endl;
 					printRecur();
 				}
-				node	*grandparent = parent;
 				node	*switchingWith = left;
-				node	*pendulum = left->right;
-				if (isLeftChild())
-					grandparent->left = switchingWith;
-				else
-					grandparent->right = switchingWith;
-				parent = switchingWith;
-				left = pendulum;
-				switchingWith->parent = grandparent;
-				switchingWith->right = this;
-				return (!grandparent);
+
+               left = switchingWith->right;
+                if (switchingWith->right)
+                    switchingWith->right->parent = this;
+                switchingWith->parent = parent;
+                if (parent && this->isLeftChild())
+                    parent->left = switchingWith;
+                else if (parent && this->isRightChild())
+                    parent->right = switchingWith;
+
+                switchingWith->right = this;
+                parent = switchingWith;
+                return (!switchingWith->parent);
+
 			}
 			
 			node	*find(Key val)
