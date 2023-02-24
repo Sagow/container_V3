@@ -298,7 +298,8 @@ namespace ft
 			
 			size_type count (const key_type k) const
 			{
-				if (_tree->find(k))
+                RBnode<const Key, T>    *found = _tree->find(k);
+				if (!found->isNull())
 					return (1);
 				return (0);
 			}
