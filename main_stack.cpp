@@ -1,75 +1,35 @@
-#include <vector>
-#include <list>
-#include <string>
-#include <fstream>
 #include <iostream>
-#include <iterator>
-#include <stdlib.h>
-#include <time.h>
-#include "vector.hpp"
 #include "stack.hpp"
-/*
-int main(void)
+#include <stack>
+
+#ifndef STD
+# define NAMESPACE ft
+#else
+# define NAMESPACE std
+#endif
+
+using namespace NAMESPACE;
+
+int	main(void)
 {
-	ft::stack<int> s;
+	NAMESPACE::stack<char> stackDefaut;
 
-	s.push(3);
-	return (0);
-}
-*/
-#include "commonvector.hpp"
+	std::cout << "stackDefaut est vide : " << (stackDefaut.empty() ? "oui" : "non") << std::endl;
+	std::cout << "Push de a, b, c" << std::endl;
+	stackDefaut.push('a');
+	stackDefaut.push('b');
+	stackDefaut.push('c');
+	std::cout << "Dessus de la pile stackDefaut : " << stackDefaut.top() << std::endl;
+	std::cout << "stackDefaut est vide : " << (stackDefaut.empty() ? "oui" : "non") << std::endl;
+	std::cout << "taille de stackDefaut : " << stackDefaut.size()<< std::endl;
+	std::cout << "creation de stackCopie : " << std::endl;
 
-#define TESTED_TYPE int
-#define t_stack_ TESTED_NAMESPACE::stack<TESTED_TYPE>
-typedef t_stack_::container_type container_type;
-
-template <class T_STACK>
-void	cmp(const T_STACK &lhs, const T_STACK &rhs)
-{
-	static int i = 0;
-
-	std::cout << "############### [" << i++ << "] ###############"  << std::endl;
-	std::cout << "eq: " << (lhs == rhs) << " | ne: " << (lhs != rhs) << std::endl;
-	std::cout << "lt: " << (lhs <  rhs) << " | le: " << (lhs <= rhs) << std::endl;
-	std::cout << "gt: " << (lhs >  rhs) << " | ge: " << (lhs >= rhs) << std::endl;
-}
-
-int		main(void)
-{
-	container_type	ctnr;
-
-	ctnr.push_back(21);
-	ctnr.push_back(42);
-	ctnr.push_back(1337);
-	ctnr.push_back(19);
-	ctnr.push_back(0);
-	ctnr.push_back(183792);
-
-	ft::stack<int, std::vector<int> > tets;
-	tets.push(4789);
-	std::cout << tets.size() << std::endl;
-
-	t_stack_	stck(ctnr);
-	t_stack_	stck2(ctnr);
-
-	cmp(stck, stck);  // 0
-	cmp(stck, stck2); // 1
-
-	stck2.push(60);
-	stck2.push(61);
-	stck2.push(62);
-
-	cmp(stck, stck2); // 2
-	cmp(stck2, stck); // 3
-
-	stck.push(42);
-
-	cmp(stck, stck2); // 4
-	cmp(stck2, stck); // 5
-
-	stck.push(100);
-
-	cmp(stck, stck2); // 6
-	cmp(stck2, stck); // 7
+	NAMESPACE::stack<char> stackCopie(stackDefaut);
+	std::cout << "Dessus de la pile stackCopie : " << stackCopie.top() << std::endl;
+	std::cout << "taille de stackcopie : " << stackCopie.size()<< std::endl;
+	std::cout << "Pop du haut de stackDefaut" << std::endl;
+	stackDefaut.pop();
+	std::cout << "Dessus de la pile stackDefaut : " << stackDefaut.top() << std::endl;
+	std::cout << "taille de stackDefaut : " << stackDefaut.size()<< std::endl;
 	return (0);
 }

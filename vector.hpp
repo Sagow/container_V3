@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 20:05:21 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/21 17:45:49 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/24 22:59:27 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <iterator>
 #include <memory>
 #include <cstring>
-#include <vector>
 #include "algorithm.hpp"
 #include "random_access_iterator.hpp"
 #include <iostream>
@@ -211,7 +210,7 @@ namespace ft {
 				return (_size == 0);
 			}
 			
-			void reserve(size_type n)
+			void reserve(size_type n, value_type val = value_type())
 			{
 				pointer ptr = _ptr;
 				size_t	capacity = _capacity;
@@ -224,6 +223,11 @@ namespace ft {
 				{
 					_capacity = n;
 					_ptr = _alloc.allocate(_capacity);
+					for (size_type i = 0; i < _size; i++)
+					{
+						_alloc.construct(_ptr + i, *(ptr + i));
+						_alloc.destroy(ptr + i);
+					}
 					for (size_type i = 0; i < _size; i++)
 					{
 						_alloc.construct(_ptr + i, *(ptr + i));
@@ -396,50 +400,50 @@ namespace ft {
 	};
 	
 	template <class T, class Allocator>
-	bool operator==(const vector<T,Allocator>& x,
-	const vector<T,Allocator>& y)
+	bool operator==(const ft::vector<T,Allocator>& x,
+	const ft::vector<T,Allocator>& y)
 	{
 		return (ft::equal(x.begin(), x.end(), y.begin(), y.end()));
 	}
 	
 	template <class T, class Allocator>
-	bool operator< (const vector<T,Allocator>& x,
-	const vector<T,Allocator>& y)
+	bool operator< (const ft::vector<T,Allocator>& x,
+	const ft::vector<T,Allocator>& y)
 	{
 		return (ft::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end()));
 	}
 	
 	template <class T, class Allocator>
-	bool operator!=(const vector<T,Allocator>& x,
-	const vector<T,Allocator>& y)
+	bool operator!=(const ft::vector<T,Allocator>& x,
+	const ft::vector<T,Allocator>& y)
 	{
 		return (!(x==y));
 	}
 	
 	template <class T, class Allocator>
-	bool operator> (const vector<T,Allocator>& x,
-	const vector<T,Allocator>& y)
+	bool operator> (const ft::vector<T,Allocator>& x,
+	const ft::vector<T,Allocator>& y)
 	{
 		return (y < x);
 	}
 	
 	template <class T, class Allocator>
-	bool operator>=(const vector<T,Allocator>& x,
-	const vector<T,Allocator>& y)
+	bool operator>=(const ft::vector<T,Allocator>& x,
+	const ft::vector<T,Allocator>& y)
 	{
 		return (!(x < y));
 	}
 	
 	template <class T, class Allocator>
-	bool operator<=(const vector<T,Allocator>& x,
-	const vector<T,Allocator>& y)
+	bool operator<=(const ft::vector<T,Allocator>& x,
+	const ft::vector<T,Allocator>& y)
 	{
 		return (!(y < x));
 	}
 	
 	// specialized algorithms:
 	template <class T, class Allocator>
-	void swap(vector<T,Allocator>& x, vector<T,Allocator>& y)
+	void swap(ft::vector<T,Allocator>& x, ft::vector<T,Allocator>& y)
 	{
 		x.swap(y);
 	}
