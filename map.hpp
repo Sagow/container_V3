@@ -221,6 +221,9 @@ namespace ft
 			
 			iterator insert (iterator position, const value_type& val)
 			{
+                iterator    it = find(val.first);
+                if (it != end())
+                    return (it);
 				RBnode<const key_type, mapped_type>	*node = NULL;
 				(void)position;
 				_tree->insertNode(val);
