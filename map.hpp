@@ -100,6 +100,8 @@ namespace ft
 				if (&x == this)
 					return (*this);
 				clear();
+                _comp = x._comp;
+                _alloc = x._alloc;
 				insert(x.begin(), x.end());
 				return (*this);
 			}
@@ -115,28 +117,36 @@ namespace ft
 			}
 			iterator end()
 			{
-				return (iterator(_tree->getEndNode())); //pas bon
+				return (iterator(_tree->getEndNode()));
 			}
 			const_iterator end() const
 			{
-				return (const_iterator(_tree->getEndNode())); //pas bon
+				return (const_iterator(_tree->getEndNode()));
 			}
 			//toutes les declinaisons
 			reverse_iterator rbegin()
             {
-                return (reverse_iterator(end()));
+                reverse_iterator tmp = end();
+                tmp++;
+                return (tmp);
             }
 			const_reverse_iterator rbegin() const
             {
-                return (reverse_iterator(end()));
+                const_reverse_iterator tmp = end();
+                tmp++;
+                return (tmp);
             }
 			reverse_iterator rend()
             {
-                return (reverse_iterator(begin()));
+                reverse_iterator tmp = begin();
+                tmp++;
+                return (tmp);
             }
 			const_reverse_iterator rend() const
             {
-                return (reverse_iterator(begin()));
+                reverse_iterator tmp = begin();
+                tmp++;
+                return (tmp);
             }
 
 			//Capacity
@@ -272,7 +282,7 @@ namespace ft
 			//Observers
 			key_compare key_comp() const
 			{
-				return (key_compare());
+				return (_comp);
 
 			}
 			value_compare value_comp() const

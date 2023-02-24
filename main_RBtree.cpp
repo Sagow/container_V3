@@ -217,28 +217,42 @@ int main ()
 {
     map<char,int> mymap;
 
-    mymap['b'] = 100;
-    mymap['a'] = 200;
-    mymap['c'] = 300;
+    mymap['x'] = 100;
+    mymap['y'] = 200;
+    mymap['z'] = 300;
+
 
     // show content:
-    int i = 0;
-    for (map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
-    {
-        i++;
+    map<char,int>::reverse_iterator rit;
+    for (rit=mymap.rbegin(); rit!=mymap.rend(); ++rit)
+        std::cout << rit->first << " => " << rit->second << '\n';
+
+
+    for (map<char,int>::const_reverse_iterator it=mymap.rbegin(); it!=mymap.rend(); it++)
         std::cout << it->first << " => " << it->second << '\n';
+
+    map<char, int>::const_reverse_iterator it = mymap.rbegin();
+    map<char, int>::const_reverse_iterator ti = mymap.rend();
+
+    it++;
+    ++it;
+    it--;
+    --it;
+
+    ti--;
+    --ti;
+    ++ti;
+    ti++;
+
+    ti = it;
+
+    map<char, int>::reverse_iterator end = mymap.rend();
+    while(it != end)
+    {
+        std::cout << it->first << " => " << it->second << '\n';
+        it++;
     }
 
-    std::cout << "\n\n========\n\n";
-
-
-    map<char,int>::iterator it = mymap.end();
-    it--;
-    std::cout << "end - 1 " << it->first << '\n';
-    std::cout << "fonctionne encore" << std::endl;
-    for (it = --mymap.end(); it!=mymap.begin(); --it)
-        std::cout << it->first << " => " << it->second << '\n';
-    std::cout << it->first << " => " << it->second << '\n';
 
     return 0;
 }
