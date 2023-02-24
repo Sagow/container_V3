@@ -250,8 +250,15 @@ namespace ft
 			template <class InputIterator>
 			void erase (InputIterator first, InputIterator last)
 			{
-				for (InputIterator it = first; it != last; it++)
-					erase(it);
+                InputIterator   tmp;
+                RBnode<const Key, T>    *nextPtr;
+                RBnode<const Key, T>    *lastPtr = last.base();
+				for (RBnode<const Key, T> *currentPtr = first.base(); currentPtr != lastPtr; currentPtr = nextPtr)
+                {
+                    tmp = InputIterator(currentPtr);
+                    nextPtr = (++tmp).base();
+                    _tree->deleteNode(currentPtr->getPair()->first);
+                }
 			}
 			void swap (map<Key, T, Compare, Allocator>& x)
 			{

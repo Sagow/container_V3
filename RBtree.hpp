@@ -251,13 +251,14 @@ namespace ft
 					y = minimum(n->getRight());
 					yColour = y->getColour();
 					x = y->getRight();
-					if (y->getParent() == n)
+					if (y->getParent() == n && x)
 						x->setParent(y);
 					else
 					{
 						transplant(y, y->getRight());
 						y->setRight(n->getRight());
-						y->getRight()->setParent(y);
+                        if (y->getRight())
+						    y->getRight()->setParent(y);
 					}
 					transplant(n, y);
 					y->setLeft(n->getLeft());
