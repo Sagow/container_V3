@@ -232,7 +232,7 @@ namespace ft
                     switchingWith->left->parent = this;
                 switchingWith->parent = parent;
                 if (parent && this->isRightChild())
-                    parent->left = switchingWith;
+                    parent->right = switchingWith;
                 else if (parent && this->isLeftChild())
                     parent->left = switchingWith;
 

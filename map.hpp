@@ -255,23 +255,11 @@ namespace ft
 			}
 			void swap (map<Key, T, Compare, Allocator>& x)
 			{
-				map	tmp;
+				Tree*	tmp = x._tree;
 
-				if (_alloc == x._alloc)
-				{
-					tmp._tree = _tree;
-					tmp._comp = _comp;
-					_tree = x._tree;
-					_comp = x._comp;
-					x._tree = tmp._tree;
-					x._comp = tmp._comp;
-				}
-				else
-				{
-					tmp = *this;
-					*this = x;
-					x = tmp;
-				}
+				x._tree = _tree;
+
+                _tree = tmp;
 			}
 			void clear()
 			{
