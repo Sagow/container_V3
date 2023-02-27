@@ -45,7 +45,7 @@ namespace ft
 
 			void	insertRecu(node *n)
 			{
-                if (!n)
+                if (!n || n->isEndNode)
                     return ;
 				insertNode(n->getPair());
 				if (n->getLeft())
