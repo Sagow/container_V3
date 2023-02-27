@@ -34,10 +34,11 @@ namespace ft
 			node			*_trunk;
 			size_t			_size;
 			Comparator		_comp;
+            Allocator       _alloc;
             node            *_endNode;
             node            *_startNode;
 
-            RBtree(): _trunk(NULL), _size(0), _comp(Comparator())
+            RBtree(Comparator comp, Allocator alloc): _trunk(NULL), _size(0), _comp(comp), _alloc(alloc)
 			{
                 allocGardians();
 			}
@@ -68,10 +69,10 @@ namespace ft
 
 			void allocGardians()
 			{
-                _endNode = Allocator().allocate(sizeof(node));
-                Allocator().construct(_endNode, node());
-                _startNode = Allocator().allocate(sizeof(node));
-                Allocator().construct(_startNode, node());
+                _endNode = _alloc.allocate(sizeof(node));
+                _alloc.construct(_endNode, node());
+                _startNode = _alloc.allocate(sizeof(node));
+                _alloc.construct(_startNode, node());
                 _endNode->isEndNode = true;
                 _startNode->isEndNode = true;
 			}
