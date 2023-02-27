@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 18:22:09 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/27 11:14:59 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/27 12:38:56 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,7 +262,8 @@ namespace ft
 			}
 			void clear()
 			{
-				_tree->destroyRecu(_tree->getTrunk(), true);
+				_tree->destroyRecu(_tree->getTrunk());
+				_tree->destroyGardians();
                 _tree->setTrunk(NULL);
                 _tree->allocGardians();
 			}

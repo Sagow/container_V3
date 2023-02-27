@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/27 11:20:26 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/27 12:38:26 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,14 +61,9 @@ namespace ft
 
             ~RBtree()
             {
-                Allocator   alloc;
 
-                destroyRecu(_trunk, true);
-//
-//                alloc.destroy(_endNode);
-//                alloc.deallocate(_endNode, sizeof(_endNode));
-//                alloc.destroy(_startNode);
-//                alloc.deallocate(_startNode, sizeof(_startNode));
+                destroyRecu(_trunk);
+				destroyGardians();
             }
 
 			void allocGardians()
@@ -79,6 +74,16 @@ namespace ft
                 Allocator().construct(_startNode, node());
                 _endNode->isEndNode = true;
                 _startNode->isEndNode = true;
+			}
+
+			void	destroyGardians()
+			{
+				Allocator   alloc;
+
+				alloc.destroy(_endNode);
+				alloc.deallocate(_endNode, sizeof(_endNode));
+				alloc.destroy(_startNode);
+				alloc.deallocate(_startNode, sizeof(_startNode));
 			}
 
             RBtree(pair val, Comparator &c): _trunk(NULL), _size(0), _comp(c)
@@ -97,15 +102,15 @@ namespace ft
 				return (_size);
 			}
 			
-			void	destroyRecu(node *n, bool deleteGardians)
+			void	destroyRecu(node *n)
 			{
 				Allocator	alloc;
-				if (!n || (deleteGardians && n->isEndNode))
+				if (!n || n->isEndNode)
 					return ;
 				if (n->getLeft())
-					destroyRecu(n->getLeft(), deleteGardians);
+					destroyRecu(n->getLeft());
 				if (n->getRight())
-					destroyRecu(n->getRight(), deleteGardians);
+					destroyRecu(n->getRight());
 				destroyNode(n);
 				_size--;
 			}

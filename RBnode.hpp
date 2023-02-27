@@ -87,16 +87,16 @@ namespace ft
 				return (colour);
 			}
 
-			RBnode() : left(NULL), right(NULL), parent(NULL), colour(true)
+			RBnode() : left(NULL), right(NULL), parent(NULL), colour(true), isEndNode(false)
 			{}
 
-			RBnode(const node &src) : _pair(src._pair), left(src.left), right(src.right), parent(src.parent), colour(src.colour)
+			RBnode(const node &src) : _pair(src._pair), left(src.left), right(src.right), parent(src.parent), colour(src.colour), isEndNode(false)
 			{}
 
-			RBnode(ft::pair<Key, T> p) : _pair(p), left(NULL), right(NULL), parent(NULL), colour(true)
+			RBnode(ft::pair<Key, T> p) : _pair(p), left(NULL), right(NULL), parent(NULL), colour(true), isEndNode(false)
 			{}
 
-			RBnode(node *par, ft::pair<Key, T> p) : _pair(p), left(NULL), right(NULL), parent(par), colour(true)
+			RBnode(node *par, ft::pair<Key, T> p) : _pair(p), left(NULL), right(NULL), parent(par), colour(true), isEndNode(false)
 			{}
 
 			~RBnode()
