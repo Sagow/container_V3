@@ -209,7 +209,7 @@ namespace ft
                     return (ft::make_pair(it, false));
                 _tree->insertNode(val);
                 it = find(val.first);
-                if (it != end())
+                if (it.base()->isEndNode == false)
                     return (ft::make_pair(it, true));
                 return (ft::make_pair(it, false));
 			}
@@ -248,13 +248,19 @@ namespace ft
 			template <class InputIterator>
 			void erase (InputIterator first, InputIterator last)
 			{
+                if (first == begin() && last == end())
+                {
+                    clear();
+                    return ;
+                }
                 InputIterator   tmp;
-                RBnode<const Key, T>    *nextPtr;
+                RBnode<const Key, T>    *nextPtr = NULL;
                 RBnode<const Key, T>    *lastPtr = last.base();
 				for (RBnode<const Key, T> *currentPtr = first.base(); currentPtr != lastPtr; currentPtr = nextPtr)
                 {
                     tmp = InputIterator(currentPtr);
-                    nextPtr = (++tmp).base();
+                    tmp++;
+                    nextPtr = tmp.base();
                     _tree->deleteNode(currentPtr->getPair().first);
                 }
 			}
@@ -268,8 +274,9 @@ namespace ft
 			}
 			void clear()
 			{
-				_tree->destroyRecu(_tree->getTrunk(), false);
+				_tree->destroyRecu(_tree->getTrunk(), true);
                 _tree->setTrunk(NULL);
+                _tree->allocGardians();
 			}
 			
 			//Observers

@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "test_utils.hpp"
+#include <vector>
+
 #ifndef VECTOR_HPP
 # define VECTOR_HPP
 # include <iterator>
@@ -195,8 +198,7 @@ namespace ft {
 				if (sz > size())
 				{
 					reserve(next_size(sz));
-					for (size_type i = oldSize; i < sz; i++)
-						push_back(c);
+                    insert(end(), sz - size(), c);
 				}
 				else if (sz < size())
 				erase(begin()+sz, end());
@@ -211,7 +213,7 @@ namespace ft {
 				return (_size == 0);
 			}
 			
-			void reserve(size_type n, value_type val = value_type())
+			void reserve(size_type n)
 			{
 				pointer ptr = _ptr;
 				size_t	capacity = _capacity;
@@ -224,11 +226,6 @@ namespace ft {
 				{
 					_capacity = n;
 					_ptr = _alloc.allocate(_capacity);
-					for (size_type i = 0; i < _size; i++)
-					{
-						_alloc.construct(_ptr + i, *(ptr + i));
-						_alloc.destroy(ptr + i);
-					}
 					for (size_type i = 0; i < _size; i++)
 					{
 						_alloc.construct(_ptr + i, *(ptr + i));

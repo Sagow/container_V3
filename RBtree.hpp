@@ -39,12 +39,7 @@ namespace ft
 
             RBtree(): _trunk(NULL), _size(0), _comp(Comparator())
 			{
-                _endNode = Allocator().allocate(sizeof(node));
-                Allocator().construct(_endNode, node());
-                _startNode = Allocator().allocate(sizeof(node));
-                Allocator().construct(_startNode, node());
-                _endNode->isEndNode = true;
-                _startNode->isEndNode = true;
+                allocGardians();
 			}
 
 			void	insertRecu(node *n)
@@ -59,9 +54,8 @@ namespace ft
 			}
 			RBtree(const RBtree<Key, T> &other): _trunk(NULL), _size(0), _comp(other._comp)
 			{
+                allocGardians();
 				insertRecu(other._trunk);
-                _endNode->isEndNode = true;
-                _startNode->isEndNode = true;
 			}
 
 
@@ -76,7 +70,18 @@ namespace ft
 //                alloc.destroy(_startNode);
 //                alloc.deallocate(_startNode, sizeof(_startNode));
             }
-        RBtree(pair val, Comparator &c): _trunk(NULL), _size(0), _comp(c)
+
+                void allocGardians()
+                {
+                _endNode = Allocator().allocate(sizeof(node));
+                Allocator().construct(_endNode, node());
+                _startNode = Allocator().allocate(sizeof(node));
+                Allocator().construct(_startNode, node());
+                _endNode->isEndNode = true;
+                _startNode->isEndNode = true;
+                }
+
+            RBtree(pair val, Comparator &c): _trunk(NULL), _size(0), _comp(c)
 			{
                 _endNode->setBelongsTo(this);
 				Allocator alloc;
