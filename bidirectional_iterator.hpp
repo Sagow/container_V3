@@ -86,6 +86,12 @@ namespace ft
 				{
 					return (_node->getPair());
 				}
+
+                reference operator* (void) const
+                {
+                    return (_node->getPair());
+                }
+
 				pointer operator-> (void) const
 				{
 					return (&_node->getPair());
