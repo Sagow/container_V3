@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 20:05:21 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/27 13:43:03 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/27 15:37:41 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,7 +217,7 @@ namespace ft {
 				size_t	capacity = _capacity;
 
 				if (n > max_size())
-					throw (std::length_error("allocator<T>::allocate(size_t n) 'n' exceeds maximum supported size")); //aller chercher p 349 du livre pour les classes d'exceptions
+					throw (std::length_error("vector::reserve")); //aller chercher p 349 du livre pour les classes d'exceptions
 				if (!_capacity && !n)
 					n = 1;
 				if (n > _capacity)
@@ -305,7 +305,6 @@ namespace ft {
 				size_type i = _size;
 				if (i == index)
 				{
-					//std::cout << "Marina est passée par là" << std::endl;
 					_alloc.construct(_ptr + i, x);
 				}
 				else
@@ -313,8 +312,8 @@ namespace ft {
 					_alloc.construct(_ptr + i, _ptr[i - 1]);
 					i--;
 					for(; i > index; i--)
-						_alloc.construct(_ptr + i, _ptr[i - 1]);
-					_alloc.construct(_ptr + i, x);
+						_ptr[i] = _ptr[i - 1];
+					_ptr[i] = x;
 				}
 				_size++;
 				return (position);
@@ -354,9 +353,7 @@ namespace ft {
 				size_type	dist = last - first;
 				if (!dist)
 					return (first);
-				size_type	start = first - begin();
-				
-				size_type	i = start;
+				size_type	i = first - begin();
 				while (i < _size - dist)
 				{
 					_alloc.destroy(_ptr + i);
@@ -389,9 +386,9 @@ namespace ft {
 			}
 			void clear()
 			{
-				difference_type i = 0;
-				for (iterator it = begin(); it != end(); it++)
-					_alloc.destroy(_ptr + i++);
+				size_type i = 0;
+				for (; i < _size; i++)
+					_alloc.destroy(_ptr + i);
 				_size = 0;
 			}
 	};
