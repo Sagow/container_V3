@@ -66,8 +66,8 @@ namespace ft
 			};
 
 		protected:
-			typedef RBtree<const Key, T, Compare> Tree;
-			typedef typename allocator_type::template rebind<Tree>::other	treeAllocator;
+			typedef typename allocator_type::template rebind<RBtree<const Key, T> >::other	treeAllocator;
+			typedef RBtree<const Key, T, Compare, treeAllocator> Tree;
 			treeAllocator _alloc;
 			key_compare	_comp;
 			Tree*	_tree;
