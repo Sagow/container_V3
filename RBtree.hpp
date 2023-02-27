@@ -88,12 +88,11 @@ namespace ft
 
             RBtree(pair val, Comparator &c): _trunk(NULL), _size(0), _comp(c)
 			{
+				allocGardians();
 				Allocator alloc;
-				_trunk = alloc.allocate(sizeof(node));
-				alloc.construct(_trunk, node(val, this));
+                insertNode(val);
 				_size = 1;
 				_trunk->getColour() = false;
-				allocGardians();
 			}
 
 			//pas de setter parce que RBtree se gere seul
