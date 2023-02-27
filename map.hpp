@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tmoragli <tmoragli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 18:22:09 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/27 12:38:56 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/27 16:50:12 by tmoragli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,29 +67,29 @@ namespace ft
 
 		protected:
 			typedef typename allocator_type::template rebind<RBnode<const Key, T> >::other	nodeAllocator;
-			typedef RBtree<const Key, T, Compare, treeAllocator> Tree;
-			treeAllocator _alloc;
+			typedef RBtree<const Key, T, Compare, nodeAllocator> Tree;
+			allocator_type _alloc;
 			key_compare	_comp;
 			Tree	_tree;
 
 		public:
-			explicit	map(const key_compare &comp = Compare(), const Allocator &alloc = Allocator()) : _alloc(alloc), _comp(comp), _tree(comp, nodeAllocator)
+			explicit	map(const key_compare &comp = Compare(), const Allocator &alloc = Allocator()) : _alloc(alloc), _comp(comp), _tree(comp, nodeAllocator())
 			{
 			}
 			template <class InputIterator>
 				map(InputIterator first, InputIterator last, const key_compare &comp = Compare(), const Allocator &alloc = Allocator()/*,
 					typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type* = u_nullptr*/)
-					: _alloc(alloc), _comp(comp), _tree(comp, nodeAllocator)
+					: _alloc(alloc), _comp(comp), _tree(comp, nodeAllocator())
 				{
 					insert(first, last);
 				}
-			map(const map<Key, T, Compare, Allocator> &other) : _alloc(other._alloc), _comp(other._comp), _tree(comp, nodeAllocator)
+			map(const map<Key, T, Compare, Allocator> &other) : _alloc(other._alloc), _comp(other._comp), _tree(Compare(), nodeAllocator())
 			{
 				insert(other.begin(), other.end());
 			}
 			~map()
 			{
-				_alloc.destroy(_tree);
+				//_tree.~RBtree();
 			}
 			map<Key, T, Compare, Allocator>	&operator= (const map<Key, T, Compare, Allocator> &x)
 			{
@@ -186,7 +186,7 @@ namespace ft
 			}
 			
 			//Modifiers
-			pair<iterator,bool> insert (const value_type& val) const
+			pair<iterator,bool> insert (const value_type& val)
 			{
                 iterator    it = find(val.first);
                 if (it.base()->isEndNode == false)
@@ -276,15 +276,15 @@ namespace ft
 			}
 
 			//Operation
-			iterator find (const key_type& k) const
+			iterator find (const key_type& k)
 			{
 				return (iterator(_tree.find(k)));
 			}
 
-//			const_iterator find(const key_type& k) const
-//			{
-//				return (const_iterator(*_tree.find(k)));
-//			}
+			const_iterator find(const key_type& k) const
+			{
+				return (const_iterator(*_tree.find(k)));
+			}
 			
 			size_type count (const key_type k) const
 			{
