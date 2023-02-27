@@ -6,11 +6,10 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/02 20:05:21 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/24 22:59:27 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/27 13:43:03 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "test_utils.hpp"
 #include <vector>
 
 #ifndef VECTOR_HPP
@@ -194,7 +193,6 @@ namespace ft {
 			}
 			void resize(size_type sz, T c = T())
 			{
-                size_type oldSize = size();
 				if (sz > size())
 				{
 					reserve(next_size(sz));
@@ -215,7 +213,7 @@ namespace ft {
 			
 			void reserve(size_type n)
 			{
-				pointer ptr = _ptr;
+				pointer ptr;
 				size_t	capacity = _capacity;
 
 				if (n > max_size())
@@ -224,14 +222,15 @@ namespace ft {
 					n = 1;
 				if (n > _capacity)
 				{
-					_capacity = n;
-					_ptr = _alloc.allocate(_capacity);
+					ptr = _alloc.allocate(n);
 					for (size_type i = 0; i < _size; i++)
 					{
-						_alloc.construct(_ptr + i, *(ptr + i));
-						_alloc.destroy(ptr + i);
+						_alloc.construct(ptr + i, *(_ptr + i));
+						_alloc.destroy(_ptr + i);
 					}
-					_alloc.deallocate(ptr, capacity);
+					_alloc.deallocate(_ptr, capacity);
+					_capacity = n;
+					_ptr = ptr;
 				}
 			}
 			// element access:
