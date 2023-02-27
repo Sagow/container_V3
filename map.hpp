@@ -6,7 +6,7 @@
 /*   By: tmoragli <tmoragli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 18:22:09 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/27 18:18:04 by tmoragli         ###   ########.fr       */
+/*   Updated: 2023/02/27 19:07:59 by tmoragli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,7 +278,7 @@ namespace ft
 
 			const_iterator find(const key_type& k) const
 			{
-				return (const_iterator(*_tree.find(k)));
+				return (const_iterator(_tree.find(k)));
 			}
 			
 			size_type count (const key_type k) const
