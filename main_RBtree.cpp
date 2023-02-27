@@ -192,8 +192,8 @@ int main ()
 	print(map2);
 	cout << "empty line5\n";
 
-	mymap = map2;
-	print(mymap);
+	//mymap = map2;
+	/*print(mymap);
 	print(map2);
 
 	cout << std::setw(40) << "map == map2: " << (mymap == map2) << std::endl;
@@ -227,7 +227,7 @@ int main ()
 	cout << std::setw(40) << "mymap < map2: " << (mymap > map2) << std::endl;
 	print(mymap);
 	print(map2);
-	cout << std::endl;
+	cout << std::endl;*/
 
 	return 0;
 }

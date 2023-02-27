@@ -5,7 +5,7 @@ namespace ft
 	template<typename T>
 	void	__swap(T& lhs, T& rhs)
 	{
-		T&	tmp = lhs;
+		T	tmp = lhs;
 
 		lhs = rhs;
 		rhs = tmp;
