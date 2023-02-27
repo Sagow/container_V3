@@ -65,7 +65,7 @@ int	main(void)
 	std::cout << std::endl << "reserve 100 in stringIni" << std::endl;
 	stringIni.reserve(100);
 	std::cout << "stringIni has size = " << stringIni.size() << ", current capacity = " << stringIni.capacity() << " and maxsize = " << stringIni.max_size() << std::endl;
-	for (int j = 0; j < stringIni.size(); j++)
+	for (unsigned long j = 0; j < stringIni.size(); j++)
 	{
 		std::cout << "obtained with [] " << stringIni[j] << std::endl;
 	}
@@ -96,7 +96,7 @@ int	main(void)
 	std::cout << "stringDefaut != stringIni " << (stringDefaut != stringIni ? "true" : "false") << std::endl;
 
 	std::cout << std::endl << "resize smaller of stringDefaut" << std::endl;
-	stringDefaut.reserve(5, "remplissage");
+	stringDefaut.reserve(5);
 	std::cout << "stringDefaut has size = " << stringDefaut.size() << ", current capacity = " << stringDefaut.capacity() << " and maxsize = " << stringDefaut.max_size() << std::endl;
 
 	std::cout << std::endl << "resize bigger of stringDefaut" << std::endl;

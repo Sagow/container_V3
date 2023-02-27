@@ -1,4 +1,4 @@
-SRCS =	main_defaut.cpp
+SRCS =	main_map.cpp
 
 HEADERS =	RBnode.hpp	\
 			RBtree.hpp	\
