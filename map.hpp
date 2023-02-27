@@ -6,7 +6,7 @@
 /*   By: tmoragli <tmoragli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 18:22:09 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/27 17:27:13 by tmoragli         ###   ########.fr       */
+/*   Updated: 2023/02/27 18:18:04 by tmoragli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,20 +89,16 @@ namespace ft
 			}
 			~map()
 			{
-				//_tree.~RBtree();
 			}
+
 			map<Key, T, Compare, Allocator>	&operator= (const map<Key, T, Compare, Allocator> &x)
 			{
 				if (&x == this)
 					return (*this);
-				clear();
-                _comp = x._comp;
-                _alloc = x._alloc;
-                _tree._size = 0;
-				insert(x.begin(), x.end());
+				_tree = x._tree;
 				return (*this);
 			}
-			
+
 			//iterators
 			iterator	begin()
 			{
@@ -252,15 +248,15 @@ namespace ft
 
 			void swap (map<Key, T, Compare, Allocator>& x)
 			{
-				ft::__swap(x._tree, _tree);
+				_tree.swap(x._tree);
 			}
 			
 			void clear()
 			{
 				_tree.destroyRecu(_tree.getTrunk());
-				_tree.destroyGardians();
-                _tree.setTrunk(NULL);
-                _tree.allocGardians();
+				_tree._trunk = NULL;
+				_tree._endNode->parent = NULL;
+				_tree._startNode->parent = NULL;
 			}
 			
 			//Observers

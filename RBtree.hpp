@@ -6,7 +6,7 @@
 /*   By: tmoragli <tmoragli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/27 17:27:13 by tmoragli         ###   ########.fr       */
+/*   Updated: 2023/02/27 18:06:36 by tmoragli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -355,17 +355,25 @@ namespace ft
                 rightest()->setRight(_endNode);
 			}
 
+			void	swap(RBtree &tree)
+			{
+				ft::__swap(_trunk, tree._trunk);
+				ft::__swap(_size, tree._size);
+				ft::__swap(_endNode, tree._endNode);
+				ft::__swap(_comp, tree._comp);
+				ft::__swap(_startNode, tree._startNode);
+				ft::__swap(_alloc, tree._alloc);
+			}
+
 			//ATTENTION ce n'est pas une deep copy. pour une deep copy, passer par le constructeur
 			RBtree &operator=(const RBtree &src)
 			{
 				if (this != &src)
 				{
-					_trunk = src._trunk;
-					_size = src._size;
-					_startNode = src._startNode;
-					_endNode = src._endNode;
-					_comp = src._comp;
-					_alloc = src._alloc;
+					if (_size)
+						destroyRecu(_trunk);
+					_trunk = NULL;
+					insertRecu(src._trunk);
 				}
 				return (*this);
 			}
