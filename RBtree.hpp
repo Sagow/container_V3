@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RBtree.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tmoragli <tmoragli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/27 12:38:26 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/27 17:27:13 by tmoragli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,6 +237,16 @@ namespace ft
 				g->getColour() = true;
 			}
 
+			node	*find(Key key) const
+			{
+				if (!_trunk)
+					return (_endNode);
+                node *found = _find(ft::make_pair(key, T()));
+                if (found)
+				    return (found);
+                return (_endNode);
+			}
+
 			node	*find(Key key)
 			{
 				if (!_trunk)
@@ -268,7 +278,27 @@ namespace ft
 				
                 return (n);
             }
+            node	*_find(const pair &val, node **leaf = NULL) const
+            {
+                node	*n = _trunk;
+				std::cerr << _endNode->isEndNode;
+				
 
+                while (n && n != _startNode && n != _endNode)
+                {
+                    if (leaf)
+                        *leaf = n;
+                    if (_comp(val.first, n->getPair().first))
+                        n = n->left;
+                    else if (_comp(n->getPair().first, val.first))
+                        n = n->right;
+                    else
+                        return (n);
+                }
+				std::cerr << _endNode->isEndNode;
+				
+                return (n);
+            }
 			//base sur https://www.programiz.com/dsa/deletion-from-a-red-black-tree
 			void			deleteNode(Key val)
 			{
@@ -324,7 +354,7 @@ namespace ft
                 leftest()->setLeft(_startNode);
                 rightest()->setRight(_endNode);
 			}
-			
+
 			//ATTENTION ce n'est pas une deep copy. pour une deep copy, passer par le constructeur
 			RBtree &operator=(const RBtree &src)
 			{
@@ -332,6 +362,10 @@ namespace ft
 				{
 					_trunk = src._trunk;
 					_size = src._size;
+					_startNode = src._startNode;
+					_endNode = src._endNode;
+					_comp = src._comp;
+					_alloc = src._alloc;
 				}
 				return (*this);
 			}
@@ -346,7 +380,7 @@ namespace ft
 				std::cout << "L'arbre contient " << std::endl << _trunk->printRecur() << " elements" << std::endl;
 			}
 
-			node	*leftest()
+			node	*leftest() const
 			{
 				if (!_trunk)
 					return (_endNode);
@@ -356,7 +390,7 @@ namespace ft
 				return (n);
 			}
 
-			node	*rightest()
+			node	*rightest() const
 			{
 				if (!_trunk)
 					return (_endNode);

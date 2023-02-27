@@ -20,33 +20,53 @@ void	print(map<Key, T>& lst)
     cout << '\n';
 }
 
-int main()
+int main ()
 {
-    pair<int, string>			my_pair(8, "salut");
-    map<int, string>			test;
-    map<int, string>::iterator	it;
+	map<char,int> mymap;
 
-    test.insert(my_pair);
-    test.insert(pair<int, string>(-4, "bar"));
-    test.insert(pair<int, string>(2, "machin"));
-    test.insert(pair<int, string>(3, "foo"));
-    test.insert(pair<int, string>(746, "Marcel"));
-    test.insert(pair<int, string>(1, "truc"));
-    it = test.begin();
-    cout << '\n';
 
-    while (it != test.end())
-    {
-        // cout << "start of while\n";
-        cout << it->first << ", " << it->second << '\n';
-        it++;
-// 		cout << "iterator incremented\n";
+	if (mymap.begin() != mymap.end())
+		cout << "This should not happen\n";
 
-// #ifndef STD
-// 		cout << it.getPointer() << '\n';
-// 		cout << test.end().getPointer() << '\n';
-// #endif
+	mymap['a'] = 200;
+	mymap['b'] = 100;
+	mymap['c'] = 300;
 
-    }
-    cout << "End of display loop\n";
+	if (mymap.begin() == mymap.end())
+		cout << "This is wrong\n";
+	// show content:
+	for (map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); it++)
+		cout << it->first << " => " << it->second << '\n';
+
+	cout << "Hello there\n";
+	for (map<char,int>::const_iterator it=mymap.begin(); it!=mymap.end(); it++)
+    cout << it->first << " => " << it->second << '\n';
+	cout << "General Kenobi\n";
+
+	map<char, int>::const_iterator it = mymap.begin();
+	map<char, int>::const_iterator ti = mymap.end();
+	cout << "Wupwup\n";
+
+	it++;
+	++it;
+	it--;
+	--it;
+	cout << "marker1\n";
+
+	ti--;
+	--ti;
+	++ti;
+	ti++;
+
+	ti = it;
+
+	cout << "Trump is a kiddo\n";
+	map<char, int>::iterator end = mymap.end();
+	while(it != end)
+	{
+    	cout << it->first << " => " << it->second << '\n';
+		it++;
+	}
+
+  return 0;
 }

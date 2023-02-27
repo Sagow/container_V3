@@ -6,7 +6,7 @@
 /*   By: tmoragli <tmoragli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 18:22:09 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/27 16:50:12 by tmoragli         ###   ########.fr       */
+/*   Updated: 2023/02/27 17:27:13 by tmoragli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ namespace ft
 			}
 
 			//Element access
-			mapped_type& operator[] (const key_type &k) const
+			mapped_type& operator[] (const key_type &k)
 			{
 				iterator tmp = find(k);
 
@@ -171,6 +171,7 @@ namespace ft
                 }
 				return (tmp->second);
 			}
+
 			mapped_type& at(key_type k) const
 			{
 				RBnode<const Key, T>	*node = _tree.find(k);
@@ -248,14 +249,12 @@ namespace ft
                     _tree.deleteNode(currentPtr->getPair().first);
                 }
 			}
+
 			void swap (map<Key, T, Compare, Allocator>& x)
 			{
-				Tree*	tmp = x._tree;
-
-				x._tree = _tree;
-
-                _tree = tmp;
+				ft::__swap(x._tree, _tree);
 			}
+			
 			void clear()
 			{
 				_tree.destroyRecu(_tree.getTrunk());
