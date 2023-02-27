@@ -120,25 +120,21 @@ namespace ft
 			reverse_iterator rbegin()
             {
                 reverse_iterator tmp = end();
-                tmp++;
                 return (tmp);
             }
 			const_reverse_iterator rbegin() const
             {
                 const_reverse_iterator tmp = end();
-                tmp++;
                 return (tmp);
             }
 			reverse_iterator rend()
             {
                 reverse_iterator tmp = begin();
-                tmp++;
                 return (tmp);
             }
 			const_reverse_iterator rend() const
             {
                 reverse_iterator tmp = begin();
-                tmp++;
                 return (tmp);
             }
 
@@ -349,40 +345,14 @@ namespace ft
 	bool operator==(const map<Key,T,Compare,Allocator>& x,
 	const map<Key,T,Compare,Allocator>& y)
 	{
-		if (x.size() != y.size())
-			return (false);
-		typename map<const Key, T>::const_iterator	itx = x.begin();
-		typename map<const Key, T>::const_iterator	ity = y.begin();
-		while (itx != x.end() && ity != y.end())
-		{
-			if (*itx != *ity)
-				return (false);
-			itx++;
-			ity++;
-		}
-		if (itx == x.end() && ity == y.end())
-			return (true);
-		return (false);
+		return !(x < y || y < x);
 	}
 	
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator< (const map<Key,T,Compare,Allocator>& x,
 	const map<Key,T,Compare,Allocator>& y)
 	{
-		typename map<const Key, T>::const_iterator	itx = x.begin();
-		typename map<const Key, T>::const_iterator	ity = y.begin();
-		while (itx != x.end() && ity != y.end())
-		{
-			if (*itx < *ity)
-				return (true);
-			if (*itx > *ity)
-				return (false);
-			itx++;
-			ity++;
-		}
-		if (itx == x.end())
-			return (true);
-		return (false);
+		return (ft::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end()));
 	}
 	
 	template <class Key, class T, class Compare, class Allocator>
@@ -396,21 +366,21 @@ namespace ft
 	bool operator> (const map<Key,T,Compare,Allocator>& x,
 	const map<Key,T,Compare,Allocator>& y)
 	{
-		return (!(x < y || x == y));
+		return (y < x);
 	}
 
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator>=(const map<Key,T,Compare,Allocator>& x,
 	const map<Key,T,Compare,Allocator>& y)
 	{
-		return(!operator<(x, y));
+		return(!(x < y));
 	}
 
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator<=(const map<Key,T,Compare,Allocator>& x,
 	const map<Key,T,Compare,Allocator>& y)
 	{
-		return (operator<(x, y) || operator==(x, y));
+		return (!(x > y));
 	}
 
 	// specialized algorithms:

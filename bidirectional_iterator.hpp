@@ -184,11 +184,14 @@ namespace ft
 
             reference operator* (void)
             {
-                return (_ptr.base()->getPair());
+                iterator tmp = _ptr.base();
+                return (*--tmp);
             }
             pointer operator-> (void) const
             {
-                return (&_ptr.base()->getPair());
+                iterator tmp = _ptr;
+                --tmp;
+                return tmp.operator->();
             }
         };
 

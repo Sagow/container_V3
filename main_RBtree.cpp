@@ -49,6 +49,9 @@ using namespace NAMESPACE;
 template<typename T1, typename T2>
 std::ostream	&operator<<(std::ostream &os, ft::pair<T1, T2> const& p)
 {
+    std::map<int, int> t;
+    auto it = t.rbegin();
+
 	os << "[" << p.first << ", " << p.second << "]";
 	return (os);
 }
