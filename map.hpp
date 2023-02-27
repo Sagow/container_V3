@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 18:22:09 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/14 06:50:52 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/27 11:14:59 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,19 +188,7 @@ namespace ft
 				return (node->pair.second);
 
 			}
-			/*const mapped_type& at(key_type& k) const
-			{
-				RBnode<Key, T>	*node = _tree->find(k);
-				if (!node)
-				{
-					std::ostringstream	oss;
-
-					oss << "map key (which is " << k << ") does not exist";
-					throw (std::out_of_range(oss.str()));
-				}
-				return (node->pair.second);
-			}*/
-
+			
 			//Modifiers
 			pair<iterator,bool> insert (const value_type& val) const
 			{

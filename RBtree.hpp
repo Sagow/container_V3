@@ -6,7 +6,7 @@
 /*   By: mdelwaul <mdelwaul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/05 22:14:14 by mdelwaul         ###   ########.fr       */
+/*   Updated: 2023/02/27 11:20:26 by mdelwaul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,26 +71,24 @@ namespace ft
 //                alloc.deallocate(_startNode, sizeof(_startNode));
             }
 
-                void allocGardians()
-                {
+			void allocGardians()
+			{
                 _endNode = Allocator().allocate(sizeof(node));
                 Allocator().construct(_endNode, node());
                 _startNode = Allocator().allocate(sizeof(node));
                 Allocator().construct(_startNode, node());
                 _endNode->isEndNode = true;
                 _startNode->isEndNode = true;
-                }
+			}
 
             RBtree(pair val, Comparator &c): _trunk(NULL), _size(0), _comp(c)
 			{
-                _endNode->setBelongsTo(this);
 				Allocator alloc;
 				_trunk = alloc.allocate(sizeof(node));
 				alloc.construct(_trunk, node(val, this));
 				_size = 1;
 				_trunk->getColour() = false;
-                _endNode->isEndNode = true;
-                _startNode->isEndNode = true;
+				allocGardians();
 			}
 
 			//pas de setter parce que RBtree se gere seul
@@ -162,7 +160,11 @@ namespace ft
 					alloc.construct(next, node(parent, val));
 					balanceTree(next);
 				}
-                _endNode->parent = rightest();
+				node	*rst = rightest();
+				if (rst->isEndNode)
+                	_endNode->parent = NULL;
+				else
+                	_endNode->parent = rightest();
                 _startNode->parent = leftest();
                 leftest()->setLeft(_startNode);
                 rightest()->setRight(_endNode);
@@ -243,6 +245,8 @@ namespace ft
             node	*_find(const pair &val, node **leaf = NULL)
             {
                 node	*n = _trunk;
+				std::cerr << _endNode->isEndNode;
+				
 
                 while (n && n != _startNode && n != _endNode)
                 {
@@ -255,6 +259,8 @@ namespace ft
                     else
                         return (n);
                 }
+				std::cerr << _endNode->isEndNode;
+				
                 return (n);
             }
 
