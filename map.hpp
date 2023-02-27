@@ -66,7 +66,7 @@ namespace ft
 			};
 
 		protected:
-			typedef RBtree<const Key, T> Tree;
+			typedef RBtree<const Key, T, Compare> Tree;
 			typedef typename allocator_type::template rebind<Tree>::other	treeAllocator;
 			treeAllocator _alloc;
 			key_compare	_comp;
@@ -102,6 +102,7 @@ namespace ft
 				clear();
                 _comp = x._comp;
                 _alloc = x._alloc;
+                _tree->_size = 0;
 				insert(x.begin(), x.end());
 				return (*this);
 			}
@@ -117,11 +118,11 @@ namespace ft
 			}
 			iterator end()
 			{
-				return (iterator(_tree->getEndNode()));
+				return (iterator(_tree->_endNode));
 			}
 			const_iterator end() const
 			{
-				return (const_iterator(_tree->getEndNode()));
+				return (const_iterator(_tree->_endNode));
 			}
 			//toutes les declinaisons
 			reverse_iterator rbegin()
@@ -168,9 +169,10 @@ namespace ft
 			{
 				iterator tmp = find(k);
 
-				if (tmp == end())
+				if (tmp.base()->isEndNode) {
 					insert(ft::make_pair(k, mapped_type()));
-				tmp = find(k);
+				    tmp = find(k);
+                }
 				return (tmp->second);
 			}
 			mapped_type& at(key_type k) const
@@ -203,7 +205,7 @@ namespace ft
 			pair<iterator,bool> insert (const value_type& val) const
 			{
                 iterator    it = find(val.first);
-                if (it != end())
+                if (it.base()->isEndNode == false)
                     return (ft::make_pair(it, false));
                 _tree->insertNode(val);
                 it = find(val.first);
@@ -266,7 +268,7 @@ namespace ft
 			}
 			void clear()
 			{
-				_tree->destroyRecu(_tree->getTrunk());
+				_tree->destroyRecu(_tree->getTrunk(), false);
                 _tree->setTrunk(NULL);
 			}
 			
@@ -295,7 +297,7 @@ namespace ft
 			size_type count (const key_type k) const
 			{
                 RBnode<const Key, T>    *found = _tree->find(k);
-				if (!found->isNull())
+				if (!found->isEndNode)
 					return (1);
 				return (0);
 			}

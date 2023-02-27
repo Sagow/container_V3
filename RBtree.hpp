@@ -31,17 +31,20 @@ namespace ft
 			typedef RBnode<Key, T>	node;
 			typedef ft::pair<Key, T> pair;
 
-		private:
 			node			*_trunk;
 			size_t			_size;
 			Comparator		_comp;
-            node            _endNode;
-
-		public:
+            node            *_endNode;
+            node            *_startNode;
 
             RBtree(): _trunk(NULL), _size(0), _comp(Comparator())
 			{
-				_endNode.setBelongsTo(this);
+                _endNode = Allocator().allocate(sizeof(node));
+                Allocator().construct(_endNode, node());
+                _startNode = Allocator().allocate(sizeof(node));
+                Allocator().construct(_startNode, node());
+                _endNode->isEndNode = true;
+                _startNode->isEndNode = true;
 			}
 
 			void	insertRecu(node *n)
@@ -56,19 +59,33 @@ namespace ft
 			}
 			RBtree(const RBtree<Key, T> &other): _trunk(NULL), _size(0), _comp(other._comp)
 			{
-                _endNode.setBelongsTo(this);
 				insertRecu(other._trunk);
+                _endNode->isEndNode = true;
+                _startNode->isEndNode = true;
 			}
 
 
+            ~RBtree()
+            {
+                Allocator   alloc;
+
+                destroyRecu(_trunk, true);
+//
+//                alloc.destroy(_endNode);
+//                alloc.deallocate(_endNode, sizeof(_endNode));
+//                alloc.destroy(_startNode);
+//                alloc.deallocate(_startNode, sizeof(_startNode));
+            }
         RBtree(pair val, Comparator &c): _trunk(NULL), _size(0), _comp(c)
 			{
-                _endNode.setBelongsTo(this);
+                _endNode->setBelongsTo(this);
 				Allocator alloc;
 				_trunk = alloc.allocate(sizeof(node));
 				alloc.construct(_trunk, node(val, this));
 				_size = 1;
 				_trunk->getColour() = false;
+                _endNode->isEndNode = true;
+                _startNode->isEndNode = true;
 			}
 
 			//pas de setter parce que RBtree se gere seul
@@ -76,28 +93,18 @@ namespace ft
 			{
 				return (_size);
 			}
-
-            node *getEndNode()
-            {
-                return (&_endNode);
-            }
 			
-			void	destroyRecu(node *n)
+			void	destroyRecu(node *n, bool deleteGardians)
 			{
 				Allocator	alloc;
-				if (!n)
+				if (!n || (deleteGardians && n->isEndNode))
 					return ;
 				if (n->getLeft())
-					destroyRecu(n->getLeft());
+					destroyRecu(n->getLeft(), deleteGardians);
 				if (n->getRight())
-					destroyRecu(n->getRight());
+					destroyRecu(n->getRight(), deleteGardians);
 				destroyNode(n);
 				_size--;
-			}
-			
-			~RBtree()
-			{
-				destroyRecu(_trunk);
 			}
 
 			
@@ -116,12 +123,15 @@ namespace ft
 				node *next = _trunk;
 				node *parent = NULL;
 				Allocator	alloc;
-				
+
+                leftest()->setLeft(NULL);
+                rightest()->setRight(NULL);
+
 				_size++;
 				if (!_trunk)
 				{
 					_trunk = alloc.allocate(sizeof(node));
-					alloc.construct(_trunk, node(val, this));
+					alloc.construct(_trunk, node(val));
 				}
 				else
 				{
@@ -147,6 +157,10 @@ namespace ft
 					alloc.construct(next, node(parent, val));
 					balanceTree(next);
 				}
+                _endNode->parent = rightest();
+                _startNode->parent = leftest();
+                leftest()->setLeft(_startNode);
+                rightest()->setRight(_endNode);
 			}
 
 			void	balanceTree(node *lastInserted)
@@ -214,12 +228,30 @@ namespace ft
 			node	*find(Key key)
 			{
 				if (!_trunk)
-					return (getEndNode());
-                node *found = _trunk->find(key);
+					return (_endNode);
+                node *found = _find(ft::make_pair(key, T()));
                 if (found)
 				    return (found);
-                return (getEndNode());
+                return (_endNode);
 			}
+
+            node	*_find(const pair &val, node **leaf = NULL)
+            {
+                node	*n = _trunk;
+
+                while (n && n != _startNode && n != _endNode)
+                {
+                    if (leaf)
+                        *leaf = n;
+                    if (_comp(val.first, n->getPair().first))
+                        n = n->left;
+                    else if (_comp(n->getPair().first, val.first))
+                        n = n->right;
+                    else
+                        return (n);
+                }
+                return (n);
+            }
 
 			//base sur https://www.programiz.com/dsa/deletion-from-a-red-black-tree
 			void			deleteNode(Key val)
@@ -228,6 +260,9 @@ namespace ft
 				node	*x = NULL;
 				node	*y = n;
 				Allocator	alloc;
+
+                leftest()->setLeft(NULL);
+                rightest()->setRight(NULL);
 
 
 				if (!n)
@@ -268,6 +303,10 @@ namespace ft
 				destroyNode(n);
 				if (!yColour)
 					deleteFix(x);
+                _endNode->parent = rightest();
+                _startNode->parent = leftest();
+                leftest()->setLeft(_startNode);
+                rightest()->setRight(_endNode);
 			}
 			
 			//ATTENTION ce n'est pas une deep copy. pour une deep copy, passer par le constructeur
@@ -276,7 +315,7 @@ namespace ft
 				if (this != &src)
 				{
 					_trunk = src._trunk;
-					_size = src._sive;
+					_size = src._size;
 				}
 				return (*this);
 			}
@@ -294,9 +333,9 @@ namespace ft
 			node	*leftest()
 			{
 				if (!_trunk)
-					return (getEndNode());
+					return (_endNode);
 				node	*n = _trunk;
-				while (n->getLeft())
+				while (n->getLeft() && !n->getLeft()->isEndNode)
 					n = n->getLeft();
 				return (n);
 			}
@@ -304,9 +343,9 @@ namespace ft
 			node	*rightest()
 			{
 				if (!_trunk)
-					return (getEndNode());
+					return (_endNode);
 				node	*n = _trunk;
-				while (n->getRight())
+				while (n->getRight() && !n->getRight()->isEndNode)
 					n = n->getRight();
 				return (n);
 			}

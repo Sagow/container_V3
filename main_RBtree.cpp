@@ -3,16 +3,44 @@
 #define T1 int
 #define T2 std::string
 
-struct ft_more {
-    bool	operator()(const T1 &first, const T1 &second) const {
-        return (first > second);
-    }
-};
+#define cout std::cout
 
-typedef TESTED_NAMESPACE::map<T1, T2> ft_mp;
-typedef TESTED_NAMESPACE::map<T1, T2>::iterator ft_mp_it;
+#ifndef STD
+# define NAMESPACE ft
+#else
+# define NAMESPACE std
+#endif
 
-int		main(void)
+using namespace NAMESPACE;
+
+template <class Key, class T>
+void	print(map<Key, T>& lst)
 {
-    return (0);
+    for (typename map<Key, T>::iterator it = lst.begin(); it != lst.end(); it++)
+        cout << it->first << " => " << it->second << '\n';
+}
+
+int main ()
+{
+    map<char,int> mymap;
+
+    mymap['b'] = 100;
+    mymap['a'] = 200;
+    mymap['c'] = 300;
+
+    // show content:
+    for (map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+        cout << it->first << " => " << it->second << '\n';
+
+    cout << "\n\n========\n\n";
+
+
+    map<char,int>::iterator it = mymap.end();
+    it--;
+    cout << "end - 1 " << it->first << '\n';
+    for (it = --mymap.end(); it!=mymap.begin(); --it)
+        cout << it->first << " => " << it->second << '\n';
+    cout << it->first << " => " << it->second << '\n';
+
+    return 0;
 }

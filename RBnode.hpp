@@ -16,16 +16,16 @@ namespace ft
 			typedef RBnode<Key, T>	node;
 			typedef ft::pair<Key, T> pair;
 
-		private:
-			pair		_pair;
-			node*		left;
-			node*		right;
-			node*		parent;
-			bool		colour;
-            RBtree<Key, T>* _belongsTo;
+            pair	    	_pair;
+			node*	    	left;
+			node*	    	right;
+			node*	    	parent;
+			bool		    colour;
+            bool            isEndNode;
+
 		public:
 
-			pair& getPair(void)
+			pair &getPair(void)
 			{
 				return (_pair);
 			}
@@ -87,26 +87,16 @@ namespace ft
 				return (colour);
 			}
 
-            RBtree<Key, T>* getBelongsTo(void)
-            {
-                return (_belongsTo);
-            }
-
-            void    setBelongsTo(RBtree<Key, T> *belongsTo)
-            {
-                _belongsTo = belongsTo;
-            }
-
-			RBnode(RBtree<Key, T>* belongsTo = NULL) : left(NULL), right(NULL), parent(NULL), colour(true), _belongsTo(belongsTo)
+			RBnode() : left(NULL), right(NULL), parent(NULL), colour(true)
 			{}
 
-			RBnode(const node &src) : _pair(src._pair), left(src.left), right(src.right), parent(src.parent), colour(src.colour), _belongsTo(src._belongsTo)
+			RBnode(const node &src) : _pair(src._pair), left(src.left), right(src.right), parent(src.parent), colour(src.colour)
 			{}
 
-			RBnode(ft::pair<Key, T> p, RBtree<Key, T>* belongsTo = NULL) : _pair(p), left(NULL), right(NULL), parent(NULL), colour(true), _belongsTo(belongsTo)
+			RBnode(ft::pair<Key, T> p) : _pair(p), left(NULL), right(NULL), parent(NULL), colour(true)
 			{}
 
-			RBnode(node *par, ft::pair<Key, T> p) : _pair(p), left(NULL), right(NULL), parent(par), colour(true), _belongsTo(par->_belongsTo)
+			RBnode(node *par, ft::pair<Key, T> p) : _pair(p), left(NULL), right(NULL), parent(par), colour(true)
 			{}
 
 			~RBnode()
@@ -122,13 +112,6 @@ namespace ft
 				colour = src.colour;
 				return (*this);
 			}
-
-            bool isNull(void)
-            {
-                if (getBelongsTo() && this == getBelongsTo()->getEndNode())
-                    return (true);
-                return (false);
-            }
 
 			bool isLeftChild(void)
 			{
@@ -170,16 +153,15 @@ namespace ft
 						n = n->left;
 					return (n);
 				}
-				else
-				{
-                    node    *prt = n->parent;
-				    while(prt && n->isRightChild())
-                    {
-                        n = prt;
-                        prt = n->parent;
-                    }
-                    return (prt);
-				}
+
+                node    *prt = n->parent;
+                while(prt && n->isRightChild())
+                {
+                    n = prt;
+                    prt = n->parent;
+                }
+
+                return (prt);
 			}
 
 			node	*getPrevious()
@@ -192,18 +174,14 @@ namespace ft
 						n = n->right;
 					return (n);
 				}
-				else
+
+                node    *prt = n->parent;
+                while(prt && n->isLeftChild())
                 {
-                    node    *prt = n->parent;
-                    while(prt && n->isLeftChild())
-                    {
-                        n = prt;
-                        prt = n->parent;
-                    }
-                    if (prt == NULL)
-                        return (this->_belongsTo->getEndNode());
-                    return (prt);
+                    n = prt;
+                    prt = n->parent;
                 }
+                return (prt);
 			}
 
 			size_t			getDepth(size_t depth = 0)
@@ -267,20 +245,6 @@ namespace ft
 
 			}
 
-			node	*find(Key val)
-			{
-				node	*ret = NULL;
-				if (_pair.first == val)
-					ret = this;
-				else
-				{
-					if (_pair.first > val && left)
-						ret = left->find(val);
-					else if (right)
-						ret = right->find(val);
-				}
-				return (ret);
-			}
 
 			node	*nextLeaf()
 			{
