@@ -242,7 +242,7 @@ namespace ft
 				if (!_trunk)
 					return (_endNode);
                 node *found = _find(ft::make_pair(key, T()));
-                if (found)
+                if (found && !found->isEndNode)
 				    return (found);
                 return (_endNode);
 			}
@@ -252,8 +252,8 @@ namespace ft
 				if (!_trunk)
 					return (_endNode);
                 node *found = _find(ft::make_pair(key, T()));
-                if (found)
-				    return (found);
+                if (found && !found->isEndNode)
+                    return (found);
                 return (_endNode);
 			}
 
