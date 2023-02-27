@@ -199,11 +199,11 @@ namespace ft
 			//true si changement de racine
 			bool	leftRotate()
 			{
-                if (!right)
+                /*if (!right)
                 {
                     std::cout << RED << "alerte on switch avec un truc vide" << END << std::endl;
                     printRecur();
-                }
+                }*/
                 node	*switchingWith = right;
 
                 right = switchingWith->left;
@@ -223,11 +223,11 @@ namespace ft
 			//true si changement de racine
 			bool	rightRotate()
 			{
-				if (!left)
+				/*if (!left)
 				{
 					std::cout << RED << "alerte on switch avec un truc vide" << END << std::endl;
 					printRecur();
-				}
+				}*/
 				node	*switchingWith = left;
 
                left = switchingWith->right;

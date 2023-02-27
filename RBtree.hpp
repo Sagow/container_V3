@@ -6,7 +6,7 @@
 /*   By: tmoragli <tmoragli@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 19:01:55 by mdelwaul          #+#    #+#             */
-/*   Updated: 2023/02/27 18:30:39 by tmoragli         ###   ########.fr       */
+/*   Updated: 2023/02/27 19:21:19 by tmoragli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,7 +260,6 @@ namespace ft
             node	*_find(const pair &val, node **leaf = NULL)
             {
                 node	*n = _trunk;
-				std::cerr << _endNode->isEndNode;
 				
 
                 while (n && n != _startNode && n != _endNode)
@@ -274,14 +273,12 @@ namespace ft
                     else
                         return (n);
                 }
-				std::cerr << _endNode->isEndNode;
 				
                 return (n);
             }
             node	*_find(const pair &val, node **leaf = NULL) const
             {
                 node	*n = _trunk;
-				std::cerr << _endNode->isEndNode;
 				
 
                 while (n && n != _startNode && n != _endNode)
@@ -295,7 +292,6 @@ namespace ft
                     else
                         return (n);
                 }
-				std::cerr << _endNode->isEndNode;
 				
                 return (n);
             }
