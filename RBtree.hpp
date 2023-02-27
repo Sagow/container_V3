@@ -36,7 +36,7 @@ namespace ft
 			size_t			_size;
 			Comparator		_comp;
             node            _endNode;
-			
+
 		public:
 
             RBtree(): _trunk(NULL), _size(0), _comp(Comparator())
@@ -48,7 +48,7 @@ namespace ft
 			{
                 if (!n)
                     return ;
-				insertNode(*n->getPair());
+				insertNode(n->getPair());
 				if (n->getLeft())
 					insertRecu(n->getLeft());
 				if (n->getRight())
@@ -128,13 +128,13 @@ namespace ft
 					while (next)
 					{
 						parent = next;
-						if (_comp((next->getPair())->first, val.first))
+						if (_comp((next->getPair()).first, val.first))
 							next = next->getRight();
 						else
 							next = next->getLeft();
 					}
 
-					if (_comp(parent->getPair()->first, val.first))
+					if (_comp(parent->getPair().first, val.first))
 					{
 						parent->setRight(alloc.allocate(sizeof(node)));
 						next = parent->getRight();

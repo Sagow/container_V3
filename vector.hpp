@@ -10,14 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-#include <iterator>
-#include <memory>
-#include <cstring>
-#include "algorithm.hpp"
-#include "random_access_iterator.hpp"
-#include <iostream>
-#include <sstream>
+#ifndef VECTOR_HPP
+# define VECTOR_HPP
+# include <iterator>
+# include <memory>
+# include <cstring>
+# include "algorithm.hpp"
+# include "random_access_iterator.hpp"
+# include <iostream>
+# include <sstream>
 
 namespace ft {
 	template <class T, class Allocator = std::allocator<T> >
@@ -448,3 +449,4 @@ namespace ft {
 		x.swap(y);
 	}
 };
+#endif

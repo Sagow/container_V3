@@ -202,13 +202,6 @@ namespace ft
 			//Modifiers
 			pair<iterator,bool> insert (const value_type& val) const
 			{
-                /*
-				pair<iterator,bool>	res = ft::make_pair(find(val.first), false);
-				if (res.first != end())
-					res.second = false;
-				else
-					res.second = true;
-				return (res);*/
                 iterator    it = find(val.first);
                 if (it != end())
                     return (ft::make_pair(it, false));
@@ -234,7 +227,7 @@ namespace ft
 				void insert (InputIterator first, InputIterator last)
 				{
 					for (InputIterator it = first; it != last; it++)
-						_tree->insertNode(*it);
+						insert(*it);
 					
 				}
 			void erase (iterator position)
@@ -260,7 +253,7 @@ namespace ft
                 {
                     tmp = InputIterator(currentPtr);
                     nextPtr = (++tmp).base();
-                    _tree->deleteNode(currentPtr->getPair()->first);
+                    _tree->deleteNode(currentPtr->getPair().first);
                 }
 			}
 			void swap (map<Key, T, Compare, Allocator>& x)
@@ -311,7 +304,7 @@ namespace ft
 				iterator it;
 				for (it = begin(); it != end(); it++)
 				{
-					if (it->first >= k)
+					if (!_comp(it->first, k))
 						break ;
 				}
 				return (it);
@@ -321,7 +314,7 @@ namespace ft
 				const_iterator it = begin();
 				for (; it != end(); it++)
 				{
-					if (it->first >= k)
+					if (!_comp(it->first, k))
 						break ;
 				}
 				return (it);
@@ -331,7 +324,7 @@ namespace ft
 				iterator it;
 				for (it = begin(); it != end(); it++)
 				{
-					if ((*it).first > k)
+					if (_comp(k, it->first))
 						break ;
 				}
 				return (it);
@@ -341,7 +334,7 @@ namespace ft
 				const_iterator it;
 				for (it = begin(); it != end(); it++)
 				{
-					if ((*it).first > k)
+					if (_comp(k, it->first))
 						break ;
 				}
 				return (it);
@@ -407,26 +400,30 @@ namespace ft
 	bool operator!=(const map<Key,T,Compare,Allocator>& x,
 	const map<Key,T,Compare,Allocator>& y)
 	{
-		return (!operator==(x, y));
+		return (!(x == y));
 	}
+
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator> (const map<Key,T,Compare,Allocator>& x,
 	const map<Key,T,Compare,Allocator>& y)
 	{
-		return (!(operator<(x, y) || operator==(x, y)));
+		return (!(x < y || x == y));
 	}
+
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator>=(const map<Key,T,Compare,Allocator>& x,
 	const map<Key,T,Compare,Allocator>& y)
 	{
 		return(!operator<(x, y));
 	}
+
 	template <class Key, class T, class Compare, class Allocator>
 	bool operator<=(const map<Key,T,Compare,Allocator>& x,
 	const map<Key,T,Compare,Allocator>& y)
 	{
 		return (operator<(x, y) || operator==(x, y));
 	}
+
 	// specialized algorithms:
 	template <class Key, class T, class Compare, class Allocator>
 	void swap(map<Key,T,Compare,Allocator>& x,

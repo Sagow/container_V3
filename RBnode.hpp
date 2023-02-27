@@ -23,12 +23,11 @@ namespace ft
 			node*		parent;
 			bool		colour;
             RBtree<Key, T>* _belongsTo;
-			
 		public:
 
-			pair* getPair(void)
+			pair& getPair(void)
 			{
-				return (&_pair);
+				return (_pair);
 			}
 
 			void	setPair(pair p)
@@ -103,7 +102,7 @@ namespace ft
 
 			RBnode(const node &src) : _pair(src._pair), left(src.left), right(src.right), parent(src.parent), colour(src.colour), _belongsTo(src._belongsTo)
 			{}
-			
+
 			RBnode(ft::pair<Key, T> p, RBtree<Key, T>* belongsTo = NULL) : _pair(p), left(NULL), right(NULL), parent(NULL), colour(true), _belongsTo(belongsTo)
 			{}
 
@@ -113,7 +112,7 @@ namespace ft
 			~RBnode()
 			{}
 
-			
+
 			node &operator=(const node &src)
 			{
 				_pair.second = src._pair.second;
@@ -201,6 +200,8 @@ namespace ft
                         n = prt;
                         prt = n->parent;
                     }
+                    if (prt == NULL)
+                        return (this->_belongsTo->getEndNode());
                     return (prt);
                 }
 			}
@@ -265,7 +266,7 @@ namespace ft
                 return (!switchingWith->parent);
 
 			}
-			
+
 			node	*find(Key val)
 			{
 				node	*ret = NULL;

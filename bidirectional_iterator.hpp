@@ -42,17 +42,6 @@ namespace ft
                 {
                     return (_node);
                 }
-//
-//				bool	operator==(const bidirectional_iterator &other)
-//				{
-//					if (_node->getPair() == other._node->getPair())
-//						return (true);
-//					return (false);
-//				}
-//				bool	operator!=(const bidirectional_iterator &other)
-//				{
-//					return (!operator==(other));
-//				}
 
 				bidirectional_iterator &operator++()
 				{
@@ -91,7 +80,7 @@ namespace ft
 				bidirectional_iterator operator--(int)
 				{
 					bidirectional_iterator save = *this;
-                    if (_node && !_node->isNull())
+                    if (_node && _node->isNull() == false)
 					    _node = _node->getPrevious();
                     else if (_node)
                         _node = _node->getBelongsTo()->rightest();
@@ -113,11 +102,11 @@ namespace ft
 
 				reference operator* (void)
 				{
-					return (*(_node->getPair()));
+					return (_node->getPair());
 				}
 				pointer operator-> (void) const
 				{
-					return (_node->getPair());
+					return (&_node->getPair());
 				}
 
 		};
@@ -125,13 +114,13 @@ namespace ft
     template<typename pair1, typename node1, typename pair2, typename node2>
     bool	operator==(bidirectional_iterator<pair1, node1> const& it1, bidirectional_iterator<pair2, node2> const& it2)
         {
-            return (it1.base()->getPair() == it2.base()->getPair());
+            return (it1.base() == it2.base());
         }
 
     template<typename pair1, typename node1, typename pair2, typename node2>
         bool	operator!=(bidirectional_iterator<pair1, node1> const& it1, bidirectional_iterator<pair2, node2> const& it2)
         {
-            return (it1.base()->getPair() != it2.base()->getPair());
+            return (it1.base() != it2.base());
         }
 
     template<typename iterator>
@@ -207,11 +196,11 @@ namespace ft
 
             reference operator* (void)
             {
-                return (*(_ptr.base()->getPair()));
+                return (_ptr.base()->getPair());
             }
             pointer operator-> (void) const
             {
-                return (_ptr.base()->getPair());
+                return (&_ptr.base()->getPair());
             }
         };
 
