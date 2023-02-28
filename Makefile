@@ -24,6 +24,7 @@ OBJS_VECTOR =  ${MAIN_VECTOR:.cpp=.o}
 
 OBJS_STACK =  ${MAIN_STACK:.cpp=.o}
 
+SEED = 42
 
 CC =	c++
 
@@ -68,19 +69,19 @@ ${NAME_STACK_STD}:	${OBJS_STACK}
 		$(CC) $(FLAGS) -o $@ -c $<
 
 defaut:	${NAME_DEFAUT_FT} ${NAME_DEFAUT_STD}
-		./${NAME_DEFAUT_FT} > ft_defaut.txt ; ./${NAME_DEFAUT_STD} > std_defaut.txt ; diff ft_defaut.txt std_defaut.txt > diff_defaut.txt
+		./${NAME_DEFAUT_FT} ${SEED} > results/ft_defaut.txt ; ./${NAME_DEFAUT_STD} ${SEED} > results/std_defaut.txt ; diff results/ft_defaut.txt results/std_defaut.txt > results/diff_defaut.txt
 
-map:	${NAME_MAP_FT} ${NAME_DEFAUT_STD}
-		./${NAME_MAP_FT} > ft_map.txt ; ./${NAME_MAP_STD} > std_map.txt ; diff ft_map.txt std_map.txt > diff_map.txt
+map:	${NAME_MAP_FT} ${NAME_MAP_STD}
+		./${NAME_MAP_FT} > results/ft_map.txt ; ./${NAME_MAP_STD} > results/std_map.txt ; diff results/ft_map.txt results/std_map.txt > results/diff_map.txt
 
 vector:	${NAME_VECTOR_FT} ${NAME_VECTOR_STD}
-		./${NAME_VECTOR_FT} > ft_vector.txt ; ./${NAME_VECTOR_STD} > std_vector.txt ; diff ft_vector.txt std_vector.txt > diff_vector.txt
+		./${NAME_VECTOR_FT} > results/ft_vector.txt ; ./${NAME_VECTOR_STD} > results/std_vector.txt ; diff results/ft_vector.txt results/std_vector.txt > results/diff_vector.txt
 
 stack:	${NAME_STACK_FT} ${NAME_STACK_STD}
-		./${NAME_STACK_FT} > ft_stack.txt ; ./${NAME_STACK_STD} > std_stack.txt ; diff ft_stack.txt std_stack.txt > diff_stack.txt
+		./${NAME_STACK_FT} > results/ft_stack.txt ; ./${NAME_STACK_STD} > results/std_stack.txt ; diff results/ft_stack.txt results/std_stack.txt > results/diff_stack.txt
 
 clean:
-		rm -rf $(OBJS_DEFAUT) $(OBJS_MAP) $(OBJS_VECTOR) $(OBJS_STACK) ft_defaut.txt std_defaut.txt diff_defaut.txt ft_map.txt std_map.txt diff_map.txt ft_vector.txt std_vector.txt diff_vector.txt ft_stack.txt std_stack.txt diff_stack.txt
+		rm -rf $(OBJS_DEFAUT) $(OBJS_MAP) $(OBJS_VECTOR) $(OBJS_STACK) results/ft_defaut.txt results/std_defaut.txt results/diff_defaut.txt results/ft_map.txt results/std_map.txt results/diff_map.txt results/ft_vector.txt results/std_vector.txt results/diff_vector.txt results/ft_stack.txt results/std_stack.txt results/diff_stack.txt
 
 fclean: clean
 		rm -rf $(NAME_DEFAUT_FT) $(NAME_DEFAUT_STD) $(NAME_MAP_FT) $(NAME_MAP_STD) $(NAME_VECTOR_FT) $(NAME_VECTOR_STD) $(NAME_STACK_FT) $(NAME_STACK_STD)
