@@ -80,7 +80,7 @@ stack:	${NAME_STACK_FT} ${NAME_STACK_STD}
 		./${NAME_STACK_FT} > ft_stack.txt ; ./${NAME_STACK_STD} > std_stack.txt ; diff ft_stack.txt std_stack.txt > diff_stack.txt
 
 clean:
-		rm -rf $(OBJS_DEFAUT) $(OBJS_MAP) $(OBJS_VECTOR) $(OBJS_STACK)
+		rm -rf $(OBJS_DEFAUT) $(OBJS_MAP) $(OBJS_VECTOR) $(OBJS_STACK) ft_defaut.txt std_defaut.txt diff_defaut.txt ft_map.txt std_map.txt diff_map.txt ft_vector.txt std_vector.txt diff_vector.txt ft_stack.txt std_stack.txt diff_stack.txt
 
 fclean: clean
 		rm -rf $(NAME_DEFAUT_FT) $(NAME_DEFAUT_STD) $(NAME_MAP_FT) $(NAME_MAP_STD) $(NAME_VECTOR_FT) $(NAME_VECTOR_STD) $(NAME_STACK_FT) $(NAME_STACK_STD)
