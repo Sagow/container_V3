@@ -39,6 +39,8 @@ NAME_VECTOR_STD =  std_vector
 NAME_STACK_FT =  ft_stack
 NAME_STACK_STD =  std_stack
 
+RESULTS = results
+
 all: defaut map vector stack
 
 ${NAME_DEFAUT_FT}:	${OBJS_DEFAUT}
@@ -69,15 +71,19 @@ ${NAME_STACK_STD}:	${OBJS_STACK}
 		$(CC) $(FLAGS) -o $@ -c $<
 
 defaut:	${NAME_DEFAUT_FT} ${NAME_DEFAUT_STD}
+		@mkdir -p results
 		./${NAME_DEFAUT_FT} ${SEED} > results/ft_defaut.txt ; ./${NAME_DEFAUT_STD} ${SEED} > results/std_defaut.txt ; diff results/ft_defaut.txt results/std_defaut.txt > results/diff_defaut.txt
 
 map:	${NAME_MAP_FT} ${NAME_MAP_STD}
+		@mkdir -p results
 		./${NAME_MAP_FT} > results/ft_map.txt ; ./${NAME_MAP_STD} > results/std_map.txt ; diff results/ft_map.txt results/std_map.txt > results/diff_map.txt
 
 vector:	${NAME_VECTOR_FT} ${NAME_VECTOR_STD}
+		@mkdir -p results
 		./${NAME_VECTOR_FT} > results/ft_vector.txt ; ./${NAME_VECTOR_STD} > results/std_vector.txt ; diff results/ft_vector.txt results/std_vector.txt > results/diff_vector.txt
 
 stack:	${NAME_STACK_FT} ${NAME_STACK_STD}
+		@mkdir -p results
 		./${NAME_STACK_FT} > results/ft_stack.txt ; ./${NAME_STACK_STD} > results/std_stack.txt ; diff results/ft_stack.txt results/std_stack.txt > results/diff_stack.txt
 
 clean:
